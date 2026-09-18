@@ -21,6 +21,20 @@ dist/
 *.log
 /tmp/
 
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+
+# 本地工具缓存 / 演示产物
+.m2-test/
+.uv-cache/
+.playwright-cli/
+.claude/
+output/playwright/
+
 # Secrets —— API Key 只走环境变量，不落仓库
 .env
 .env.*

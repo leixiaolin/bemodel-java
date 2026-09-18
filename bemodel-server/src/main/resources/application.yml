@@ -7,14 +7,14 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/bemodel_platform?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:}
-    password: ${MYSQL_PASSWORD:}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
   flyway:
     enabled: true
     locations: classpath:db/migration
     placeholders:
-      demo_db_username: ${MYSQL_USERNAME:}
-      demo_db_password: ${MYSQL_PASSWORD:}
+      demo_db_username: ${MYSQL_USERNAME:root}
+      demo_db_password: ${MYSQL_PASSWORD:123456}
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai

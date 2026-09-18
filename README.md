@@ -34,13 +34,13 @@ BeModel 是一个语义层（Semantic Layer）平台：数据留在各业务库�
 
 ## 技术栈
 
-| 端 | 技术 |
-|---|---|
+| 端   | 技术                                                                                                         |
+| ---- | ------------------------------------------------------------------------------------------------------------ |
 | 后端 | Java 21 · Spring Boot 3.3 · Spring Security + JJWT · MyBatis-Plus · Flyway · Apache Jena（ARQ + SHACL） |
-| 前端 | Vue 3 · Vite · Element Plus · ECharts · Pinia（设计令牌层 + 深色导航布局） |
-| 存储 | MySQL（平台元数据库 + 各业务演示库） |
-| 安全 | JWT 认证（三角色）· 数据源密码 AES-GCM 加密 · SQL 白名单校验 · RDF 导出脱敏 |
-| AI | DeepSeek（API Key 走环境变量，无 Key 全链路可降级演示） |
+| 前端 | Vue 3 · Vite · Element Plus · ECharts · Pinia（设计令牌层 + 深色导航布局）                               |
+| 存储 | MySQL（平台元数据库 + 各业务演示库）                                                                         |
+| 安全 | JWT 认证（三角色）· 数据源密码 AES-GCM 加密 · SQL 白名单校验 · RDF 导出脱敏                               |
+| AI   | DeepSeek（API Key 走环境变量，无 Key 全链路可降级演示）                                                      |
 
 ## 目录结构
 
@@ -189,11 +189,11 @@ pnpm dev                               # http://127.0.0.1:5173（打开后进入
 
 内置演示账号（仅限演示环境，定义于 [V26__auth_and_security.sql](bemodel-server/src/main/resources/db/migration/V26__auth_and_security.sql)）：
 
-| 账号 | 密码 | 角色 | 权限 |
-|---|---|---|---|
-| `admin` | `admin123` | ADMIN | 全部能力 |
-| `modeler` | `model123` | EDITOR | 建模与写操作（无用户管理） |
-| `viewer` | `viewer123` | VIEWER | 只读 + 问答 / 搜索 |
+| 账号        | 密码          | 角色   | 权限                       |
+| ----------- | ------------- | ------ | -------------------------- |
+| `admin`   | `admin123`  | ADMIN  | 全部能力                   |
+| `modeler` | `model123`  | EDITOR | 建模与写操作（无用户管理） |
+| `viewer`  | `viewer123` | VIEWER | 只读 + 问答 / 搜索         |
 
 首次启动说明：
 
@@ -203,16 +203,16 @@ pnpm dev                               # http://127.0.0.1:5173（打开后进入
 
 ## 环境变量
 
-| 变量 | 必填 | 默认值 | 说明 |
-|---|---|---|---|
-| `MYSQL_USERNAME` | 是 | — | 平台库用户名（需有建库权限），同时用作九个演示库连接账号 |
-| `MYSQL_PASSWORD` | 是 | — | 平台库密码 |
-| `MYSQL_HOST` | 否 | `127.0.0.1` | MySQL 主机 |
-| `MYSQL_PORT` | 否 | `3306` | MySQL 端口 |
-| `MYSQL_DATABASE` | 否 | `bemodel_platform` | 平台元数据库名 |
-| `JWT_SECRET` | 生产必填 | 内置开发密钥 | JWT 签名密钥（HS256）；未配置时启动会告警 |
-| `APP_SECRET_KEY` | 生产必填 | 内置开发密钥 | 数据源密码 AES-GCM 加密密钥；更换后需重新保存数据源密码 |
-| `DEEPSEEK_API_KEY` | 否 | — | DeepSeek API Key；不配置则自动降级 |
+| 变量                 | 必填     | 默认值               | 说明                                                     |
+| -------------------- | -------- | -------------------- | -------------------------------------------------------- |
+| `MYSQL_USERNAME`   | 是       | —                   | 平台库用户名（需有建库权限），同时用作九个演示库连接账号 |
+| `MYSQL_PASSWORD`   | 是       | —                   | 平台库密码                                               |
+| `MYSQL_HOST`       | 否       | `127.0.0.1`        | MySQL 主机                                               |
+| `MYSQL_PORT`       | 否       | `3306`             | MySQL 端口                                               |
+| `MYSQL_DATABASE`   | 否       | `bemodel_platform` | 平台元数据库名                                           |
+| `JWT_SECRET`       | 生产必填 | 内置开发密钥         | JWT 签名密钥（HS256）；未配置时启动会告警                |
+| `APP_SECRET_KEY`   | 生产必填 | 内置开发密钥         | 数据源密码 AES-GCM 加密密钥；更换后需重新保存数据源密码  |
+| `DEEPSEEK_API_KEY` | 否       | —                   | DeepSeek API Key；不配置则自动降级                       |
 
 > 安全约定：API Key、数据库账号密码、JWT / 加密密钥只走环境变量，不落入仓库（`.gitignore` 已排除 `.env*`）；代码中的内置开发密钥（`bemodel-dev-*-do-not-use-in-prod`）仅用于零配置演示，启动日志会明确告警。
 
