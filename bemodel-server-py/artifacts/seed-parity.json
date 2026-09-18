@@ -1,0 +1,338 @@
+[
+  {
+    "table": "demo_charge.charge_audit",
+    "javaRows": 277,
+    "pythonRows": 277,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_charge.invoice",
+    "javaRows": 22,
+    "pythonRows": 22,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_charge.pay_record",
+    "javaRows": 89,
+    "pythonRows": 89,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_charge.reconcile_record",
+    "javaRows": 15,
+    "pythonRows": 15,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_charge.refund_apply",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_charge.settlement",
+    "javaRows": 22,
+    "pythonRows": 22,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.anesthesia_record",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.diag_dict",
+    "javaRows": 15,
+    "pythonRows": 15,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.drg_group",
+    "javaRows": 13,
+    "pythonRows": 13,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.emr_record",
+    "javaRows": 13,
+    "pythonRows": 13,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.emr_surgery",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.followup",
+    "javaRows": 5,
+    "pythonRows": 5,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.infection_report",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_emr.patient_allergy",
+    "javaRows": 1,
+    "pythonRows": 1,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.blood_apply",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.blood_transfusion",
+    "javaRows": 2,
+    "pythonRows": 2,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.dept",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.fee_detail",
+    "javaRows": 271,
+    "pythonRows": 271,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.inpatient",
+    "javaRows": 41,
+    "pythonRows": 41,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.medical_order",
+    "javaRows": 271,
+    "pythonRows": 271,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.staff",
+    "javaRows": 17,
+    "pythonRows": 17,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_his.status_map",
+    "javaRows": 3,
+    "pythonRows": 3,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_lis.lab_apply",
+    "javaRows": 118,
+    "pythonRows": 118,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_lis.lab_dict_status",
+    "javaRows": 4,
+    "pythonRows": 4,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_lis.lab_report",
+    "javaRows": 111,
+    "pythonRows": 111,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_material.material_apply",
+    "javaRows": 9,
+    "pythonRows": 9,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_material.material_in",
+    "javaRows": 6,
+    "pythonRows": 6,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_material.material_out",
+    "javaRows": 7,
+    "pythonRows": 7,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_material.material_stock",
+    "javaRows": 6,
+    "pythonRows": 6,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_nurse.nurse_exec",
+    "javaRows": 258,
+    "pythonRows": 258,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_nurse.vital_sign",
+    "javaRows": 123,
+    "pythonRows": 123,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_opd.opd_presc",
+    "javaRows": 71,
+    "pythonRows": 71,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_opd.opd_reg",
+    "javaRows": 25,
+    "pythonRows": 25,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_opd.opd_visit",
+    "javaRows": 24,
+    "pythonRows": 24,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pacs.exam_report",
+    "javaRows": 37,
+    "pythonRows": 37,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.dispense_record",
+    "javaRows": 184,
+    "pythonRows": 184,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.drug_dict",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.drug_stock",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.presc_review",
+    "javaRows": 126,
+    "pythonRows": 126,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.purchase_order",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.stock_in",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  },
+  {
+    "table": "demo_pharmacy.stock_out",
+    "javaRows": 12,
+    "pythonRows": 12,
+    "equal": true,
+    "javaOnly": [],
+    "pythonOnly": []
+  }
+]

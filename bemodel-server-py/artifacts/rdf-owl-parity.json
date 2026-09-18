@@ -1,0 +1,502 @@
+[
+  {
+    "scenario": "Turtle ZY202682000027",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000027",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000026",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000026",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000025",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000025",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000040",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000040",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000039",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000039",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000024",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000024",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000038",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000038",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000023",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000023",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000037",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000037",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260903041",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260903041",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000022",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000022",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000021",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000021",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000036",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000036",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000020",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000020",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000035",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000035",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000019",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000019",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000034",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000034",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000018",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000018",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000033",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000033",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000017",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000017",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000032",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000032",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260828010",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260828010",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000016",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000016",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000031",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000031",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000030",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000030",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000015",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000015",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000029",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000029",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000014",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000014",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000028",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000028",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260825009",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260825009",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY202682000013",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY202682000013",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260822007",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260822007",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260820005",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260820005",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260818004",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260818004",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260816003",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260816003",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260815001",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260815001",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260812002",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260812002",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260810008",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260810008",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260805006",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260805006",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260802011",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260802011",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "Turtle ZY20260728012",
+    "differences": []
+  },
+  {
+    "scenario": "SHACL ZY20260728012",
+    "implementationEngines": [
+      "Apache Jena SHACL 5.2.0",
+      "pySHACL"
+    ],
+    "differences": []
+  },
+  {
+    "scenario": "OWL preview sample.ttl",
+    "differences": []
+  },
+  {
+    "scenario": "OWL preview sample.owl",
+    "differences": []
+  }
+]

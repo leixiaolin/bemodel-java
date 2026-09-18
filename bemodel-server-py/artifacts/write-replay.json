@@ -1,0 +1,219 @@
+[
+  {
+    "method": "GET",
+    "path": "/concept/list",
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/concept/detail/TEST-NOT-FOUND",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept/transition/TEST-NOT-FOUND?target=REVIEW",
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/ontology/relation/closure",
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/flow/loop/TEST-NOT-FOUND",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/auth/login",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/concept/TEST-REPLAY-A",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/concept/TEST-REPLAY-B",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept",
+    "differences": []
+  },
+  {
+    "method": "PUT",
+    "path": "/concept",
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/concept/detail/TEST-REPLAY-A",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept/TEST-REPLAY-B/parents",
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/concept/TEST-REPLAY-B/parents",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept/TEST-REPLAY-A/parents",
+    "differences": []
+  },
+  {
+    "method": "PUT",
+    "path": "/concept/TEST-REPLAY-B/parents/TEST-REPLAY-A/primary",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept/attribute",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/concept/relation",
+    "differences": []
+  },
+  {
+    "method": "PUT",
+    "path": "/concept/relation",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": [
+      "/concept/relation/51",
+      "/concept/relation/51"
+    ],
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": [
+      "/concept/attribute/167",
+      "/concept/attribute/167"
+    ],
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/concept/TEST-REPLAY-B/parents/TEST-REPLAY-A",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule",
+    "differences": []
+  },
+  {
+    "method": "PUT",
+    "path": "/rule",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule/transition/TEST-REPLAY-RULE?target=PUBLISHED",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule/transition/TEST-REPLAY-RULE?target=REVIEW",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule/transition/TEST-REPLAY-RULE?target=PUBLISHED",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule/transition/TEST-REPLAY-RULE?target=DRAFT",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/rule/transition/TEST-REPLAY-RULE?target=DEPRECATED",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": [
+      "/rule/18",
+      "/rule/20"
+    ],
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action",
+    "differences": []
+  },
+  {
+    "method": "PUT",
+    "path": "/action",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action/transition/TEST-REPLAY-ACTION?target=PUBLISHED",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action/transition/TEST-REPLAY-ACTION?target=REVIEW",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action/transition/TEST-REPLAY-ACTION?target=PUBLISHED",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action/transition/TEST-REPLAY-ACTION?target=DRAFT",
+    "differences": []
+  },
+  {
+    "method": "POST",
+    "path": "/action/transition/TEST-REPLAY-ACTION?target=DEPRECATED",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": [
+      "/action/10",
+      "/action/10"
+    ],
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/concept/TEST-REPLAY-B",
+    "differences": []
+  },
+  {
+    "method": "DELETE",
+    "path": "/concept/TEST-REPLAY-A",
+    "differences": []
+  }
+]

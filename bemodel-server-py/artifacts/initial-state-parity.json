@@ -1,0 +1,611 @@
+{
+  "ignoredColumns": [
+    "created_at",
+    "execution_time",
+    "installed_on",
+    "scanned_at",
+    "updated_at"
+  ],
+  "tables": [
+    {
+      "table": "bm_action",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_alert_notice",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_attribute",
+      "javaCount": 164,
+      "pythonCount": 164,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_axiom",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_concept",
+      "javaCount": 49,
+      "pythonCount": 49,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_concept_disjoint",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_concept_parent",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_cs_feedback",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_datasource",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_domain",
+      "javaCount": 16,
+      "pythonCount": 16,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_gov_issue",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_gov_rule",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_gov_scan",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_inspect_run",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_llm_log",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_mapping",
+      "javaCount": 203,
+      "pythonCount": 203,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_metric",
+      "javaCount": 4,
+      "pythonCount": 4,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_ontology_miss",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_physical_column",
+      "javaCount": 307,
+      "pythonCount": 307,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_physical_table",
+      "javaCount": 42,
+      "pythonCount": 42,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_relation",
+      "javaCount": 47,
+      "pythonCount": 47,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_relation_closure",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_release",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_rule",
+      "javaCount": 14,
+      "pythonCount": 14,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_term",
+      "javaCount": 61,
+      "pythonCount": 61,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bm_user",
+      "javaCount": 3,
+      "pythonCount": 3,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "flyway_schema_history",
+      "javaCount": 28,
+      "pythonCount": 28,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "link_node",
+      "javaCount": 18,
+      "pythonCount": 18,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "link_rel",
+      "javaCount": 16,
+      "pythonCount": 16,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "qc_result",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "rca_case",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "rca_report",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "rca_step",
+      "javaCount": 0,
+      "pythonCount": 0,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.charge_audit",
+      "javaCount": 277,
+      "pythonCount": 277,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.invoice",
+      "javaCount": 22,
+      "pythonCount": 22,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.pay_record",
+      "javaCount": 89,
+      "pythonCount": 89,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.reconcile_record",
+      "javaCount": 15,
+      "pythonCount": 15,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.refund_apply",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.settlement",
+      "javaCount": 22,
+      "pythonCount": 22,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.anesthesia_record",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.diag_dict",
+      "javaCount": 15,
+      "pythonCount": 15,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.drg_group",
+      "javaCount": 13,
+      "pythonCount": 13,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.emr_record",
+      "javaCount": 13,
+      "pythonCount": 13,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.emr_surgery",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.followup",
+      "javaCount": 5,
+      "pythonCount": 5,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.infection_report",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.patient_allergy",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.blood_apply",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.blood_transfusion",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.dept",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.fee_detail",
+      "javaCount": 271,
+      "pythonCount": 271,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.inpatient",
+      "javaCount": 41,
+      "pythonCount": 41,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.medical_order",
+      "javaCount": 271,
+      "pythonCount": 271,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.staff",
+      "javaCount": 17,
+      "pythonCount": 17,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.status_map",
+      "javaCount": 3,
+      "pythonCount": 3,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_apply",
+      "javaCount": 118,
+      "pythonCount": 118,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_dict_status",
+      "javaCount": 4,
+      "pythonCount": 4,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_report",
+      "javaCount": 111,
+      "pythonCount": 111,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_apply",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_in",
+      "javaCount": 6,
+      "pythonCount": 6,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_out",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_stock",
+      "javaCount": 6,
+      "pythonCount": 6,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_nurse.nurse_exec",
+      "javaCount": 258,
+      "pythonCount": 258,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_nurse.vital_sign",
+      "javaCount": 123,
+      "pythonCount": 123,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_presc",
+      "javaCount": 71,
+      "pythonCount": 71,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_reg",
+      "javaCount": 25,
+      "pythonCount": 25,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_visit",
+      "javaCount": 24,
+      "pythonCount": 24,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pacs.exam_report",
+      "javaCount": 37,
+      "pythonCount": 37,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.dispense_record",
+      "javaCount": 184,
+      "pythonCount": 184,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.drug_dict",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.drug_stock",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.presc_review",
+      "javaCount": 126,
+      "pythonCount": 126,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.purchase_order",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.stock_in",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.stock_out",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "javaOnly": [],
+      "pythonOnly": []
+    }
+  ]
+}

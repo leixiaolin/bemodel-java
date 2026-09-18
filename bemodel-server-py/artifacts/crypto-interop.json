@@ -1,0 +1,56 @@
+[
+  {
+    "keyKind": "default",
+    "plainBytes": 0,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "default",
+    "plainBytes": 19,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "default",
+    "plainBytes": 25,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 0,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 19,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 25,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 0,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 19,
+    "directions": 2,
+    "passed": true
+  },
+  {
+    "keyKind": "custom",
+    "plainBytes": 25,
+    "directions": 2,
+    "passed": true
+  }
+]

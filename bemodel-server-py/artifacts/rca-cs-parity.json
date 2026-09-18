@@ -1,0 +1,10 @@
+[
+  {
+    "scenario": "RCA seven steps",
+    "differences": []
+  },
+  {
+    "scenario": "JWT cross-verification both directions",
+    "differences": []
+  }
+]
