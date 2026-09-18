@@ -22,6 +22,14 @@
           @click.stop="doScan(ds)"
         >扫描</el-button>
       </el-card>
+
+      <!-- 新增数据源入口（只读角色不可见） -->
+      <el-card v-if="!userStore.isViewer" class="ds-card add-card" shadow="never" @click="openCreate">
+        <div class="add-inner">
+          <span class="add-plus">+</span>
+          <span>新增数据源</span>
+        </div>
+      </el-card>
     </div>
 
     <template v-if="currentDs">
@@ -203,15 +211,63 @@
         >保存</el-button>
       </template>
     </el-dialog>
+
+    <!-- 新增数据源 -->
+    <el-dialog v-model="createVisible" title="新增数据源" width="520px">
+      <el-form ref="createFormRef" :model="createForm" :rules="createRules" label-width="90px">
+        <el-form-item label="编码" prop="dsCode">
+          <el-input v-model="createForm.dsCode" placeholder="如 DS_BLOOD（建议 DS_ 前缀大写）" />
+        </el-form-item>
+        <el-form-item label="名称" prop="dsName">
+          <el-input v-model="createForm.dsName" placeholder="如 血库系统库" />
+        </el-form-item>
+        <el-form-item label="产品线">
+          <el-input v-model="createForm.productName" placeholder="可选，如 血库系统" />
+        </el-form-item>
+        <el-form-item label="库类型">
+          <el-select v-model="createForm.dbType" disabled style="width: 100%">
+            <el-option label="MySQL" value="MYSQL" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="主机" prop="host">
+          <el-input v-model="createForm.host" placeholder="127.0.0.1" />
+        </el-form-item>
+        <el-form-item label="端口" prop="port">
+          <el-input-number
+            v-model="createForm.port"
+            :min="1"
+            :max="65535"
+            controls-position="right"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="数据库名" prop="dbName">
+          <el-input v-model="createForm.dbName" placeholder="如 demo_blood" />
+        </el-form-item>
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="createForm.username" placeholder="只读账号即可" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="createForm.password" type="password" show-password />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button :loading="testing" @click="doTest">测试连接</el-button>
+        <el-button @click="createVisible = false">取消</el-button>
+        <el-button type="primary" :loading="creating" @click="doCreate">注册</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage, ElLoading } from 'element-plus'
 import {
   listDatasources,
   scanDatasource,
+  createDatasource,
+  testDatasource,
   listTables,
   listColumns,
   listMappings,
@@ -257,6 +313,86 @@ const doScan = async (ds) => {
     }
   } finally {
     scanningDs.value = ''
+  }
+}
+
+// ---------- 新增数据源 ----------
+const createVisible = ref(false)
+const createFormRef = ref(null)
+const testing = ref(false)
+const creating = ref(false)
+const createForm = reactive({
+  dsCode: '',
+  dsName: '',
+  productName: '',
+  dbType: 'MYSQL',
+  host: '127.0.0.1',
+  port: 3306,
+  dbName: '',
+  username: '',
+  password: ''
+})
+const createRules = {
+  dsCode: [{ required: true, message: '请输入数据源编码', trigger: 'blur' }],
+  dsName: [{ required: true, message: '请输入数据源名称', trigger: 'blur' }],
+  host: [{ required: true, message: '请输入主机地址', trigger: 'blur' }],
+  dbName: [{ required: true, message: '请输入数据库名', trigger: 'blur' }],
+  username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+}
+
+const openCreate = () => {
+  Object.assign(createForm, {
+    dsCode: '',
+    dsName: '',
+    productName: '',
+    dbType: 'MYSQL',
+    host: '127.0.0.1',
+    port: 3306,
+    dbName: '',
+    username: '',
+    password: ''
+  })
+  createVisible.value = true
+  nextTick(() => createFormRef.value?.clearValidate())
+}
+
+const doTest = async () => {
+  const valid = await createFormRef.value.validate().catch(() => false)
+  if (!valid) return
+  testing.value = true
+  try {
+    const ok = await testDatasource({ ...createForm })
+    if (ok) {
+      ElMessage.success('连接成功')
+    } else {
+      ElMessage.warning('连接失败：请检查地址、端口、数据库名、账号或密码')
+    }
+  } finally {
+    testing.value = false
+  }
+}
+
+const doCreate = async () => {
+  const valid = await createFormRef.value.validate().catch(() => false)
+  if (!valid) return
+  if (datasources.value.some((d) => d.dsCode === createForm.dsCode)) {
+    ElMessage.warning(`数据源编码已存在：${createForm.dsCode}`)
+    return
+  }
+  creating.value = true
+  try {
+    const ds = await createDatasource({ ...createForm })
+    ElMessage.success(`数据源注册成功：${ds.dsName}`)
+    createVisible.value = false
+    await loadDatasources()
+    const created = datasources.value.find((d) => d.dsCode === ds.dsCode)
+    if (created) {
+      selectDs(created)
+      doScan(created).catch(() => {})
+    }
+  } finally {
+    creating.value = false
   }
 }
 
@@ -470,6 +606,35 @@ onMounted(() => {
 
 .scan-btn {
   margin-top: 8px;
+}
+
+.add-card {
+  border: 1px dashed #c0c4cc;
+  cursor: pointer;
+}
+
+.add-card:hover {
+  border-color: #409eff;
+}
+
+.add-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 104px;
+  color: #909399;
+}
+
+.add-card:hover .add-inner {
+  color: #409eff;
+}
+
+.add-plus {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 8px;
+  font-weight: 300;
 }
 
 .footer-bar {
