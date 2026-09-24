@@ -2,7 +2,7 @@
 
 > 一句话定位：把医院九套业务系统（HIS / LIS / PACS / EMR / 药房 / 收费 / 门诊 / 护士站 / 物资）的数据**不搬家、不复制**，通过「本体 + 映射」建成统一的语义层，让规则引擎和 AI 都能直接基于业务语义工作。
 
-BeModel 是一个语义层（Semantic Layer）平台：数据留在各业务库里，平台只维护「概念 → 属性 → 物理表列」的映射与值字典，在此之上提供本体建模、版本化发布、规则/指标口径管理、链路追溯、病案质控、根因分析、AI 客服与智能问数等能力，并内置认证授权与密钥加密。
+BeModel 是一个语义层（Semantic Layer）平台：数据留在各业务库里，平台只维护「概念 → 属性 → 物理表列」的映射与值字典，在此之上提供本体建模、版本化发布、规则/指标口径管理、链路追溯、病案质控、根因分析、AI 客服与智能问数等能力，并内置认证授权与密钥加密。后端提供 **Java（Spring Boot）与 Python（FastAPI）两套全量对等实现**——共用同一套 MySQL 库表与 API 契约，前端无需任何改动即可切换对接。
 
 设计哲学：**物理自治、逻辑统一**——避开数据搬迁和图数据库的成本，语义层随使用持续生长。
 
@@ -18,6 +18,8 @@ BeModel 是一个语义层（Semantic Layer）平台：数据留在各业务库�
 - **指标定时巡检 + 平台内告警中心**：巡检结果落库、异常生成通知，客服路由反馈回路（错例回流 prompt）
 - **概念缺口 / 语义漂移独立页**：本体未覆盖说法按热度生长、术语分叉与口径演进检测
 - **前端 v2**：设计令牌层 + 导航分组布局、架构全貌双视图（实体全景 / 分层架构）、规则双模态（可视化 / JSON 互转）、版本变更图谱
+
+> V0.1.2 之后追加：新增 **Python 后端 [bemodel-server-py](bemodel-server-py/)**（FastAPI + SQLAlchemy）——116 个 API 的方法、路径、鉴权规则与 MySQL 表结构和 Java 版一一对应，28 个 SQL 迁移与 SHACL 约束文件逐字节复用（兼容已有 Flyway 历史记录），运行时不依赖 JVM；SHACL 引擎对应换用 pySHACL。启动、验证与双端对拍验收详见 [bemodel-server-py/README.md](bemodel-server-py/README.md)。
 
 ## 核心能力
 
@@ -36,7 +38,8 @@ BeModel 是一个语义层（Semantic Layer）平台：数据留在各业务库�
 
 | 端   | 技术                                                                                                         |
 | ---- | ------------------------------------------------------------------------------------------------------------ |
-| 后端 | Java 21 · Spring Boot 3.3 · Spring Security + JJWT · MyBatis-Plus · Flyway · Apache Jena（ARQ + SHACL） |
+| 后端（Java） | Java 21 · Spring Boot 3.3 · Spring Security + JJWT · MyBatis-Plus · Flyway · Apache Jena（ARQ + SHACL） |
+| 后端（Python，全量对等） | Python 3.12 · FastAPI · SQLAlchemy 2 · PyMySQL · PyJWT · pySHACL · APScheduler（复用同一套 SQL 迁移与库表） |
 | 前端 | Vue 3 · Vite · Element Plus · ECharts · Pinia（设计令牌层 + 深色导航布局）                               |
 | 存储 | MySQL（平台元数据库 + 各业务演示库）                                                                         |
 | 安全 | JWT 认证（三角色）· 数据源密码 AES-GCM 加密 · SQL 白名单校验 · RDF 导出脱敏                               |
@@ -77,6 +80,16 @@ bemodel-java
 │       │       ├── application.yml # 配置（账号密码与密钥全部走环境变量）
 │       │       └── db/migration/   # Flyway 迁移（V1~V28，含本体种子数据与演示账号）
 │       └── test/java/com/bemodel   # 单元测试（ontology / modeling / clinical / cs / rdf 等）
+├── bemodel-server-py           # Python 后端（FastAPI + SQLAlchemy，与 Java 版全量对等）
+│   ├── pyproject.toml          # 依赖与打包（含 test 可选依赖）
+│   ├── .env.example            # 环境变量模板
+│   ├── compose.test.yml         # 独立 MySQL（tmpfs）集成测试环境
+│   ├── src/bemodel             # 模块划分与 Java 版一一对应（auth / ontology / cs / rdf ...）
+│   │   ├── db/migration/       # 逐字节复用 Java 侧 28 个 Flyway SQL，兼容已有 Flyway 历史
+│   │   └── resources/          # SHACL 约束（.ttl）+ 固定演示场景（.json）
+│   ├── tests/                  # pytest 单元测试 + 独立 MySQL 集成测试
+│   ├── scripts/                # 验收对拍脚本（路由覆盖 / 种子比对 / API 回放 / AES-GCM 互证）
+│   └── artifacts/              # 验收报告
 ├── bemodel-web                 # 前端（Vue 3 + Vite）
 │   ├── index.html
 │   ├── vite.config.js          # dev 代理 /api → 127.0.0.1:18080
@@ -167,7 +180,7 @@ Spring Security + JWT 认证，内置 ADMIN / EDITOR / VIEWER 三种角色，路
 
 ## 快速开始
 
-环境要求：JDK 21+、Maven 3.9+、MySQL 8、Node 18+（推荐 pnpm）。
+环境要求：JDK 21+、Maven 3.9+、MySQL 8、Node 18+（推荐 pnpm）；运行 Python 版后端另需 Python 3.12+（无需 JVM）。
 
 ```bash
 # 1. 配置环境变量（数据库账号密码必填；账号需有建库权限，首次启动会自动建库建表）
@@ -177,9 +190,18 @@ export JWT_SECRET=your_jwt_secret          # 可选；不配置使用内置开�
 export APP_SECRET_KEY=your_encrypt_key     # 可选；同上，用于数据源密码加密
 export DEEPSEEK_API_KEY=sk-xxxx            # 可选；不配置则 LLM 能力自动降级为规则/模板
 
-# 2. 启动后端（Flyway 自动建表 + DataSeeder 自动生成演示数据与演示账号）
+# 2. 启动后端（二选一；两者同端口 18080，切换前先停掉另一端）
+
+# 2a. Java 后端（Flyway 自动建表 + DataSeeder 自动生成演示数据与演示账号）
 cd bemodel-server
 mvn spring-boot:run                    # http://127.0.0.1:18080
+
+# 2b. Python 后端（FastAPI；启动时依次执行 SQL 迁移 → 数据源密文迁移 → 演示种子 → 巡检调度）
+cd bemodel-server-py
+python3.12 -m venv .venv                       # Windows: py -3.12 -m venv .venv
+.venv/bin/python -m pip install -e '.[test]'   # Windows: .venv\Scripts\python.exe ...
+cp .env.example .env                           # 填写 MYSQL_USERNAME / MYSQL_PASSWORD
+.venv/bin/python -m uvicorn bemodel.main:app --host 127.0.0.1 --port 18080
 
 # 3. 启动前端
 cd bemodel-web
@@ -200,6 +222,7 @@ pnpm dev                               # http://127.0.0.1:5173（打开后进入
 - Flyway 自动执行 V1~V28 迁移，创建平台元数据库表结构、本体种子数据与演示账号
 - `DataSeeder` 自动生成九个演示业务库（demo_charge / demo_emr / demo_his / demo_lis / demo_material / demo_nurse / demo_opd / demo_pacs / demo_pharmacy），含 40 名**虚构**患者的住院医嘱全闭环数据，并预埋若干「取消未退费」类数据裂缝供质控与追溯演示；数据确定性可重复，幂等跳过
 - 未配置 `DEEPSEEK_API_KEY` 时，AI 相关能力自动降级（关键词路由 / 模板作答），平台功能不中断
+- Python 后端首次启动执行等价流程：原始 SQL 迁移（识别并兼容已有 Flyway 历史记录，不会重复执行）→ 数据源密文迁移 → 演示种子与结构化公理 → 指标巡检调度；演示数据保留与 Java 相同的新鲜度判断（不足时重建演示场景），因此验收请使用独立测试库
 
 ## 环境变量
 
@@ -213,12 +236,15 @@ pnpm dev                               # http://127.0.0.1:5173（打开后进入
 | `JWT_SECRET`       | 生产必填 | 内置开发密钥         | JWT 签名密钥（HS256）；未配置时启动会告警                |
 | `APP_SECRET_KEY`   | 生产必填 | 内置开发密钥         | 数据源密码 AES-GCM 加密密钥；更换后需重新保存数据源密码  |
 | `DEEPSEEK_API_KEY` | 否       | —                   | DeepSeek API Key；不配置则自动降级                       |
+| `BEMODEL_DISABLE_SCHEDULER` | 否 | `0`               | Python 后端专用；置 `1` 关闭指标定时巡检                 |
+| `BEMODEL_INSPECT_CRON` | 否  | `0 0/30 * * * *`   | Python 后端专用；巡检 cron（含秒的六字段表达式）         |
 
 > 安全约定：API Key、数据库账号密码、JWT / 加密密钥只走环境变量，不落入仓库（`.gitignore` 已排除 `.env*`）；代码中的内置开发密钥（`bemodel-dev-*-do-not-use-in-prod`）仅用于零配置演示，启动日志会明确告警。
 
 ## 当前边界
 
 - 演示数据为平台自建的九套 demo 库，尚未接入真实产品线；接上真实库的只读连接后，同样的映射、探针与问答即可工作
+- Python 后端与 Java 版全量对等（API、库表、演示数据一致，AES-GCM 密文双向互通），已知的明确差异仅一处：SHACL 引擎为 pySHACL（Java 版为 Apache Jena SHACL），校验响应的 `engine` 字段据实返回；两套后端共用同一套环境变量与密钥，连同一库时 `JWT_SECRET` / `APP_SECRET_KEY` 必须一致
 - 认证授权已落地（JWT 三角色、写操作需 EDITOR+），但生产化仍需补齐：HTTPS 传输、口令策略与定期轮换、审计日志完善、患者敏感字段的出口脱敏收口
 - 数据源密码加密与本机部署默认配置面向演示环境；公网部署前必须替换 `JWT_SECRET` / `APP_SECRET_KEY` 并启用传输加密
 - LLM 依赖 DeepSeek API，需自行配置 Key；每次调用已落 `llm_log` 审计表并绑定本体版本号
