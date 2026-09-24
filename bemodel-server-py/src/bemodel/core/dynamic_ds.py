@@ -26,3 +26,10 @@ def dispose_all():
         for engine in _engines.values():
             engine.dispose()
         _engines.clear()
+
+
+def dispose_engine(code):
+    with _lock:
+        engine = _engines.pop(code, None)
+    if engine:
+        engine.dispose()

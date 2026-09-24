@@ -6,21 +6,37 @@
         v-for="ds in datasources"
         :key="ds.dsCode"
         class="ds-card"
-        :class="{ active: currentDs?.dsCode === ds.dsCode }"
+        :class="{ active: currentDs?.dsCode === ds.dsCode, disabled: isDisabled(ds) }"
         shadow="hover"
         @click="selectDs(ds)"
       >
-        <div class="ds-title">{{ ds.dsName }}</div>
+        <div class="ds-title">
+          <span>{{ ds.dsName }}</span>
+          <el-tag v-if="isDisabled(ds)" size="small" type="warning" effect="plain">已失效</el-tag>
+        </div>
         <div class="ds-meta">产品：{{ ds.productName }}</div>
         <div class="ds-meta">{{ ds.dbType }} · {{ ds.host }}:{{ ds.port }}/{{ ds.dbName }}</div>
         <div class="ds-meta">账号：{{ ds.username }}</div>
-        <el-button
-          v-if="!userStore.isViewer"
-          size="small"
-          class="scan-btn"
-          :loading="scanningDs === ds.dsCode"
-          @click.stop="doScan(ds)"
-        >扫描</el-button>
+        <div v-if="!userStore.isViewer" class="ds-actions">
+          <el-button
+            size="small"
+            :disabled="isDisabled(ds)"
+            :loading="scanningDs === ds.dsCode"
+            @click.stop="doScan(ds)"
+          >扫描</el-button>
+          <el-button
+            size="small"
+            :loading="togglingDs === ds.dsCode"
+            @click.stop="toggleStatus(ds)"
+          >{{ isDisabled(ds) ? '激活' : '失效' }}</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            plain
+            :loading="deletingDs === ds.dsCode"
+            @click.stop="doDelete(ds)"
+          >删除</el-button>
+        </div>
       </el-card>
 
       <!-- 新增数据源入口（只读角色不可见） -->
@@ -67,9 +83,18 @@
                     {{ aiMeta.llmUsed ? `AI生成（${aiMeta.model}）` : '规则降级' }}
                   </el-tag>
                 </span>
-                <el-tooltip content="只读角色无写权限" :disabled="!userStore.isViewer" placement="top">
+                <el-tooltip
+                  :content="userStore.isViewer ? '只读角色无写权限' : '数据源已失效，激活后可操作'"
+                  :disabled="!userStore.isViewer && !isDisabled(currentDs)"
+                  placement="top"
+                >
                   <span>
-                    <el-button type="primary" :disabled="userStore.isViewer" :loading="aiLoading" @click="runAiSuggest">
+                    <el-button
+                      type="primary"
+                      :disabled="userStore.isViewer || isDisabled(currentDs)"
+                      :loading="aiLoading"
+                      @click="runAiSuggest"
+                    >
                       AI 推荐映射
                     </el-button>
                   </span>
@@ -127,7 +152,7 @@
                       size="small"
                       link
                       type="primary"
-                      :disabled="row.accepted"
+                      :disabled="row.accepted || isDisabled(currentDs)"
                       @click="accept(row)"
                     >{{ row.accepted ? '已采纳' : '采纳' }}</el-button>
                   </template>
@@ -136,12 +161,12 @@
               </el-table-column>
               <el-table-column v-if="!userStore.isViewer" label="操作" width="110" fixed="right">
                 <template #default="{ row }">
-                  <el-button size="small" @click="openEdit(row)">编辑映射</el-button>
+                  <el-button size="small" :disabled="isDisabled(currentDs)" @click="openEdit(row)">编辑映射</el-button>
                 </template>
               </el-table-column>
             </el-table>
             <div class="footer-bar" v-if="acceptedRows.length">
-              <el-button type="success" :loading="saving" @click="saveAccepted">
+              <el-button type="success" :loading="saving" :disabled="isDisabled(currentDs)" @click="saveAccepted">
                 保存已采纳映射（{{ acceptedRows.length }}）
               </el-button>
             </div>
@@ -192,6 +217,14 @@
               :value="a.attrCode"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="值映射">
+          <el-input
+            v-model="editForm.valueMap"
+            type="textarea"
+            :rows="3"
+            placeholder='JSON，如 {"1":"异常","0":"正常"}'
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -262,12 +295,14 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
-import { ElMessage, ElLoading } from 'element-plus'
+import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import {
   listDatasources,
   scanDatasource,
   createDatasource,
   testDatasource,
+  updateDatasourceStatus,
+  deleteDatasource,
   listTables,
   listColumns,
   listMappings,
@@ -287,6 +322,10 @@ const datasources = ref([])
 const loadingDs = ref(false)
 const currentDs = ref(null)
 const scanningDs = ref('')
+const togglingDs = ref('')
+const deletingDs = ref('')
+
+const isDisabled = (ds) => ds?.status === 'DISABLED'
 
 const loadDatasources = async () => {
   loadingDs.value = true
@@ -299,8 +338,9 @@ const loadDatasources = async () => {
 
 const selectDs = (ds) => {
   currentDs.value = ds
-  currentTable.value = ''
-  loadTables()
+  clearWorkbench()
+  // 失效数据源不参与业务流程，后端已拦截表/列读取，这里不再发起请求
+  if (!isDisabled(ds)) loadTables()
 }
 
 const doScan = async (ds) => {
@@ -314,6 +354,47 @@ const doScan = async (ds) => {
   } finally {
     scanningDs.value = ''
   }
+}
+
+const toggleStatus = async (ds) => {
+  togglingDs.value = ds.dsCode
+  try {
+    const target = isDisabled(ds) ? 'ACTIVE' : 'DISABLED'
+    const updated = await updateDatasourceStatus(ds.dsCode, target)
+    ElMessage.success(target === 'DISABLED' ? `已失效：${updated.dsName}` : `已激活：${updated.dsName}`)
+    await loadDatasources()
+    if (currentDs.value?.dsCode === ds.dsCode) {
+      const fresh = datasources.value.find((d) => d.dsCode === ds.dsCode)
+      currentDs.value = fresh || null
+      clearWorkbench()
+      if (fresh && !isDisabled(fresh)) loadTables()
+    }
+  } finally {
+    togglingDs.value = ''
+  }
+}
+
+const doDelete = (ds) => {
+  ElMessageBox.confirm(
+    `删除后「${ds.dsName}」将不再展示，且不能参与扫描、映射、问数等业务流程；历史映射与扫描快照保留。`,
+    '删除数据源',
+    { type: 'warning', confirmButtonText: '删除', cancelButtonText: '取消' }
+  )
+    .then(async () => {
+      deletingDs.value = ds.dsCode
+      try {
+        await deleteDatasource(ds.dsCode)
+        ElMessage.success(`已删除：${ds.dsName}`)
+        if (currentDs.value?.dsCode === ds.dsCode) {
+          currentDs.value = null
+          clearWorkbench()
+        }
+        await loadDatasources()
+      } finally {
+        deletingDs.value = ''
+      }
+    })
+    .catch(() => {})
 }
 
 // ---------- 新增数据源 ----------
@@ -400,6 +481,17 @@ const doCreate = async () => {
 const tables = ref([])
 const loadingTables = ref(false)
 const currentTable = ref('')
+
+// 清空右侧表/列/映射工作区（切换失效、删除数据源时调用）
+const clearWorkbench = () => {
+  tables.value = []
+  currentTable.value = ''
+  columns.value = []
+  mappings.value = []
+  suggestions.value = {}
+  accepted.value = new Set()
+  aiMeta.value = null
+}
 
 const loadTables = async () => {
   if (!currentDs.value) return
@@ -509,7 +601,7 @@ const saveAccepted = async () => {
 // ---------- 手动编辑映射 ----------
 const editVisible = ref(false)
 const editRow = ref(null)
-const editForm = reactive({ conceptCode: '', attrCode: '' })
+const editForm = reactive({ conceptCode: '', attrCode: '', valueMap: '' })
 const attrOptions = ref([])
 const clearing = ref(false)
 
@@ -525,6 +617,7 @@ const openEdit = async (row) => {
   editRow.value = row
   editForm.conceptCode = row.mapping?.conceptCode || ''
   editForm.attrCode = row.mapping?.attrCode || ''
+  editForm.valueMap = row.mapping?.valueMap || ''
   attrOptions.value = []
   editVisible.value = true
   if (editForm.conceptCode) {
@@ -543,6 +636,7 @@ const saveEdit = async () => {
         columnName: editRow.value.columnName,
         conceptCode: editForm.conceptCode,
         attrCode: editForm.attrCode,
+        valueMap: editForm.valueMap?.trim() || null,
         confirmed: 1,
         source: 'MANUAL'
       }
@@ -604,7 +698,16 @@ onMounted(() => {
   margin-bottom: 4px;
 }
 
-.scan-btn {
+.ds-card.disabled {
+  background: #f5f7fa;
+}
+
+.ds-card.disabled .ds-title,
+.ds-card.disabled .ds-meta {
+  color: #c0c4cc;
+}
+
+.ds-actions {
   margin-top: 8px;
 }
 

@@ -14,6 +14,11 @@ from bemodel.rca.services import dumps
 from .prompts import SEMANTIC_PLAN_PROMPT
 from .sql_validation import validate_sql
 
+ENUM_TRUE_WORDS = {'异常', '阳性', '是', '有', '启用', '已发布', '通过'}
+ENUM_FALSE_WORDS = {'正常', '阴性', '否', '无', '停用', '未发布', '不通过'}
+ENUM_TRUE_CODES = {'1', 'Y', 'A', 'T', 'TRUE', 'YES'}
+ENUM_FALSE_CODES = {'0', 'N', 'F', 'FALSE', 'NO'}
+
 
 def java_value(value):
     if value is None:
@@ -88,6 +93,71 @@ class SemanticQaService:
         mappings = self.rows(Mapping, Mapping.ds_code == ds, Mapping.confirmed == 1)
         return list(dict.fromkeys(m.table_name for m in mappings)), {m.column_name for m in mappings}
 
+    def enum_mappings(self, ds):
+        mappings = self.rows(Mapping, Mapping.ds_code == ds, Mapping.confirmed == 1)
+        by_column = {}
+        for m in mappings:
+            if not m.value_map or not m.value_map.strip():
+                continue
+            try:
+                value_map = json.loads(m.value_map)
+            except (ValueError, TypeError):
+                continue
+            if isinstance(value_map, dict) and value_map:
+                by_column[(m.table_name.lower(), m.column_name.lower())] = {str(k): str(v) for k, v in value_map.items()}
+        return by_column
+
+    def canonical_enum_value(self, value_map, literal):
+        if literal in value_map:
+            return literal
+        target = literal.strip()
+        target_upper = target.upper()
+        for code, label in value_map.items():
+            if target == label:
+                return code
+        true_codes = {code for code, label in value_map.items() if label in ENUM_TRUE_WORDS or code.upper() in ENUM_TRUE_CODES}
+        false_codes = {code for code, label in value_map.items() if label in ENUM_FALSE_WORDS or code.upper() in ENUM_FALSE_CODES}
+        if len(true_codes) == 1 and target_upper in ENUM_TRUE_CODES:
+            return next(iter(true_codes))
+        if len(false_codes) == 1 and target_upper in ENUM_FALSE_CODES:
+            return next(iter(false_codes))
+        return literal
+
+    def normalize_enum_literals(self, ds, sql):
+        enum_maps = self.enum_mappings(ds)
+        if not enum_maps:
+            return sql
+        table_aliases = {}
+        for match in re.finditer(r'\b(?:from|join)\s+`?([a-zA-Z_][a-zA-Z0-9_]*)`?(?:\s+(?:as\s+)?`?([a-zA-Z_][a-zA-Z0-9_]*)`?)?', sql, re.I):
+            table, alias = match.groups()
+            table_aliases[table.lower()] = table.lower()
+            if alias and alias.lower() not in {'where', 'join', 'left', 'right', 'inner', 'outer', 'cross', 'on', 'group', 'order', 'having', 'limit'}:
+                table_aliases[alias.lower()] = table.lower()
+
+        def replace(match):
+            qualifier, column, quote, literal = match.groups()
+            qualifier = qualifier.strip('`').lower() if qualifier else None
+            column = column.strip('`')
+            column_key = column.lower()
+            candidates = []
+            if qualifier:
+                table = table_aliases.get(qualifier, qualifier)
+                candidates.append((table, column_key))
+            else:
+                candidates.extend(key for key in enum_maps if key[1] == column_key)
+            candidates = [key for key in candidates if key in enum_maps]
+            if len(candidates) != 1:
+                return match.group(0)
+            canonical = self.canonical_enum_value(enum_maps[candidates[0]], literal)
+            if canonical == literal:
+                return match.group(0)
+            escaped = canonical.replace('\\', '\\\\').replace(quote, '\\' + quote)
+            prefix = (qualifier + '.' if qualifier else '') + column
+            return f"{prefix} = {quote}{escaped}{quote}"
+
+        pattern = re.compile(r'\b(?:(`?[a-zA-Z_][a-zA-Z0-9_]*`?)\.)?`?([a-zA-Z_][a-zA-Z0-9_]*)`?\s*=\s*([\'"])([^\'"]*)\3', re.I)
+        return pattern.sub(replace, sql)
+
     def execute(self, ds, sql):
         with self.ds.jdbc(ds).connect() as conn:
             # MySQL enforces the statement timeout; fetchmany caps response rows even
@@ -132,7 +202,7 @@ class SemanticQaService:
         if not tables:
             return miss()
         try:
-            sql = validate_sql(plan['sql'], tables, columns)
+            sql = validate_sql(self.normalize_enum_literals(plan['ds'], plan['sql']), tables, columns)
             rows = self.execute(plan['ds'], sql)
         except Exception:
             logging.getLogger(__name__).warning('语义查询失败，降级能力菜单', exc_info=True)

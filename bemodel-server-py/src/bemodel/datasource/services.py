@@ -1,10 +1,10 @@
 from datetime import datetime
-from sqlalchemy import text
+from sqlalchemy import text, update
 from bemodel.config import settings
 from bemodel.core.base_dao import BaseDAO
 from bemodel.core.crypto_service import CryptoService
 from bemodel.core.database import transactional
-from bemodel.core.dynamic_ds import get_engine, make_engine
+from bemodel.core.dynamic_ds import dispose_engine, get_engine, make_engine
 from bemodel.core.exceptions import BizException
 from bemodel.core.result import to_camel_dict
 from .entities import Datasource, PhysicalTable, PhysicalColumn, Mapping
@@ -20,8 +20,10 @@ class DatasourceService(BaseDAO):
 
     def require(self, code):
         ds = self.get_by_code(code)
-        if ds is None:
+        if ds is None or (ds.deleted or 0) == 1:
             raise BizException("数据源不存在: " + code)
+        if (ds.status or "ACTIVE") == "DISABLED":
+            raise BizException("数据源已失效，不能参与业务流程: " + code)
         return ds
 
     def jdbc(self, code):
@@ -33,16 +35,46 @@ class DatasourceService(BaseDAO):
 
     def create(self, data):
         row = self.entity(data)
+        row.status = row.status or "ACTIVE"
+        row.deleted = 0
         row.password = self.crypto.encrypt(row.password)
         result = to_camel_dict(self.insert(row))
         result["password"] = "****"
         return result
 
     def list_all(self):
-        result = to_camel_dict(self.select_list(order=(Datasource.ds_code,)))
+        result = to_camel_dict(self.select_list(Datasource.deleted != 1, order=(Datasource.ds_code,)))
         for row in result:
             row["password"] = "****"
+            row["status"] = row.get("status") or "ACTIVE"
+            row["deleted"] = row.get("deleted") or 0
         return result
+
+    def update_status(self, code, status):
+        status = (status or "").upper()
+        if status not in ("ACTIVE", "DISABLED"):
+            raise BizException("数据源状态不合法: " + status)
+        ds = self.get_by_code(code)
+        if ds is None or (ds.deleted or 0) == 1:
+            raise BizException("数据源不存在: " + code)
+        ds.status = status
+        ds.updated_at = datetime.now()
+        self.update_by_id(ds)
+        if status == "DISABLED":
+            dispose_engine(code)
+        result = to_camel_dict(ds)
+        result["password"] = "****"
+        return result
+
+    def soft_delete(self, code):
+        ds = self.get_by_code(code)
+        if ds is None or (ds.deleted or 0) == 1:
+            raise BizException("数据源不存在: " + code)
+        ds.deleted = 1
+        ds.status = "DISABLED"
+        ds.updated_at = datetime.now()
+        self.update_by_id(ds)
+        dispose_engine(code)
 
     def test_connection(self, data):
         engine = None
@@ -70,9 +102,11 @@ class SchemaScanService:
         self.ds = DatasourceService(session)
 
     def tables(self, code):
+        self.ds.require(code)
         return BaseDAO(self.session, PhysicalTable).select_list(PhysicalTable.ds_code == code, order=(PhysicalTable.table_name,))
 
     def columns(self, code, table=None):
+        self.ds.require(code)
         return BaseDAO(self.session, PhysicalColumn).select_list(PhysicalColumn.ds_code == code,
             *([PhysicalColumn.table_name == table] if table and table.strip() else []), order=(PhysicalColumn.ordinal_position,))
 
@@ -98,16 +132,29 @@ class MappingService(BaseDAO):
         super().__init__(session, Mapping)
 
     def list(self, code=None, table=None):
+        if code and code.strip():
+            DatasourceService(self.session).require(code)
         return self.select_list(*([Mapping.ds_code == code] if code and code.strip() else []),
                                 *([Mapping.table_name == table] if table and table.strip() else []))
 
     def save_batch(self, rows):
+        ds = DatasourceService(self.session)
         for data in rows:
             row = self.entity(data)
+            ds.require(row.ds_code)
+            # 请求体显式携带 valueMap 键（含 null/空白）表示要管理值映射；
+            # 未携带（如 AI 批量采纳）则保持非空更新语义，不触碰已有值。
+            explicit_map = isinstance(data, dict) and ("valueMap" in data or "value_map" in data)
+            if explicit_map and row.value_map is not None and not row.value_map.strip():
+                row.value_map = None
             existing = self.select_one(Mapping.ds_code == row.ds_code, Mapping.table_name == row.table_name, Mapping.column_name == row.column_name)
             if existing:
                 row.id = existing.id
                 self.update_by_id(row)
+                if explicit_map and row.value_map is None and existing.value_map is not None:
+                    # 显式清空值映射：非空更新语义会跳过 None，这里强制置空
+                    self.session.execute(update(Mapping).where(Mapping.id == existing.id).values(value_map=None))
+                    self.finish()
             else:
                 self.insert(row)
 
@@ -128,8 +175,8 @@ class MappingService(BaseDAO):
         for c in concepts:
             attrs = ", ".join(f"{a.attr_code}({a.attr_name})" for a in attributes if a.concept_code == c.code)
             prompt += f"概念 {c.code}({c.name}): {attrs}\n"
-        prompt += '\n请为每个物理字段推荐映射，返回JSON数组，元素格式：{"column":"字段名","conceptCode":"概念编码","attrCode":"属性编码","confidence":0.0-1.0,"reason":"理由"}。无合适映射时 attrCode 填 null。只返回JSON。'
-        response = DeepSeekClient(self.session).chat("MAPPING_SUGGEST", "你是医疗信息化本体映射专家。只返回JSON数组，不要多余文字。", prompt)
+        prompt += '\n请为每个物理字段推荐映射，返回 JSON 数组，元素格式：{"column":"字段名","conceptCode":"概念编码","attrCode":"属性编码","confidence":0.0-1.0,"reason":"理由"}。无合适映射时 attrCode 填 null。只返回 JSON。'
+        response = DeepSeekClient(self.session).chat("MAPPING_SUGGEST", "你是医疗信息化本体映射专家。只返回 JSON 数组，不要多余文字。", prompt)
         suggestions = []
         if response:
             try:

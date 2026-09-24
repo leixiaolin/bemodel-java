@@ -18,6 +18,17 @@ def create(body: dict, session: Session = DB):
     return ok(DatasourceService(session).create(body))
 
 
+@router.patch("/datasource/{dsCode}/status")
+def update_status(dsCode: str, body: dict, session: Session = DB):
+    return ok(DatasourceService(session).update_status(dsCode, body.get("status")))
+
+
+@router.delete("/datasource/{dsCode}")
+def delete_datasource(dsCode: str, session: Session = DB):
+    DatasourceService(session).soft_delete(dsCode)
+    return ok()
+
+
 @router.post("/datasource/test")
 def test(body: dict, session: Session = DB):
     return ok(DatasourceService(session).test_connection(body))

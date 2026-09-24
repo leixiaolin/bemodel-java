@@ -15,7 +15,10 @@ class Datasource(Base):
     db_name = Column('db_name', Text, nullable=True, server_default=FetchedValue())
     username = Column('username', Text, nullable=True, server_default=FetchedValue())
     password = Column('password', Text, nullable=True, server_default=FetchedValue())
+    status = Column('status', Text, nullable=True, server_default=FetchedValue())
+    deleted = Column('deleted', Integer, nullable=True, server_default=FetchedValue())
     created_at = Column('created_at', DateTime, nullable=True, server_default=FetchedValue())
+    updated_at = Column('updated_at', DateTime, nullable=True, server_default=FetchedValue())
 
 
 class Mapping(Base):

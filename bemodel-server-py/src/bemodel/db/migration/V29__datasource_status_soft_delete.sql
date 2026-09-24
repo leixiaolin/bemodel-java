@@ -1,0 +1,10 @@
+ALTER TABLE bm_datasource
+    ADD COLUMN status VARCHAR(16) NOT NULL DEFAULT 'ACTIVE' COMMENT 'ACTIVE/DISABLED';
+
+ALTER TABLE bm_datasource
+    ADD COLUMN deleted TINYINT NOT NULL DEFAULT 0 COMMENT '软删除标记';
+
+ALTER TABLE bm_datasource
+    ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+CREATE INDEX idx_datasource_status_deleted ON bm_datasource (status, deleted);

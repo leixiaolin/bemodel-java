@@ -7,6 +7,11 @@ export const listDatasources = () => request.get('/datasource/list')
 // 密码落库前由后端 AES-GCM 加密；返回体密码为 **** 掩码
 export const createDatasource = (data) => request.post('/datasource', data)
 
+export const updateDatasourceStatus = (dsCode, status) =>
+  request.patch(`/datasource/${dsCode}/status`, { status })
+
+export const deleteDatasource = (dsCode) => request.delete(`/datasource/${dsCode}`)
+
 // 连接测试（SELECT 1），返回 true/false，不落库
 export const testDatasource = (data) => request.post('/datasource/test', data)
 

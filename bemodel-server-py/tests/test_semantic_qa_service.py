@@ -1,6 +1,8 @@
 import pytest
+from bemodel.cs.semantic import SemanticQaService
 from bemodel.cs.sql_validation import validate_sql
 from bemodel.core.exceptions import BizException
+from bemodel.datasource.entities import Mapping
 
 TABLES = {'fee_detail', 'medical_order', 'inpatient'}
 COLUMNS = set('fee_id order_id inhos_no item_name amount fee_status order_status order_type create_time patient_name sex dept_code'.split())
@@ -34,3 +36,31 @@ def test_java_rejected_queries(sql):
 def test_java_limit_clamping():
     assert validate_sql('SELECT item_name FROM fee_detail LIMIT 500', TABLES, COLUMNS).endswith('LIMIT 100')
     assert validate_sql('SELECT item_name FROM fee_detail LIMIT 20', TABLES, COLUMNS).endswith('LIMIT 20')
+
+
+def test_enum_literal_uses_current_table_value_map(session):
+    session.add(Mapping(ds_code='DS_PEIS', table_name='peis_item_result', column_name='abnormal',
+                        concept_code='CHECK_REPORT', attr_code='abnormal',
+                        value_map='{"1":"异常","0":"正常"}', confirmed=1, source='MANUAL'))
+    session.commit()
+
+    sql = ("SELECT COUNT(DISTINCT r.exam_no) AS abn_exam_cnt FROM peis_item_result r "
+           "WHERE r.abnormal = 'Y' LIMIT 100")
+
+    assert SemanticQaService(session).normalize_enum_literals('DS_PEIS', sql) == (
+        "SELECT COUNT(DISTINCT r.exam_no) AS abn_exam_cnt FROM peis_item_result r "
+        "WHERE r.abnormal = '1' LIMIT 100"
+    )
+
+
+def test_enum_literal_accepts_chinese_label(session):
+    session.add(Mapping(ds_code='DS_PEIS', table_name='peis_item_result', column_name='abnormal',
+                        concept_code='CHECK_REPORT', attr_code='abnormal',
+                        value_map='{"1":"异常","0":"正常"}', confirmed=1, source='MANUAL'))
+    session.commit()
+
+    sql = "SELECT exam_no FROM peis_item_result WHERE abnormal = '异常'"
+
+    assert SemanticQaService(session).normalize_enum_literals('DS_PEIS', sql) == (
+        "SELECT exam_no FROM peis_item_result WHERE abnormal = '1'"
+    )
