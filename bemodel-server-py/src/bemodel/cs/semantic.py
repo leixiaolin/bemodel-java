@@ -6,7 +6,7 @@ import re
 from sqlalchemy import or_, text
 from bemodel.core.base_dao import BaseDAO
 from bemodel.datasource.entities import Mapping, PhysicalTable
-from bemodel.datasource.services import DatasourceService
+from bemodel.datasource.services import DatasourceService, parse_value_map
 from bemodel.llm.services import DeepSeekClient
 from bemodel.ontology.entities import Concept, Attribute, Relation
 from bemodel.ontology.miss_service import MissService
@@ -72,22 +72,35 @@ class SemanticQaService:
                 result += f'{r.from_concept}({names.get(r.from_concept, "")})—{r.relation_name}→{r.to_concept}({names.get(r.to_concept, "")})\n'
         return result
 
-    def plan_query(self, q):
+    def plan_query(self, q, insist=False):
         prompt = self.build_semantic_context()+SEMANTIC_PLAN_PROMPT.replace('__TODAY__', str(date.today())).replace('__QUESTION__', q)
-        response = self.llm.chat('CS_SEMANTIC_PLAN', '你是医疗信息平台的本体语义查询规划器，把自然语言问题编译为只读 SQL。只返回JSON，不要多余文字。', prompt)
-        if response is None:
-            return None
-        try:
-            start, end = response.find('{'), response.rfind('}')
-            plan = json.loads(response[start:end+1] if start >= 0 and end > start else response)
-            for key in ('ds', 'sql', 'conclusion', 'verifySql'):
-                plan[key] = (plan.get(key) or '').strip()
-            plan.setdefault('semantics', '')
-            if plan.get('mode') == 'UNANSWERABLE' or (plan.get('mode') == 'MODEL_ANSWER' and plan['conclusion']) or (plan.get('mode') == 'QUERY' and plan['ds'] and plan['sql']):
-                return plan
-        except (ValueError, AttributeError, TypeError):
-            pass
+        if insist:
+            prompt += '\n注意：该问题用词已命中上方本体概念/属性，请仔细核对【物理映射】段优先生成 QUERY 或 MODEL_ANSWER；确实无映射可用才允许 UNANSWERABLE。'
+        for _ in range(2):
+            # 同一问题偶发输出漂移（非法JSON/缺字段）时重试一次，避免直接落兜底菜单
+            response = self.llm.chat('CS_SEMANTIC_PLAN', '你是医疗信息平台的本体语义查询规划器，把自然语言问题编译为只读 SQL。只返回JSON，不要多余文字。', prompt)
+            if response is None:
+                return None
+            try:
+                start, end = response.find('{'), response.rfind('}')
+                plan = json.loads(response[start:end+1] if start >= 0 and end > start else response)
+                for key in ('ds', 'sql', 'conclusion', 'verifySql'):
+                    plan[key] = (plan.get(key) or '').strip()
+                plan.setdefault('semantics', '')
+                if plan.get('mode') == 'UNANSWERABLE' or (plan.get('mode') == 'MODEL_ANSWER' and plan['conclusion']) or (plan.get('mode') == 'QUERY' and plan['ds'] and plan['sql']):
+                    return plan
+            except (ValueError, AttributeError, TypeError):
+                pass
         return None
+
+    def coverage_hit(self, q):
+        """问题文本（按二字词元）是否命中已发布概念名/属性名——拒答前的确定性护栏。"""
+        grams = {q[i:i+2] for i in range(len(q)-1)}
+        if not grams:
+            return False
+        names = [c.name for c in self.rows(Concept, Concept.status == 'PUBLISHED') if c.name]
+        names += [a.attr_name for a in self.rows(Attribute) if a.attr_name]
+        return any(any(gram in name for name in names) for gram in grams)
 
     def allowed(self, ds):
         mappings = self.rows(Mapping, Mapping.ds_code == ds, Mapping.confirmed == 1)
@@ -97,14 +110,10 @@ class SemanticQaService:
         mappings = self.rows(Mapping, Mapping.ds_code == ds, Mapping.confirmed == 1)
         by_column = {}
         for m in mappings:
-            if not m.value_map or not m.value_map.strip():
-                continue
-            try:
-                value_map = json.loads(m.value_map)
-            except (ValueError, TypeError):
-                continue
-            if isinstance(value_map, dict) and value_map:
-                by_column[(m.table_name.lower(), m.column_name.lower())] = {str(k): str(v) for k, v in value_map.items()}
+            # 容忍历史裸字典文本（如「0在检 1完成 2作废」），解析不出则跳过该列
+            value_map = parse_value_map(m.value_map)
+            if value_map:
+                by_column[(m.table_name.lower(), m.column_name.lower())] = value_map
         return by_column
 
     def canonical_enum_value(self, value_map, literal):
@@ -194,6 +203,11 @@ class SemanticQaService:
         def miss():
             MissService(self.session).record_miss(q, 'QUESTION', 'QA_ASK' if analytics else 'CS_ASK')
             return None, True
+        if plan['mode'] == 'UNANSWERABLE' and self.coverage_hit(q):
+            # 用词命中语义层却拒答，多为采样抖动：带提示再规划一次
+            retry = self.plan_query(q, insist=True)
+            if retry is not None and retry['mode'] != 'UNANSWERABLE':
+                plan = retry
         if plan['mode'] == 'UNANSWERABLE':
             return miss()
         if plan['mode'] == 'MODEL_ANSWER':

@@ -12,12 +12,13 @@ class LlmLogService(BaseDAO):
     def __init__(self, session):
         super().__init__(session, LlmLog)
 
-    def log(self, call_type, model, digest, latency, success, error):
+    def log(self, call_type, model, digest, latency, success, error, response=None):
         try:
             # A failed audit insert must not poison the caller's transaction/session.
             with self.session.begin_nested():
                 row = LlmLog(call_type=call_type, model=model, ontology_version=ReleaseService(self.session).current_tag() or "未发布",
-                    prompt_digest=(digest or "")[:200], latency_ms=latency, success=int(success), err_msg=error)
+                    prompt_digest=(digest or "")[:200], latency_ms=latency, success=int(success), err_msg=error,
+                    response_digest=(response or "")[:512] if response is not None else None)
                 self.session.add(row)
                 self.session.flush()
             if not self.session.info.get("transaction_depth"):
@@ -34,6 +35,10 @@ class LlmLogService(BaseDAO):
 
 
 class DeepSeekClient:
+    # 标签/JSON 等结构化输出调用对同一问题必须稳定，采样温度归零；
+    # 自由文本答复（客服回复、答案组织、报告）保留少量随机性。
+    DETERMINISTIC_CALLS = {"CS_ROUTE", "CS_SEMANTIC_PLAN", "MAPPING_SUGGEST", "MISS_CLASSIFY"}
+
     def __init__(self, session):
         self.logs = LlmLogService(session)
 
@@ -46,13 +51,13 @@ class DeepSeekClient:
         try:
             response = httpx.post(settings.deepseek_base_url.rstrip("/") + "/chat/completions",
                 headers={"Authorization": "Bearer " + settings.deepseek_api_key}, timeout=settings.deepseek_timeout_seconds,
-                json={"model": settings.deepseek_model, "temperature": .2, "messages": [
+                json={"model": settings.deepseek_model, "temperature": 0 if call_type in self.DETERMINISTIC_CALLS else .2, "messages": [
                     {"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]})
             response.raise_for_status()
             choices = response.json().get("choices", [])
             content = choices[0].get("message", {}).get("content") if choices else None
-            self.logs.log(call_type, settings.deepseek_model, digest, int((time.monotonic()-started)*1000), content is not None, None)
+            self.logs.log(call_type, settings.deepseek_model, digest, int((time.monotonic()-started)*1000), content is not None, None, content)
             return content
         except Exception as exc:
-            self.logs.log(call_type, settings.deepseek_model, digest, int((time.monotonic()-started)*1000), False, str(exc))
+            self.logs.log(call_type, settings.deepseek_model, digest, int((time.monotonic()-started)*1000), False, str(exc), None)
             return None

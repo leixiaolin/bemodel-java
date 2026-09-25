@@ -1,4 +1,6 @@
 from datetime import datetime
+import json
+import re
 from sqlalchemy import text, update
 from bemodel.config import settings
 from bemodel.core.base_dao import BaseDAO
@@ -8,6 +10,34 @@ from bemodel.core.dynamic_ds import dispose_engine, get_engine, make_engine
 from bemodel.core.exceptions import BizException
 from bemodel.core.result import to_camel_dict
 from .entities import Datasource, PhysicalTable, PhysicalColumn, Mapping
+
+# 裸字典文本里的「码 标签」对，如 0在检 1完成 2作废 / Y:异常,N:正常
+_VALUE_MAP_PAIR = re.compile(r'([A-Za-z0-9]+)\s*[:：=，,;；\-—]?\s*([一-龥][一-龥A-Za-z0-9]*)')
+
+
+def parse_value_map(raw):
+    """值字典容忍解析：合法 JSON 对象优先，退化为裸字典文本配对；识别不了返回 None。"""
+    if isinstance(raw, dict):
+        return {str(k): str(v) for k, v in raw.items()} if raw else None
+    if raw is None or not isinstance(raw, str) or not raw.strip():
+        return None
+    source = raw.strip()
+    try:
+        parsed = json.loads(source)
+    except (ValueError, TypeError):
+        parsed = None
+    if isinstance(parsed, dict) and parsed:
+        return {str(k): str(v) for k, v in parsed.items()}
+    pairs = _VALUE_MAP_PAIR.findall(source)
+    if pairs:
+        return dict(pairs)
+    return None
+
+
+def normalize_value_map(raw):
+    """把值字典规范为紧凑 JSON 串（码→中文标签）；识别不了返回 None。"""
+    parsed = parse_value_map(raw)
+    return json.dumps(parsed, ensure_ascii=False, separators=(',', ':')) if parsed else None
 
 
 class DatasourceService(BaseDAO):
@@ -145,8 +175,14 @@ class MappingService(BaseDAO):
             # 请求体显式携带 valueMap 键（含 null/空白）表示要管理值映射；
             # 未携带（如 AI 批量采纳）则保持非空更新语义，不触碰已有值。
             explicit_map = isinstance(data, dict) and ("valueMap" in data or "value_map" in data)
-            if explicit_map and row.value_map is not None and not row.value_map.strip():
+            if explicit_map and row.value_map is not None and not str(row.value_map).strip():
                 row.value_map = None
+            if row.value_map is not None and str(row.value_map).strip():
+                # 值字典入库前规范化为紧凑 JSON（兼容「0在检 1完成」式裸文本），识别不了直接拒绝
+                normalized = normalize_value_map(row.value_map)
+                if normalized is None:
+                    raise BizException(f'{row.table_name}.{row.column_name} 值映射格式无法识别：{row.value_map}，应为 JSON（如 {{"0":"在检","1":"完成"}}）')
+                row.value_map = normalized
             existing = self.select_one(Mapping.ds_code == row.ds_code, Mapping.table_name == row.table_name, Mapping.column_name == row.column_name)
             if existing:
                 row.id = existing.id

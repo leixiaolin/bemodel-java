@@ -10,6 +10,8 @@ class LlmLog(Base):
     model = Column('model', Text, nullable=True, server_default=FetchedValue())
     ontology_version = Column('ontology_version', Text, nullable=True, server_default=FetchedValue())
     prompt_digest = Column('prompt_digest', Text, nullable=True, server_default=FetchedValue())
+    # Python-only column (V30)；Java 端实体未含此列，插入时保持 NULL。
+    response_digest = Column('response_digest', Text, nullable=True, server_default=FetchedValue())
     latency_ms = Column('latency_ms', BigInteger().with_variant(Integer, 'sqlite'), nullable=True, server_default=FetchedValue())
     success = Column('success', Integer, nullable=True, server_default=FetchedValue())
     err_msg = Column('err_msg', Text, nullable=True, server_default=FetchedValue())
