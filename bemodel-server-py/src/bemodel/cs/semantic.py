@@ -8,7 +8,7 @@ from bemodel.core.base_dao import BaseDAO
 from bemodel.datasource.entities import Mapping, PhysicalTable
 from bemodel.datasource.services import DatasourceService, parse_value_map
 from bemodel.llm.services import DeepSeekClient
-from bemodel.ontology.entities import Concept, Attribute, Relation
+from bemodel.ontology.entities import Concept, Attribute, Relation, Term
 from bemodel.ontology.miss_service import MissService
 from bemodel.rca.services import dumps
 from .prompts import SEMANTIC_PLAN_PROMPT
@@ -18,6 +18,8 @@ ENUM_TRUE_WORDS = {'异常', '阳性', '是', '有', '启用', '已发布', '通
 ENUM_FALSE_WORDS = {'正常', '阴性', '否', '无', '停用', '未发布', '不通过'}
 ENUM_TRUE_CODES = {'1', 'Y', 'A', 'T', 'TRUE', 'YES'}
 ENUM_FALSE_CODES = {'0', 'N', 'F', 'FALSE', 'NO'}
+ID_CARD_NAME_HINTS = ('身份证', '证件号')
+ID_CARD_CODE_NAMES = {'id_card', 'idcard', 'id_no', 'idcard_no', 'cert_no'}
 
 
 def java_value(value):
@@ -167,6 +169,35 @@ class SemanticQaService:
         pattern = re.compile(r'\b(?:(`?[a-zA-Z_][a-zA-Z0-9_]*`?)\.)?`?([a-zA-Z_][a-zA-Z0-9_]*)`?\s*=\s*([\'"])([^\'"]*)\3', re.I)
         return pattern.sub(replace, sql)
 
+    def id_card_columns(self, ds):
+        """识别数据源里的身份证号物理列：属性名含「身份证/证件号」，或属性/列名为常见证件命名。"""
+        attr_names = {(a.concept_code, a.attr_code): a.attr_name or '' for a in self.rows(Attribute)}
+        columns = set()
+        for m in self.rows(Mapping, Mapping.ds_code == ds, Mapping.confirmed == 1):
+            attr_name = attr_names.get((m.concept_code, m.attr_code), '')
+            if (any(hint in attr_name for hint in ID_CARD_NAME_HINTS)
+                    or m.attr_code.lower() in ID_CARD_CODE_NAMES
+                    or m.column_name.lower() in ID_CARD_CODE_NAMES):
+                columns.add(m.column_name.lower())
+        return columns
+
+    def fix_id_card_year_prefix(self, ds, sql):
+        """LLM 偶发把出生年份译成身份证前缀匹配（LIKE '1988%'）的确定性护栏：
+        证号开头是6位地区码，出生年份在第7-14位，前缀匹配永远查不到，改写为包含匹配。"""
+        columns = self.id_card_columns(ds)
+        if not columns:
+            return sql
+
+        def replace(match):
+            ref, quote, year = match.groups()
+            column = ref.strip('`').rsplit('.', 1)[-1].strip('`').lower()
+            if column not in columns:
+                return match.group(0)
+            return f"{ref} LIKE {quote}%{year}%{quote}"
+
+        pattern = re.compile(r'(`?[a-zA-Z_][\w.`]*`?)\s+LIKE\s+([\'"])((?:19|20)\d{2})%\2', re.I)
+        return pattern.sub(replace, sql)
+
     def execute(self, ds, sql):
         with self.ds.jdbc(ds).connect() as conn:
             # MySQL enforces the statement timeout; fetchmany caps response rows even
@@ -178,21 +209,45 @@ class SemanticQaService:
     def links(self, codes):
         return [dict(label='去本体页看概念 '+c, route='/ontology?concept='+c) for c in list(dict.fromkeys(codes))[:2]]
 
-    def fill_parse(self, result, query):
+    def fill_parse(self, result, query, used_concepts=()):
+        """填充语义解析面板：概念匹配 + 关联概念关系。
+
+        概念匹配三层归一（同一概念只保留最高优先级命中）：
+        ① 概念名/编码原样命中问题文本；② bm_term 术语别名命中（业务
+        方言→标准概念，如 客户→患者）；③ 兜底计入本次 SQL 实际用到
+        表所映射的概念（match='映射'）。问「体检」而概念叫「检查报告」
+        时，LLM 仍可按物理映射生成 SQL，面板靠②③层补齐展示。
+        关系展示的是命中概念在本体中的邻域，不是本次 SQL 的实际路径；
+        仅当关系两端都在 used_concepts 中时标 used=True（前端区分
+        「本次查询/本体相邻」）。
+        """
         try:
             concepts = self.rows(Concept, Concept.status == 'PUBLISHED')
-            hits = []
+            names = {c.code: c.name for c in concepts}
+            hits, matched = [], set()
+
+            def record(code, how):
+                # 未发布概念不进面板；面板最多展示 6 个概念
+                if code and code in names and code not in matched and len(hits) < 6:
+                    hits.append(dict(code=code, name=names.get(code) or code, match=how))
+                    matched.add(code)
+
             for c in concepts:
                 how = '名称' if c.name and len(c.name) >= 2 and c.name in query else '编码' if c.code and len(c.code) >= 2 and c.code.lower() in query.lower() else None
                 if how:
-                    hits.append(dict(code=c.code, name=c.name if c.name is not None else c.code, match=how))
+                    record(c.code, how)
                 if len(hits) >= 6:
                     break
+            for t in self.rows(Term):
+                if t.term and len(t.term) >= 2 and t.term in query:
+                    record(t.concept_code, '术语')
+            for code in used_concepts:
+                record(code, '映射')
             codes = [h['code'] for h in hits]
-            names = {c.code: c.name for c in concepts}
             rels = self.rows(Relation, or_(Relation.from_concept.in_(codes), Relation.to_concept.in_(codes)))[:8] if codes else []
             result['matchedConcepts'] = hits
-            result['relations'] = [{'from': r.from_concept, 'fromName': names.get(r.from_concept, r.from_concept), 'relation': r.relation_name, 'to': r.to_concept, 'toName': names.get(r.to_concept, r.to_concept)} for r in rels]
+            used = set(used_concepts)
+            result['relations'] = [{'from': r.from_concept, 'fromName': names.get(r.from_concept, r.from_concept), 'relation': r.relation_name, 'to': r.to_concept, 'toName': names.get(r.to_concept, r.to_concept), 'used': r.from_concept in used and r.to_concept in used} for r in rels]
         except Exception:
             result.update(matchedConcepts=[], relations=[])
 
@@ -216,7 +271,8 @@ class SemanticQaService:
         if not tables:
             return miss()
         try:
-            sql = validate_sql(self.normalize_enum_literals(plan['ds'], plan['sql']), tables, columns)
+            rewritten = self.fix_id_card_year_prefix(plan['ds'], self.normalize_enum_literals(plan['ds'], plan['sql']))
+            sql = validate_sql(rewritten, tables, columns)
             rows = self.execute(plan['ds'], sql)
         except Exception:
             logging.getLogger(__name__).warning('语义查询失败，降级能力菜单', exc_info=True)
@@ -233,7 +289,7 @@ class SemanticQaService:
         result = dict(question=q, intent='语义查询', router='SEMANTIC', answer=answer,
             evidence=[dict(label='执行SQL', value=sql), dict(label='数据源', value=plan['ds']+' / '+','.join(used)), dict(label='结果行数', value=str(total)+('（展示前20行）' if total > 20 else ''))],
             links=self.links(codes), semantics=plan['semantics'], rows=view)
-        self.fill_parse(result, q+' '+plan['semantics'])
+        self.fill_parse(result, q+' '+plan['semantics'], codes)
         return result, False
 
     def model_answer(self, q, plan):
@@ -243,7 +299,7 @@ class SemanticQaService:
         tables, columns = self.allowed(plan['ds']) if plan['ds'] else ([], set())
         if plan['verifySql'] and tables:
             try:
-                sql = validate_sql(plan['verifySql'], tables, columns)
+                sql = validate_sql(self.fix_id_card_year_prefix(plan['ds'], plan['verifySql']), tables, columns)
                 rows = self.execute(plan['ds'], sql)
             except Exception:
                 sql, rows = None, None

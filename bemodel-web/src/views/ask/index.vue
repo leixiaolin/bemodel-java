@@ -154,14 +154,20 @@
           <div v-else class="block-empty">问题未命中已发布概念</div>
         </div>
 
-        <!-- 2. 关系推理链 -->
+        <!-- 2. 关联概念关系（命中概念在本体中的邻域，非 SQL 实际路径） -->
         <div class="parse-block">
-          <div class="block-title">② 关系推理链</div>
+          <div class="block-title">② 关联概念关系</div>
           <div v-if="activeParse.relations?.length" class="rel-chain">
             <div v-for="(r, i) in activeParse.relations" :key="i" class="rel-item">
               <span class="rel-node">{{ r.fromName }}</span>
               <span class="rel-arrow">—{{ r.relation }}→</span>
               <span class="rel-node">{{ r.toName }}</span>
+              <el-tag class="rel-tag" size="small" effect="plain" :type="r.used ? 'success' : 'info'">
+                {{ r.used ? '本次查询' : '本体相邻' }}
+              </el-tag>
+            </div>
+            <div v-if="activeParse.relations.some((r) => !r.used)" class="rel-note">
+              「本体相邻」＝本体中与命中概念相连的关系，本次 SQL 未实际使用
             </div>
           </div>
           <div v-else class="block-empty">无关联关系</div>
@@ -240,7 +246,7 @@ const rowColumns = computed(() =>
 // 右栏空态提示：按最近一条回答的真实状态如实说明，不过度承诺、不断言后端配置
 const parseEmptyHint = computed(() => {
   const last = [...messages.value].reverse().find((m) => m.role === 'ai')
-  if (!last) return '提问后，语义查询类回答会在这里展示解析过程：命中概念、关系链、查询逻辑与原始行数据'
+  if (!last) return '提问后，语义查询类回答会在这里展示解析过程：命中概念、关联关系、查询逻辑与原始行数据'
   if (last.unanswered) return '这个问题超出了当前本体的覆盖，暂无解析可展示；本体采纳该缺口后即可被语义层回答'
   if (last.card === 'METRIC') return '口径类回答以左侧指标卡展示：定义、公式与探针 SQL 均来自指标库真实数据；数据类问题（如「最近10条缴费记录」）可展示完整语义解析'
   if (last.router === 'REFERRAL') return '这个问题未命中问数场景能力，可按左侧回答里的入口转 AI 客服，或换个数据问法（如「最近10条缴费记录」）'
@@ -747,7 +753,7 @@ const ask = async (q) => {
   color: var(--primary);
 }
 
-/* 关系链 */
+/* 关联概念关系 */
 .rel-chain {
   display: flex;
   flex-direction: column;
@@ -772,6 +778,16 @@ const ask = async (q) => {
 .rel-arrow {
   color: var(--primary);
   font-size: 11px;
+}
+
+.rel-tag {
+  flex-shrink: 0;
+}
+
+.rel-note {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-secondary);
 }
 
 /* 查询逻辑 */
