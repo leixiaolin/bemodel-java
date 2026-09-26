@@ -1,9 +1,11 @@
 import json
+import logging
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 from sqlalchemy import text
 from bemodel.core.base_dao import BaseDAO
+from bemodel.core.exceptions import BizException
 from bemodel.datasource.services import DatasourceService, SchemaScanService
 from bemodel.modeling.entities import Axiom
 from bemodel.ontology.entities import Disjoint, Relation
@@ -25,6 +27,9 @@ def decode(value):
     return value
 
 
+logger = logging.getLogger(__name__)
+
+
 class DataSeeder:
     """Native Python loader for the fixed Java demo scenario, with identical freshness gates.
 
@@ -34,6 +39,18 @@ class DataSeeder:
     def __init__(self, session):
         self.session = session
         self.ds = DatasourceService(session)
+        self._usable, self._blocked = set(), set()
+
+    def usable(self, code):
+        """演示库生命周期过滤：不存在/已失效/已删除的数据源跳过种子校验与补种，只告警，不阻断启动。"""
+        if code not in self._usable and code not in self._blocked:
+            try:
+                self.ds.require(code)
+                self._usable.add(code)
+            except BizException:
+                self._blocked.add(code)
+                logger.warning("演示种子跳过不可用数据源（不存在/已失效/已删除）: %s", code)
+        return code in self._usable
 
     def seed_structured_axioms(self):
         disjoints = DisjointService(self.session)
@@ -61,12 +78,16 @@ class DataSeeder:
 
     def run(self):
         self.seed_structured_axioms()
-        counts = [self.ds.query(ds, f"SELECT COUNT(*) AS n FROM `{table}`")[0]["n"] for ds, table, minimum in FRESHNESS]
-        if all(count >= spec[2] for count, spec in zip(counts, FRESHNESS)):
+        # 不可用数据源不参与新鲜度校验（视为无需补种），尊重手动失效/删除的生命周期决策
+        gates = [spec for spec in FRESHNESS if self.usable(spec[0])]
+        counts = [self.ds.query(ds, f"SELECT COUNT(*) AS n FROM `{table}`")[0]["n"] for ds, table, minimum in gates]
+        if all(count >= spec[2] for count, spec in zip(counts, gates)):
             return False
         resource = Path(__file__).resolve().parents[1] / "resources/seed/demo.json"
         fixture = json.loads(resource.read_text(encoding="utf-8"), object_hook=decode)
         for ds, tables in fixture["datasources"].items():
+            if not self.usable(ds):
+                continue
             # Product DB writes are independent of the platform transaction, as in Java.
             with self.ds.jdbc(ds).connect() as conn:
                 for table in tables:
@@ -79,5 +100,6 @@ class DataSeeder:
                         conn.execute(text(sql), {f"v{i}": row[c] for i, c in enumerate(columns)})
                         conn.commit()
         for ds in fixture["datasources"]:
-            SchemaScanService(self.session).scan(ds)
+            if self.usable(ds):
+                SchemaScanService(self.session).scan(ds)
         return True

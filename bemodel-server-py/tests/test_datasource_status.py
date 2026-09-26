@@ -6,6 +6,7 @@ from bemodel.auth.jwt_service import JwtService
 from bemodel.core.exceptions import BizException
 from bemodel.datasource.entities import Datasource, Mapping, PhysicalColumn, PhysicalTable
 from bemodel.datasource.services import DatasourceService, MappingService, SchemaScanService
+from bemodel.seed.services import DataSeeder
 
 
 def auth_headers(role="ADMIN"):
@@ -93,3 +94,24 @@ def test_soft_deleted_datasource_is_hidden_and_blocked(session):
         ds.require("DS_TEST")
     with pytest.raises(BizException, match="不存在"):
         SchemaScanService(session).tables("DS_TEST")
+
+
+def test_seeder_skips_unavailable_datasources_instead_of_blocking_startup(session):
+    # 复现启动崩溃：停用 FRESHNESS 中的演示库后，种子校验必须跳过而不是抛 BizException
+    create_datasource(session, code="DS_HIS")
+    DatasourceService(session).update_status("DS_HIS", "DISABLED")
+
+    seeder = DataSeeder(session)
+    assert seeder.usable("DS_HIS") is False
+    assert seeder.usable("DS_MISSING") is False  # 不存在的演示库同样跳过
+    assert seeder.usable("DS_HIS") is False  # 结论有缓存，重复判断不反复查库
+    assert seeder.run() is False  # 其余演示库均不存在 → 全部跳过，无需补种，且不触达 jdbc
+
+
+def test_seeder_usable_follows_lifecycle_restore(session):
+    create_datasource(session)
+    ds = DatasourceService(session)
+
+    assert DataSeeder(session).usable("DS_TEST") is True
+    ds.soft_delete("DS_TEST")
+    assert DataSeeder(session).usable("DS_TEST") is False
