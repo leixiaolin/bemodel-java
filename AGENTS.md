@@ -50,6 +50,7 @@ Common module names are shared across Java, Python, and frontend where practical
 - `rca`: root cause analysis.
 - `notice`: inspection and in-app alerts.
 - `value`: value proof pages and APIs.
+- `agents`: Python-only. Microsoft Agent Framework adapter plus the semantic-QA SQL critic agent.
 
 ## Common Commands
 

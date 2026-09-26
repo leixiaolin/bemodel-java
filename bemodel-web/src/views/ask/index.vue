@@ -198,6 +198,19 @@
             <div class="rows-tip">最多展示前 20 行，完整结果以回答中的统计为准</div>
           </div>
         </div>
+
+        <!-- 4. 智能体纠错（执行结果可疑时由校验纠错智能体诊断修正，仅修正被采用时展示） -->
+        <div v-if="activeParse.corrections?.length" class="parse-block">
+          <div class="block-title">④ 智能体纠错</div>
+          <div class="fix-list">
+            <div v-for="(c, i) in activeParse.corrections" :key="i" class="fix-item">
+              <div class="fix-reason">{{ c.reason }}</div>
+              <pre class="sql-code fix-sql">{{ c.before }}</pre>
+              <div class="fix-arrow">↓ 修正为</div>
+              <pre class="sql-code fix-sql">{{ c.after }}</pre>
+            </div>
+          </div>
+        </div>
       </template>
       <div v-else class="parse-empty">
         <el-icon :size="28"><DataLine /></el-icon>
@@ -305,7 +318,8 @@ const ask = async (q) => {
         relations: res.relations || [],
         semantics: res.semantics,
         sql: sqlEv?.value,
-        rows: res.rows || []
+        rows: res.rows || [],
+        corrections: res.corrections || []
       }
     }
     messages.value.push(msg)
@@ -836,6 +850,31 @@ const ask = async (q) => {
   margin-top: 6px;
   font-size: 11px;
   color: var(--text-muted);
+}
+
+/* 智能体纠错 */
+.fix-item {
+  margin-bottom: 10px;
+}
+
+.fix-item:last-child {
+  margin-bottom: 0;
+}
+
+.fix-reason {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.fix-sql {
+  margin: 0;
+}
+
+.fix-arrow {
+  font-size: 11px;
+  color: var(--primary);
+  margin: 4px 0;
 }
 
 /* 窄屏折叠解析面板 */

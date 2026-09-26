@@ -4,6 +4,7 @@ import json
 import logging
 import re
 from sqlalchemy import or_, text
+from bemodel.agents.critic import MAX_AGENT_FIXES, SqlCritic, describe_result, improved, suspicious_result
 from bemodel.core.base_dao import BaseDAO
 from bemodel.datasource.entities import Mapping, PhysicalTable
 from bemodel.datasource.services import DatasourceService, parse_value_map
@@ -37,6 +38,7 @@ class SemanticQaService:
         self.session = session
         self.llm = DeepSeekClient(session)
         self.ds = DatasourceService(session)
+        self.critic = SqlCritic(session)
 
     def rows(self, model, *conditions):
         return BaseDAO(self.session, model).select_list(*conditions)
@@ -206,6 +208,48 @@ class SemanticQaService:
             cursor = conn.execute(text(sql))
             return [dict(row) for row in cursor.mappings().fetchmany(100)]
 
+    def tables_in_sql(self, sql, tables):
+        return [t for t in tables if re.search(r'\b'+re.escape(t)+r'\b', sql, re.I)]
+
+    def sample_rows(self, ds, tables):
+        """每张涉及表取 3 行真实样例作智能体判定证据（仅触发路径执行，JSON 截断防提示词膨胀）。"""
+        parts = []
+        for t in tables[:3]:
+            try:
+                sample = dumps(self.execute(ds, f'SELECT * FROM `{t}` LIMIT 3'))
+                parts.append(f'{t}：{sample[:500]}'+('…' if len(sample) > 500 else ''))
+            except Exception:
+                continue
+        return '\n'.join(parts) or '无'
+
+    def agent_correct(self, q, plan, sql, rows, tables, columns):
+        """校验纠错智能体：执行结果可疑（0行/计0）时由 MAF 智能体诊断修正。
+
+        触发门控与接受条件是不依赖 LLM 自律的客观护栏（见方案实验③的误纠实证）：
+        修正 SQL 重走确定性改写+白名单校验+执行，仅当结果确有改善（0→N）
+        才采用；任何失败（LLM 降级/校验拒绝/无改善）都保留原结果，不阻断主流程。
+        """
+        corrections = []
+        for _ in range(MAX_AGENT_FIXES):
+            if not suspicious_result(rows):
+                break
+            verdict = self.critic.judge(q, self.build_semantic_context(), sql,
+                                        describe_result(rows),
+                                        self.sample_rows(plan['ds'], self.tables_in_sql(sql, tables)))
+            if not verdict or verdict.get('verdict') != 'FIX' or not verdict.get('correctedSql'):
+                break
+            try:
+                fixed = validate_sql(self.fix_id_card_year_prefix(plan['ds'], self.normalize_enum_literals(plan['ds'], verdict['correctedSql'])), tables, columns)
+                new_rows = self.execute(plan['ds'], fixed)
+            except Exception:
+                logging.getLogger(__name__).warning('智能体修正SQL未通过校验/执行，保留原结果', exc_info=True)
+                break
+            if not improved(rows, new_rows):
+                break
+            corrections.append(dict(before=sql, after=fixed, reason=verdict['reason']))
+            sql, rows = fixed, new_rows
+        return sql, rows, corrections
+
     def links(self, codes):
         return [dict(label='去本体页看概念 '+c, route='/ontology?concept='+c) for c in list(dict.fromkeys(codes))[:2]]
 
@@ -277,6 +321,7 @@ class SemanticQaService:
         except Exception:
             logging.getLogger(__name__).warning('语义查询失败，降级能力菜单', exc_info=True)
             return miss()
+        sql, rows, corrections = self.agent_correct(q, plan, sql, rows, tables, columns)
         total, view = len(rows), rows[:20]
         rows_json = dumps(view)
         if len(rows_json) > 3000:
@@ -284,11 +329,11 @@ class SemanticQaService:
         answer = self.llm.chat('CS_SEMANTIC_ANSWER', '你是医院信息平台的数据问答助手。严格基于给定查询结果用中文回答，先给结论再给关键数字，口语化，不超过200字。结果里没有的信息不要编造，结果为0条就如实说没有。', f"用户问题：{q}\n查询语义：{plan['semantics']}\n执行SQL：{sql}\n结果行数：{total}"+('（仅展示前20行）' if total > 20 else '')+'\n结果JSON：'+rows_json)
         if answer is None:
             answer = f"按本体映射到 {plan['ds']} 查询，没有符合条件的记录。（{plan['semantics']}）" if total == 0 else f"按本体映射查询到 {total} 条记录（{plan['semantics']}）。首条明细：{java_value(view[0])}"
-        used = [t for t in tables if re.search(r'\b'+re.escape(t)+r'\b', sql, re.I)]
+        used = self.tables_in_sql(sql, tables)
         codes = [m.concept_code for m in self.rows(Mapping, Mapping.ds_code == plan['ds'], Mapping.table_name.in_(used))] if used else []
         result = dict(question=q, intent='语义查询', router='SEMANTIC', answer=answer,
             evidence=[dict(label='执行SQL', value=sql), dict(label='数据源', value=plan['ds']+' / '+','.join(used)), dict(label='结果行数', value=str(total)+('（展示前20行）' if total > 20 else ''))],
-            links=self.links(codes), semantics=plan['semantics'], rows=view)
+            links=self.links(codes), semantics=plan['semantics'], rows=view, corrections=corrections)
         self.fill_parse(result, q+' '+plan['semantics'], codes)
         return result, False
 
