@@ -41,5 +41,15 @@ def start_scheduler():
         except Exception:
             logging.getLogger(__name__).exception("定时巡检失败（下个周期重试）")
     scheduler.add_job(inspect, cron_trigger(settings.inspect_cron))
+    def ontology_analysis():
+        from bemodel.datasource.governance import OntologyAnalysisService
+        try:
+            with Session(engine, expire_on_commit=False) as session:
+                OntologyAnalysisService(session).run_next()
+        except Exception:
+            logging.getLogger(__name__).exception("数据源本体治理任务失败（下个周期重试）")
+    scheduler.add_job(ontology_analysis, "interval",
+                      seconds=max(1, settings.ontology_analysis_interval_seconds),
+                      max_instances=1, coalesce=True)
     scheduler.start()
     return scheduler

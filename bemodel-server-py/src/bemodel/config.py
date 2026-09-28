@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     deepseek_timeout_seconds: int = 30
     inspect_cron: str = Field("0 0/30 * * * *", validation_alias="BEMODEL_INSPECT_CRON")
     disable_scheduler: bool = Field(False, validation_alias="BEMODEL_DISABLE_SCHEDULER")
+    ontology_analysis_interval_seconds: int = Field(10, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_INTERVAL_SECONDS")
+    ontology_analysis_lock_seconds: int = Field(300, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_LOCK_SECONDS")
+    ontology_analysis_max_attempts: int = Field(3, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_MAX_ATTEMPTS")
+    ontology_analysis_chunk_tables: int = Field(8, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_CHUNK_TABLES")
+    ontology_stats_timeout_seconds: int = Field(5, validation_alias="BEMODEL_ONTOLOGY_STATS_TIMEOUT_SECONDS")
+    ontology_stats_max_columns: int = Field(80, validation_alias="BEMODEL_ONTOLOGY_STATS_MAX_COLUMNS")
+    ontology_stats_enum_limit: int = Field(20, validation_alias="BEMODEL_ONTOLOGY_STATS_ENUM_LIMIT")
 
 
 settings = Settings()

@@ -1,0 +1,75 @@
+ALTER TABLE bm_physical_column
+    ADD COLUMN referenced_table VARCHAR(128) NULL COMMENT '外键引用表',
+    ADD COLUMN referenced_column VARCHAR(128) NULL COMMENT '外键引用列';
+
+CREATE TABLE IF NOT EXISTS bm_ontology_analysis_task (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    ds_code VARCHAR(64) NOT NULL,
+    status VARCHAR(16) NOT NULL DEFAULT 'PENDING',
+    progress INT NOT NULL DEFAULT 0,
+    scan_fingerprint VARCHAR(64) NOT NULL,
+    ontology_version VARCHAR(64) NOT NULL,
+    model VARCHAR(128),
+    analysis_mode VARCHAR(16) NOT NULL DEFAULT 'FULL',
+    scan_diff_json TEXT,
+    dedupe_key VARCHAR(64),
+    attempt_count INT NOT NULL DEFAULT 0,
+    locked_at DATETIME,
+    worker_id VARCHAR(128),
+    error_message VARCHAR(1024),
+    change_set_id BIGINT,
+    created_by VARCHAR(64),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    started_at DATETIME,
+    finished_at DATETIME,
+    KEY idx_ontology_task_ds_created (ds_code, created_at),
+    KEY idx_ontology_task_status_locked (status, locked_at),
+    KEY idx_ontology_task_baseline (ds_code, scan_fingerprint, ontology_version),
+    UNIQUE KEY uk_ontology_task_dedupe (dedupe_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据源本体治理分析任务';
+
+CREATE TABLE IF NOT EXISTS bm_ontology_change_set (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    task_id BIGINT NOT NULL,
+    ds_code VARCHAR(64) NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    status VARCHAR(16) NOT NULL DEFAULT 'DRAFT',
+    scan_fingerprint VARCHAR(64) NOT NULL,
+    ontology_version VARCHAR(64) NOT NULL,
+    suggestion_count INT NOT NULL DEFAULT 0,
+    high_risk_count INT NOT NULL DEFAULT 0,
+    summary_json TEXT,
+    created_by VARCHAR(64),
+    reviewed_by VARCHAR(64),
+    published_by VARCHAR(64),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    published_at DATETIME,
+    UNIQUE KEY uk_ontology_change_task (task_id),
+    KEY idx_ontology_change_ds_status (ds_code, status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本体治理变更集';
+
+CREATE TABLE IF NOT EXISTS bm_ontology_change_item (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    change_set_id BIGINT NOT NULL,
+    item_type VARCHAR(24) NOT NULL,
+    operation VARCHAR(32) NOT NULL,
+    review_status VARCHAR(16) NOT NULL DEFAULT 'PENDING',
+    target_key VARCHAR(256) NOT NULL,
+    payload_json TEXT NOT NULL,
+    evidence_json TEXT,
+    dependency_json TEXT,
+    confidence DECIMAL(5,4) NOT NULL DEFAULT 0,
+    risk_level VARCHAR(16) NOT NULL DEFAULT 'MEDIUM',
+    reason VARCHAR(1024),
+    missing_information VARCHAR(1024),
+    source_table VARCHAR(128),
+    source_column VARCHAR(128),
+    review_note VARCHAR(1024),
+    result_ref_json TEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_ontology_change_target (change_set_id, item_type, target_key),
+    KEY idx_ontology_item_review (change_set_id, review_status),
+    KEY idx_ontology_item_source (change_set_id, source_table)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本体治理变更建议';

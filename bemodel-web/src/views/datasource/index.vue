@@ -49,6 +49,56 @@
     </div>
 
     <template v-if="currentDs">
+      <el-card class="governance-card" style="margin-top: 16px">
+        <template #header>
+          <div class="card-header">
+            <span>AI 本体治理分析</span>
+            <div>
+              <el-button size="small" :loading="analysisLoading" @click="loadAnalysis">刷新</el-button>
+              <el-button
+                v-if="!userStore.isViewer"
+                size="small"
+                type="primary"
+                :disabled="isDisabled(currentDs)"
+                :loading="analysisStarting"
+                @click="restartAnalysis"
+              >重新分析</el-button>
+            </div>
+          </div>
+        </template>
+        <el-empty v-if="!analysis" description="尚无治理分析；扫描数据源后将自动创建任务" :image-size="56" />
+        <template v-else>
+          <div class="analysis-summary">
+            <el-tag :type="analysisStatusType(analysis.status)">{{ analysisStatusText(analysis.status) }}</el-tag>
+            <span>任务 #{{ analysis.id }}</span>
+            <span>进度 {{ analysis.progress || 0 }}%</span>
+            <span v-if="analysis.model">模型：{{ analysis.model }}</span>
+            <span v-if="analysis.changeSet?.suggestionCount">建议 {{ analysis.changeSet.suggestionCount }} 项</span>
+            <span v-if="analysis.changeSet?.highRiskCount">高风险 {{ analysis.changeSet.highRiskCount }} 项</span>
+          </div>
+          <el-progress
+            v-if="['PENDING', 'RUNNING'].includes(analysis.status)"
+            :percentage="analysis.progress || 0"
+            :status="analysis.status === 'RUNNING' ? undefined : 'warning'"
+            style="margin-top: 12px"
+          />
+          <el-alert
+            v-if="analysis.errorMessage"
+            :title="analysis.errorMessage"
+            :type="analysis.status === 'FAILED' ? 'error' : 'warning'"
+            :closable="false"
+            show-icon
+            style="margin-top: 12px"
+          />
+          <div v-if="analysis.changeSet" class="analysis-actions">
+            <span v-if="analysis.changeSet.summary?.mappingCoverage !== undefined">
+              当前映射覆盖率 {{ Math.round(analysis.changeSet.summary.mappingCoverage * 100) }}%
+            </span>
+            <el-button type="success" plain @click="openGovernanceWorkbench">审核变更集</el-button>
+          </div>
+        </template>
+      </el-card>
+
       <el-row :gutter="16" style="margin-top: 16px">
         <el-col :span="8">
           <el-card>
@@ -121,7 +171,7 @@
                       <el-tag>{{ row.mapping.conceptCode }}.{{ row.mapping.attrCode }}</el-tag>
                     </el-tooltip>
                     <el-tag
-                      v-if="row.mapping.source === 'AI'"
+                      v-if="['AI', 'AI_GOVERNANCE'].includes(row.mapping.source)"
                       size="small"
                       type="warning"
                       effect="plain"
@@ -180,6 +230,101 @@
     <el-card v-else style="margin-top: 16px">
       <el-empty description="请选择一个数据源" />
     </el-card>
+
+    <el-dialog v-model="governanceVisible" title="AI 本体治理变更集" width="92%" top="4vh">
+      <template v-if="changeSet">
+        <div class="change-toolbar">
+          <el-select v-model="changeFilters.type" clearable placeholder="元素类型" style="width: 150px">
+            <el-option v-for="type in changeItemTypes" :key="type" :label="type" :value="type" />
+          </el-select>
+          <el-select v-model="changeFilters.risk" clearable placeholder="风险" style="width: 120px">
+            <el-option label="高" value="HIGH" /><el-option label="中" value="MEDIUM" /><el-option label="低" value="LOW" />
+          </el-select>
+          <el-select v-model="changeFilters.status" clearable placeholder="审核状态" style="width: 140px">
+            <el-option label="待审核" value="PENDING" /><el-option label="已接受" value="ACCEPTED" />
+            <el-option label="已拒绝" value="REJECTED" /><el-option label="待补充" value="NEEDS_INPUT" />
+          </el-select>
+          <el-select v-model="changeFilters.confidence" clearable placeholder="最低置信度" style="width: 140px">
+            <el-option label="≥ 90%" :value="0.9" /><el-option label="≥ 70%" :value="0.7" />
+            <el-option label="≥ 50%" :value="0.5" />
+          </el-select>
+          <el-input v-model="changeFilters.table" clearable placeholder="来源表" style="width: 180px" />
+          <span class="change-state">状态：{{ changeSet.status }} · 建议 {{ changeSet.suggestionCount }}</span>
+        </div>
+        <el-table
+          ref="changeTableRef"
+          :data="filteredChangeItems"
+          v-loading="changeLoading"
+          height="560"
+          row-key="id"
+          @selection-change="onChangeSelection"
+        >
+          <el-table-column type="selection" width="44" :selectable="selectableChangeItem" />
+          <el-table-column type="expand">
+            <template #default="{ row }">
+              <div class="evidence-panel">
+                <p><b>理由：</b>{{ row.reason || '-' }}</p>
+                <p><b>证据：</b>{{ (row.evidence || []).join('；') || '-' }}</p>
+                <p><b>依赖：</b>{{ (row.dependencies || []).join('；') || '-' }}</p>
+                <p v-if="row.missingInformation"><b>待补充：</b>{{ row.missingInformation }}</p>
+                <pre>{{ JSON.stringify(row.payload, null, 2) }}</pre>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="itemType" label="类型" width="100" />
+          <el-table-column prop="operation" label="操作" width="160" />
+          <el-table-column prop="targetKey" label="目标" min-width="210" show-overflow-tooltip />
+          <el-table-column label="来源" min-width="180">
+            <template #default="{ row }">{{ row.sourceTable }}{{ row.sourceColumn ? `.${row.sourceColumn}` : '' }}</template>
+          </el-table-column>
+          <el-table-column label="置信度" width="95">
+            <template #default="{ row }">{{ Math.round((row.confidence || 0) * 100) }}%</template>
+          </el-table-column>
+          <el-table-column label="风险" width="80">
+            <template #default="{ row }"><el-tag size="small" :type="riskTag(row.riskLevel)">{{ row.riskLevel }}</el-tag></template>
+          </el-table-column>
+          <el-table-column label="审核" width="110">
+            <template #default="{ row }"><el-tag size="small" effect="plain">{{ row.reviewStatus }}</el-tag></template>
+          </el-table-column>
+          <el-table-column v-if="!userStore.isViewer && changeMutable" label="操作" width="230" fixed="right">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="editChangeItem(row)">编辑</el-button>
+              <el-button
+                link type="success" :disabled="!selectableChangeItem(row)"
+                @click="reviewChangeItem(row, 'ACCEPTED')"
+              >接受</el-button>
+              <el-button link type="danger" @click="reviewChangeItem(row, 'REJECTED')">拒绝</el-button>
+              <el-button link type="warning" @click="reviewChangeItem(row, 'NEEDS_INPUT')">待补充</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+      <template #footer>
+        <el-button @click="governanceVisible = false">关闭</el-button>
+        <el-button
+          v-if="!userStore.isViewer" type="primary" plain :disabled="!changeMutable || !selectedChangeItems.length"
+          :loading="changeSaving" @click="adoptSelectedChanges"
+        >批量采纳（{{ selectedChangeItems.length }}）</el-button>
+        <el-button
+          v-if="!userStore.isViewer" type="success" :disabled="!changeMutable || !acceptedChangeCount"
+          :loading="changePublishing" @click="publishChanges"
+        >创建草稿与候选映射</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="changeEditVisible" title="编辑治理建议" width="620px">
+      <el-form label-width="90px">
+        <el-form-item label="建议目标"><span>{{ editingChangeItem?.targetKey }}</span></el-form-item>
+        <el-form-item label="载荷 JSON">
+          <el-input v-model="changePayloadText" type="textarea" :rows="14" />
+        </el-form-item>
+        <el-form-item label="审核备注"><el-input v-model="changeReviewNote" type="textarea" :rows="2" /></el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="changeEditVisible = false">取消</el-button>
+        <el-button type="primary" :loading="changeSaving" @click="saveChangeEdit">保存</el-button>
+      </template>
+    </el-dialog>
 
     <!-- 编辑映射 -->
     <el-dialog v-model="editVisible" :title="`编辑映射：${editRow?.columnName || ''}`" width="480px">
@@ -294,7 +439,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import {
   listDatasources,
@@ -308,7 +453,13 @@ import {
   listMappings,
   saveMappings,
   aiSuggest,
-  deleteMapping
+  deleteMapping,
+  startOntologyAnalysis,
+  latestOntologyAnalysis,
+  getOntologyChangeSet,
+  updateOntologyChangeItem,
+  adoptOntologyChangeItems,
+  publishOntologyChangeSet
 } from '../../api/datasource'
 import { conceptDetail } from '../../api/ontology'
 import { useConceptStore } from '../../store/concept'
@@ -341,6 +492,7 @@ const selectDs = (ds) => {
   clearWorkbench()
   // 失效数据源不参与业务流程，后端已拦截表/列读取，这里不再发起请求
   if (!isDisabled(ds)) loadTables()
+  loadAnalysis()
 }
 
 const doScan = async (ds) => {
@@ -349,10 +501,192 @@ const doScan = async (ds) => {
     const res = await scanDatasource(ds.dsCode)
     ElMessage.success(`扫描完成：${res.dsCode} 共 ${res.tableCount} 张表`)
     if (currentDs.value?.dsCode === ds.dsCode) {
+      analysis.value = {
+        id: res.analysisTaskId,
+        status: res.analysisStatus,
+        progress: 0
+      }
+      scheduleAnalysisPoll()
+    }
+    if (currentDs.value?.dsCode === ds.dsCode) {
       loadTables()
     }
   } finally {
     scanningDs.value = ''
+  }
+}
+
+// ---------- 整库 AI 本体治理 ----------
+const analysis = ref(null)
+const analysisLoading = ref(false)
+const analysisStarting = ref(false)
+let analysisTimer = null
+
+const analysisStatusText = (status) => ({
+  PENDING: '等待分析', RUNNING: '分析中', SUCCEEDED: '分析完成', PARTIAL: '部分完成',
+  FAILED: '分析失败', CANCELLED: '已取消'
+}[status] || status || '未知')
+
+const analysisStatusType = (status) => ({
+  SUCCEEDED: 'success', PARTIAL: 'warning', FAILED: 'danger', CANCELLED: 'info', RUNNING: 'primary'
+}[status] || 'info')
+
+const stopAnalysisPoll = () => {
+  if (analysisTimer) window.clearTimeout(analysisTimer)
+  analysisTimer = null
+}
+
+const scheduleAnalysisPoll = () => {
+  stopAnalysisPoll()
+  if (analysis.value && ['PENDING', 'RUNNING'].includes(analysis.value.status)) {
+    analysisTimer = window.setTimeout(async () => {
+      await loadAnalysis(false)
+      scheduleAnalysisPoll()
+    }, 3000)
+  }
+}
+
+const loadAnalysis = async (showLoading = true) => {
+  if (!currentDs.value || isDisabled(currentDs.value)) {
+    analysis.value = null
+    stopAnalysisPoll()
+    return
+  }
+  const dsCode = currentDs.value.dsCode
+  if (showLoading) analysisLoading.value = true
+  try {
+    const result = await latestOntologyAnalysis(dsCode)
+    if (currentDs.value?.dsCode === dsCode) {
+      analysis.value = result
+      scheduleAnalysisPoll()
+    }
+  } finally {
+    if (showLoading) analysisLoading.value = false
+  }
+}
+
+const restartAnalysis = async () => {
+  analysisStarting.value = true
+  try {
+    analysis.value = await startOntologyAnalysis(currentDs.value.dsCode, { force: true })
+    ElMessage.success('已创建新的治理分析任务')
+    scheduleAnalysisPoll()
+  } finally {
+    analysisStarting.value = false
+  }
+}
+
+const governanceVisible = ref(false)
+const changeSet = ref(null)
+const changeLoading = ref(false)
+const changeSaving = ref(false)
+const changePublishing = ref(false)
+const selectedChangeItems = ref([])
+const changeTableRef = ref(null)
+const changeFilters = reactive({ type: '', risk: '', status: '', table: '', confidence: '' })
+const changeItemTypes = ['CONCEPT', 'ATTRIBUTE', 'TERM', 'RELATION', 'RULE', 'ACTION', 'METRIC', 'MAPPING']
+const changeMutable = computed(() => ['DRAFT', 'REVIEWED', 'ADOPTED'].includes(changeSet.value?.status))
+const acceptedChangeCount = computed(() => (changeSet.value?.items || []).filter((item) => item.reviewStatus === 'ACCEPTED').length)
+
+const filteredChangeItems = computed(() => (changeSet.value?.items || []).filter((item) =>
+  (!changeFilters.type || item.itemType === changeFilters.type) &&
+  (!changeFilters.risk || item.riskLevel === changeFilters.risk) &&
+  (!changeFilters.status || item.reviewStatus === changeFilters.status) &&
+  (!changeFilters.confidence || (item.confidence || 0) >= changeFilters.confidence) &&
+  (!changeFilters.table || (item.sourceTable || '').toLowerCase().includes(changeFilters.table.toLowerCase()))
+))
+
+const riskTag = (risk) => ({ HIGH: 'danger', MEDIUM: 'warning', LOW: 'success' }[risk] || 'info')
+const selectableChangeItem = (item) =>
+  changeMutable.value && !['CONFLICT', 'INSUFFICIENT_EVIDENCE'].includes(item.operation)
+const onChangeSelection = (rows) => { selectedChangeItems.value = rows }
+
+const openGovernanceWorkbench = async () => {
+  governanceVisible.value = true
+  changeLoading.value = true
+  try {
+    changeSet.value = await getOntologyChangeSet(analysis.value.changeSet.id)
+  } finally {
+    changeLoading.value = false
+  }
+}
+
+const reloadChangeSet = async () => {
+  if (!changeSet.value?.id) return
+  changeSet.value = await getOntologyChangeSet(changeSet.value.id)
+  selectedChangeItems.value = []
+}
+
+const reviewChangeItem = async (item, reviewStatus) => {
+  changeSaving.value = true
+  try {
+    await updateOntologyChangeItem(changeSet.value.id, item.id, { reviewStatus })
+    await reloadChangeSet()
+  } finally {
+    changeSaving.value = false
+  }
+}
+
+const changeEditVisible = ref(false)
+const editingChangeItem = ref(null)
+const changePayloadText = ref('')
+const changeReviewNote = ref('')
+
+const editChangeItem = (item) => {
+  editingChangeItem.value = item
+  changePayloadText.value = JSON.stringify(item.payload || {}, null, 2)
+  changeReviewNote.value = item.reviewNote || ''
+  changeEditVisible.value = true
+}
+
+const saveChangeEdit = async () => {
+  let payload
+  try {
+    payload = JSON.parse(changePayloadText.value)
+  } catch {
+    ElMessage.error('载荷 JSON 格式不正确')
+    return
+  }
+  changeSaving.value = true
+  try {
+    await updateOntologyChangeItem(changeSet.value.id, editingChangeItem.value.id, {
+      payload,
+      reviewNote: changeReviewNote.value
+    })
+    changeEditVisible.value = false
+    await reloadChangeSet()
+    ElMessage.success('建议已更新')
+  } finally {
+    changeSaving.value = false
+  }
+}
+
+const adoptSelectedChanges = async () => {
+  changeSaving.value = true
+  try {
+    const result = await adoptOntologyChangeItems(changeSet.value.id, selectedChangeItems.value.map((item) => item.id))
+    await reloadChangeSet()
+    ElMessage.success(`已采纳 ${result.acceptedCount} 项建议（含依赖）`)
+  } finally {
+    changeSaving.value = false
+  }
+}
+
+const publishChanges = async () => {
+  await ElMessageBox.confirm(
+    '将已采纳建议原子化创建为本体草稿与未确认候选映射，仍需走现有审核发布流程。确认继续？',
+    '发布变更集',
+    { type: 'warning' }
+  )
+  changePublishing.value = true
+  try {
+    const result = await publishOntologyChangeSet(changeSet.value.id)
+    ElMessage.success(`变更集已发布，共创建 ${result.created?.length || 0} 项`)
+    await reloadChangeSet()
+    await conceptStore.fetchAll()
+    await loadAnalysis()
+  } finally {
+    changePublishing.value = false
   }
 }
 
@@ -665,6 +999,8 @@ onMounted(() => {
   loadDatasources()
   conceptStore.fetchAll()
 })
+
+onUnmounted(stopAnalysisPoll)
 </script>
 
 <style scoped>
@@ -747,5 +1083,53 @@ onMounted(() => {
 
 .no-suggest {
   color: #c0c4cc;
+}
+
+.card-header,
+.analysis-summary,
+.analysis-actions,
+.change-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header,
+.analysis-actions {
+  justify-content: space-between;
+}
+
+.analysis-summary {
+  flex-wrap: wrap;
+  color: #606266;
+  font-size: 13px;
+}
+
+.analysis-actions {
+  margin-top: 12px;
+  color: #606266;
+}
+
+.change-toolbar {
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.change-state {
+  margin-left: auto;
+  color: #606266;
+}
+
+.evidence-panel {
+  padding: 4px 24px 12px;
+  color: #606266;
+}
+
+.evidence-panel pre {
+  max-height: 240px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 4px;
+  background: #f5f7fa;
 }
 </style>

@@ -17,6 +17,23 @@ export const testDatasource = (data) => request.post('/datasource/test', data)
 
 export const scanDatasource = (dsCode) => request.post(`/datasource/scan/${dsCode}`)
 
+export const startOntologyAnalysis = (dsCode, options = {}) =>
+  request.post(`/datasource/${dsCode}/ontology-analysis`, options)
+
+export const latestOntologyAnalysis = (dsCode) =>
+  request.get(`/datasource/${dsCode}/ontology-analysis/latest`)
+
+export const getOntologyChangeSet = (id) => request.get(`/ontology-change-set/${id}`)
+
+export const updateOntologyChangeItem = (changeSetId, itemId, data) =>
+  request.patch(`/ontology-change-set/${changeSetId}/items/${itemId}`, data)
+
+export const adoptOntologyChangeItems = (changeSetId, itemIds) =>
+  request.post(`/ontology-change-set/${changeSetId}/adopt`, { itemIds })
+
+export const publishOntologyChangeSet = (changeSetId) =>
+  request.post(`/ontology-change-set/${changeSetId}/publish`)
+
 export const listTables = (dsCode) => request.get(`/datasource/tables/${dsCode}`)
 
 export const listColumns = (dsCode, tableName) =>

@@ -92,6 +92,8 @@ class DatasourceService(BaseDAO):
         self.update_by_id(ds)
         if status == "DISABLED":
             dispose_engine(code)
+            from .governance import OntologyAnalysisService
+            OntologyAnalysisService(self.session).cancel_for_datasource(code)
         result = to_camel_dict(ds)
         result["password"] = "****"
         return result
@@ -105,6 +107,8 @@ class DatasourceService(BaseDAO):
         ds.updated_at = datetime.now()
         self.update_by_id(ds)
         dispose_engine(code)
+        from .governance import OntologyAnalysisService
+        OntologyAnalysisService(self.session).cancel_for_datasource(code, "数据源已删除")
 
     def test_connection(self, data):
         engine = None
@@ -140,11 +144,27 @@ class SchemaScanService:
         return BaseDAO(self.session, PhysicalColumn).select_list(PhysicalColumn.ds_code == code,
             *([PhysicalColumn.table_name == table] if table and table.strip() else []), order=(PhysicalColumn.ordinal_position,))
 
-    def scan(self, code):
+    def scan(self, code, created_by=None):
+        old_tables = BaseDAO(self.session, PhysicalTable).select_list(PhysicalTable.ds_code == code)
+        old_columns = BaseDAO(self.session, PhysicalColumn).select_list(PhysicalColumn.ds_code == code)
+        old_table_map = {row.table_name: row.table_comment or "" for row in old_tables}
+        old_column_map = {(row.table_name, row.column_name): (row.data_type or "", row.column_comment or "",
+            int(row.is_pk or 0), row.referenced_table or "", row.referenced_column or "") for row in old_columns}
         with transactional(self.session):
             ds = self.ds.require(code)
             tables = self.ds.query(code, "SELECT TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA=:db", {"db": ds.db_name})
-            columns = self.ds.query(code, "SELECT TABLE_NAME,COLUMN_NAME,DATA_TYPE,COLUMN_COMMENT,COLUMN_KEY,ORDINAL_POSITION FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=:db ORDER BY TABLE_NAME,ORDINAL_POSITION", {"db": ds.db_name})
+            columns = self.ds.query(code, """SELECT c.TABLE_NAME,c.COLUMN_NAME,c.DATA_TYPE,c.COLUMN_COMMENT,c.COLUMN_KEY,c.ORDINAL_POSITION,
+                k.REFERENCED_TABLE_NAME,k.REFERENCED_COLUMN_NAME
+                FROM information_schema.COLUMNS c
+                LEFT JOIN (
+                  SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,
+                         MAX(REFERENCED_TABLE_NAME) REFERENCED_TABLE_NAME,
+                         MAX(REFERENCED_COLUMN_NAME) REFERENCED_COLUMN_NAME
+                  FROM information_schema.KEY_COLUMN_USAGE
+                  WHERE REFERENCED_TABLE_NAME IS NOT NULL
+                  GROUP BY TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME
+                ) k ON k.TABLE_SCHEMA=c.TABLE_SCHEMA AND k.TABLE_NAME=c.TABLE_NAME AND k.COLUMN_NAME=c.COLUMN_NAME
+                WHERE c.TABLE_SCHEMA=:db ORDER BY c.TABLE_NAME,c.ORDINAL_POSITION""", {"db": ds.db_name})
             td, cd = BaseDAO(self.session, PhysicalTable), BaseDAO(self.session, PhysicalColumn)
             td.delete(PhysicalTable.ds_code == code)
             cd.delete(PhysicalColumn.ds_code == code)
@@ -153,8 +173,30 @@ class SchemaScanService:
                 td.insert(PhysicalTable(ds_code=code, table_name=row["TABLE_NAME"], table_comment=row.get("TABLE_COMMENT", ""), scanned_at=now))
             for row in columns:
                 cd.insert(PhysicalColumn(ds_code=code, table_name=row["TABLE_NAME"], column_name=row["COLUMN_NAME"],
-                    data_type=row["DATA_TYPE"], column_comment=row.get("COLUMN_COMMENT", ""), is_pk=int(row["COLUMN_KEY"] == "PRI"), ordinal_position=row["ORDINAL_POSITION"]))
-            return len(tables)
+                    data_type=row["DATA_TYPE"], column_comment=row.get("COLUMN_COMMENT", ""), is_pk=int(row["COLUMN_KEY"] == "PRI"),
+                    ordinal_position=row["ORDINAL_POSITION"], referenced_table=row.get("REFERENCED_TABLE_NAME"),
+                    referenced_column=row.get("REFERENCED_COLUMN_NAME")))
+            count = len(tables)
+        from .governance import OntologyAnalysisService
+        analysis = OntologyAnalysisService(self.session)
+        fingerprint, _ = analysis.current_baseline(code)
+        analysis.mark_stale(code, fingerprint)
+        new_tables = analysis.session.query(PhysicalTable).filter(PhysicalTable.ds_code == code).all()
+        new_columns = analysis.session.query(PhysicalColumn).filter(PhysicalColumn.ds_code == code).all()
+        new_table_map = {row.table_name: row.table_comment or "" for row in new_tables}
+        new_column_map = {(row.table_name, row.column_name): (row.data_type or "", row.column_comment or "",
+            int(row.is_pk or 0), row.referenced_table or "", row.referenced_column or "") for row in new_columns}
+        scan_diff = {
+            "addedTables": sorted(set(new_table_map) - set(old_table_map)),
+            "removedTables": sorted(set(old_table_map) - set(new_table_map)),
+            "addedColumns": [".".join(key) for key in sorted(set(new_column_map) - set(old_column_map))],
+            "removedColumns": [".".join(key) for key in sorted(set(old_column_map) - set(new_column_map))],
+            "changedColumns": [".".join(key) for key in sorted(set(old_column_map) & set(new_column_map))
+                               if old_column_map[key] != new_column_map[key]],
+        }
+        task = analysis.enqueue(code, created_by=created_by, scan_diff=scan_diff)
+        return {"tableCount": count, "scanFingerprint": fingerprint,
+                "analysisTaskId": task.id, "analysisStatus": task.status}
 
 
 class MappingService(BaseDAO):

@@ -45,6 +45,8 @@ class PhysicalColumn(Base):
     column_comment = Column('column_comment', Text, nullable=True, server_default=FetchedValue())
     is_pk = Column('is_pk', Integer, nullable=True, server_default=FetchedValue())
     ordinal_position = Column('ordinal_position', Integer, nullable=True, server_default=FetchedValue())
+    referenced_table = Column('referenced_table', Text, nullable=True)
+    referenced_column = Column('referenced_column', Text, nullable=True)
 
 
 class PhysicalTable(Base):

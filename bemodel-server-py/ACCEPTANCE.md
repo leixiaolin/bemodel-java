@@ -31,8 +31,11 @@
 | S10 通知/巡检 | 手动巡检、已读、幂等告警；真实 cron 首次失败后再次执行 | `artifacts/full-acceptance.json`、`tests/test_scheduler.py` |
 | S11 架构/影响 | 总览、变更影响 BFS | `artifacts/full-acceptance.json` |
 | S12 交付/前端 | wheel 含运行资源、Vue 构建、登录/架构/住院闭环/客服浏览器冒烟 | `artifacts/dist/`、`artifacts/validation-summary.json`、`../output/playwright/python-cs.png` |
+| Python 扩展：数据源 AI 本体治理 | 扫描自动入队、脱敏统计、确定性/AI 分析、变更集审核、草稿发布和事务回滚 | `tests/test_datasource_ontology_governance.py`；真实模型调用需部署侧另行验收 |
 
 ## 已知例外与归一化
+
+2026-09-28 数据源 AI 本体治理扩展本地复验：Python 回归 `160 passed, 32 skipped`，跳过项均需要项目规定的 13317 隔离 MySQL；前端 `npm run build` 通过，浏览器确认治理分析卡片、空状态及原映射区域可正常渲染。Docker Desktop 当次无法启动，因此 V31 真实 MySQL 迁移、完整治理写路径和真实 DeepSeek 调用未在本轮外部环境复验，不以 SQLite/替身结果替代这些结论。
 
 2026-09-19 跨域补充验收：新增 `core/cors.py`，按原 Java 仅对 `/api/**` 配置跨域；精确回显请求来源、方法和请求头，同源预检不附加跨域许可头，非 API 跨域预检返回 403。跨域包装置于全局异常处理中间件之外，保证未知异常响应可被浏览器读取。`scripts/check_cors_parity.py` 实测原 Java 与当前 Python ASGI 的 12 组请求，状态、正文和 CORS 头全部一致；另有 11 项 CORS 回归测试。报告：`artifacts/cors-parity.json`。
 

@@ -1,5 +1,6 @@
 """Compare method/path contracts directly with the original Java controllers."""
 import json
+import sys
 from pathlib import Path
 import re
 from bemodel.main import create_app
@@ -23,10 +24,24 @@ def normalize(route):
 
 actual = {(method, r.path) for r in create_app(startup=False).routes if r.path.startswith('/api') for method in r.methods}
 missing = sorted(r for r in expected if normalize(r) not in {normalize(a) for a in actual})
-extra = sorted(r for r in actual if normalize(r) not in {normalize(e) for e in expected})
-report = dict(javaCount=len(expected), pythonCount=len(actual), missing=missing, extra=extra, javaRoutes=sorted(expected), pythonRoutes=sorted(actual))
+python_extensions = {
+    ("DELETE", "/api/datasource/{}"),
+    ("PATCH", "/api/datasource/{}/status"),
+    ("POST", "/api/datasource/{}/ontology-analysis"),
+    ("GET", "/api/datasource/{}/ontology-analysis/latest"),
+    ("GET", "/api/ontology-change-set/{}"),
+    ("PATCH", "/api/ontology-change-set/{}/items/{}"),
+    ("POST", "/api/ontology-change-set/{}/adopt"),
+    ("POST", "/api/ontology-change-set/{}/publish"),
+}
+extra = sorted(r for r in actual if normalize(r) not in {normalize(e) for e in expected}
+               and normalize(r) not in python_extensions)
+extensions = sorted(r for r in actual if normalize(r) in python_extensions)
+report = dict(javaCount=len(expected), pythonCount=len(actual), missing=missing, extra=extra,
+              pythonExtensions=extensions, javaRoutes=sorted(expected), pythonRoutes=sorted(actual))
 destination = root / 'bemodel-server-py/artifacts/routes.json'
 destination.parent.mkdir(exist_ok=True)
-destination.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+if '--check-only' not in sys.argv:
+    destination.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
 print(json.dumps({k: v for k, v in report.items() if not k.endswith('Routes')}, ensure_ascii=False))
 raise SystemExit(bool(missing or extra))

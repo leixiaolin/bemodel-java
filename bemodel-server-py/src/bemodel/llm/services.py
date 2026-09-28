@@ -37,7 +37,7 @@ class LlmLogService(BaseDAO):
 class DeepSeekClient:
     # 标签/JSON 等结构化输出调用对同一问题必须稳定，采样温度归零；
     # 自由文本答复（客服回复、答案组织、报告）保留少量随机性。
-    DETERMINISTIC_CALLS = {"CS_ROUTE", "CS_SEMANTIC_PLAN", "MAPPING_SUGGEST", "MISS_CLASSIFY"}
+    DETERMINISTIC_CALLS = {"CS_ROUTE", "CS_SEMANTIC_PLAN", "MAPPING_SUGGEST", "MISS_CLASSIFY", "DATASOURCE_ONTOLOGY_ANALYSIS"}
 
     def __init__(self, session):
         self.logs = LlmLogService(session)

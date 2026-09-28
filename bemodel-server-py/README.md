@@ -1,6 +1,6 @@
 # BeModel Python 后端
 
-按照 `../docs/python-migration-plan.md` 将 Java 后端改写为 FastAPI + SQLAlchemy。前端和 Java 源码保持不变；Python 服务运行时不依赖 JVM。116 个 API 的方法、路径、鉴权规则和 MySQL 表结构与源项目对应。
+按照 `../docs/python-migration-plan.md` 将 Java 后端改写为 FastAPI + SQLAlchemy。Python 服务运行时不依赖 JVM。116 个 Java 基线 API 的方法、路径、鉴权规则和 MySQL 表结构保持对等；另有 8 个 Python 专属扩展接口（数据源失效/删除及 AI 本体治理），Java 后端保持冻结。
 
 最新完整验收见 [ACCEPTANCE.md](ACCEPTANCE.md)：116/116 接口成功覆盖，131 项 Python 测试通过，75 张表操作后数据和结构一致。
 
@@ -18,11 +18,13 @@ Copy-Item .env.example .env
 
 Linux/macOS 使用 `python3.12` 和 `.venv/bin/python`。必须从包含 `.env` 的目录启动，也可以直接设置同名环境变量。默认端口与原 Java 服务相同，切换时先停止占用 18080 的 Java 服务。
 
-启动依次执行：原始 SQL 迁移 → 数据源密文迁移 → 演示种子及结构化公理 → 指标巡检调度。28 个 SQL 和 SHACL 文件逐字节复用。已有兼容的 Flyway 历史记录不会重复执行。演示数据保留原 Java 的新鲜度判断：不足时重建演示场景，因此验收必须使用独立测试库。
+启动依次执行：SQL 迁移 → 数据源密文迁移 → 演示种子及结构化公理 → 指标巡检与数据源本体治理任务调度。V1–V28 和 SHACL 文件继续保持双端基线不变；Python 专属增量迁移从 V29 起追加。已有兼容的 Flyway 历史记录不会重复执行。演示数据保留原 Java 的新鲜度判断：不足时重建演示场景，因此验收必须使用独立测试库。
 
 `MYSQL_USERNAME`、`MYSQL_PASSWORD` 也用于原始 SQL 的演示数据源占位符。原始脚本将演示源登记为本机 3306；非默认端口的测试环境由 `scripts/bootstrap_test_db.py` 单独调整登记端口，未修改迁移文件。跨主机部署需在数据源管理中配置相应连接。
 
 `JWT_SECRET`、`APP_SECRET_KEY` 缺省时沿用 Java 的开发默认值；连接已有库时必须与原服务一致。`DEEPSEEK_API_KEY` 为空时使用原有降级路径。`BEMODEL_DISABLE_SCHEDULER=1` 可关闭定时巡检；`BEMODEL_INSPECT_CRON` 使用含秒的六字段表达式。
+
+数据源扫描成功后会持久化一个异步本体治理任务。任务先执行确定性覆盖分析与脱敏聚合统计，再按表分片调用模型；无 Key 时保留确定性结果并标记为 `PARTIAL`。任务轮询、锁超时、重试、分片和统计预算分别通过 `BEMODEL_ONTOLOGY_ANALYSIS_*`、`BEMODEL_ONTOLOGY_STATS_*` 配置。候选映射默认 `confirmed=0`，不会进入正式问数白名单；所有建议均需 ADMIN/EDITOR 审核。
 
 ## 验证
 

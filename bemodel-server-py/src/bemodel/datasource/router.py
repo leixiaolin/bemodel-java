@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from bemodel.core.database import get_session
 from bemodel.core.result import ok
 from .services import DatasourceService, SchemaScanService, MappingService
+from .governance import OntologyAnalysisService, OntologyChangeSetService
 
 router = APIRouter(prefix="/api")
 DB = Depends(get_session)
@@ -35,8 +36,47 @@ def test(body: dict, session: Session = DB):
 
 
 @router.post("/datasource/scan/{dsCode}")
-def scan(dsCode: str, session: Session = DB):
-    return ok({"dsCode": dsCode, "tableCount": SchemaScanService(session).scan(dsCode)})
+def scan(dsCode: str, request: Request, session: Session = DB):
+    return ok({"dsCode": dsCode, **SchemaScanService(session).scan(dsCode, actor(request))})
+
+
+def actor(request: Request):
+    claims = getattr(request.state, "claims", None) or {}
+    return claims.get("sub") or claims.get("username")
+
+
+@router.post("/datasource/{dsCode}/ontology-analysis")
+def start_analysis(dsCode: str, body: dict | None = None, request: Request = None, session: Session = DB):
+    body = body or {}
+    task = OntologyAnalysisService(session).enqueue(dsCode, actor(request),
+        str(body.get("force", False)).lower() == "true", str(body.get("aiOnly", False)).lower() == "true")
+    return ok(OntologyAnalysisService(session).latest(dsCode))
+
+
+@router.get("/datasource/{dsCode}/ontology-analysis/latest")
+def latest_analysis(dsCode: str, session: Session = DB):
+    DatasourceService(session).require(dsCode)
+    return ok(OntologyAnalysisService(session).latest(dsCode))
+
+
+@router.get("/ontology-change-set/{id}")
+def change_set(id: int, session: Session = DB):
+    return ok(OntologyChangeSetService(session).detail(id))
+
+
+@router.patch("/ontology-change-set/{id}/items/{itemId}")
+def update_change_item(id: int, itemId: int, body: dict, request: Request, session: Session = DB):
+    return ok(OntologyChangeSetService(session).update_item(id, itemId, body, actor(request)))
+
+
+@router.post("/ontology-change-set/{id}/adopt")
+def adopt_change_items(id: int, body: dict, request: Request, session: Session = DB):
+    return ok(OntologyChangeSetService(session).adopt(id, body.get("itemIds"), actor(request)))
+
+
+@router.post("/ontology-change-set/{id}/publish")
+def publish_change_set(id: int, request: Request, session: Session = DB):
+    return ok(OntologyChangeSetService(session).publish(id, actor(request)))
 
 
 @router.get("/datasource/tables/{dsCode}")
