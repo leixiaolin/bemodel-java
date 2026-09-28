@@ -57,7 +57,7 @@
                 :data="pagedConcepts"
                 v-loading="loadingConcepts"
                 highlight-current-row
-                @row-click="openDetail"
+                @row-click="(row) => openDetail(row)"
               >
                 <el-table-column prop="code" label="编码" width="160" />
                 <el-table-column prop="name" label="名称" width="130" />

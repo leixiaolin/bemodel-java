@@ -1,5 +1,6 @@
 """Read-only replay of all seeded patient flows against an isolated Java baseline."""
 import json
+import os
 from pathlib import Path
 import httpx
 from sqlalchemy.orm import Session
@@ -26,9 +27,11 @@ def differences(a, b, path='$'):
 
 
 def main():
-    assert settings.mysql_host in ('127.0.0.1', 'localhost') and settings.mysql_port == 13316
-    assert settings.mysql_database == 'bemodel_py_test'
-    with httpx.Client(base_url='http://127.0.0.1:18080', timeout=60) as client, Session(engine) as session:
+    assert settings.mysql_host in ('127.0.0.1', 'localhost')
+    assert (settings.mysql_port, settings.mysql_database) in ((13316,'bemodel_py_test'),(13320,'bemodel_acceptance'))
+    baseline = os.environ.get('BEMODEL_JAVA_URL','http://127.0.0.1:18080')
+    assert baseline in ('http://127.0.0.1:18080','http://127.0.0.1:18083')
+    with httpx.Client(base_url=baseline, timeout=60) as client, Session(engine) as session:
         login = client.post('/api/auth/login', json=dict(username='admin', password='admin123')).json()
         client.headers['Authorization'] = 'Bearer '+login['data']['token']
         service = FlowService(session)

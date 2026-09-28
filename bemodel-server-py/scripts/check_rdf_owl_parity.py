@@ -1,11 +1,14 @@
 """Golden Turtle exports, SHACL violation sets, and OWL import previews."""
 import json
+import os
 import re
 from pathlib import Path
 import httpx
 from check_flow_parity import differences
 
-clients = [httpx.Client(base_url=f'http://127.0.0.1:{port}', timeout=120) for port in (18080, 18081)]
+urls = [os.environ.get('BEMODEL_JAVA_URL','http://127.0.0.1:18080'),os.environ.get('BEMODEL_PYTHON_URL','http://127.0.0.1:18081')]
+assert tuple(urls) in (('http://127.0.0.1:18080','http://127.0.0.1:18081'),('http://127.0.0.1:18083','http://127.0.0.1:18084'))
+clients = [httpx.Client(base_url=url, timeout=120) for url in urls]
 checks = []
 try:
     for client in clients:

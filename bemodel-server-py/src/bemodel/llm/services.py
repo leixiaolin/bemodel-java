@@ -49,8 +49,18 @@ class DeepSeekClient:
                 json={"model": settings.deepseek_model, "temperature": .2, "messages": [
                     {"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]})
             response.raise_for_status()
-            choices = response.json().get("choices", [])
-            content = choices[0].get("message", {}).get("content") if choices else None
+            root = response.json()
+            choices = root.get("choices") if isinstance(root, dict) else None
+            first = choices[0] if isinstance(choices, list) and choices else None
+            message = first.get("message") if isinstance(first, dict) else None
+            content = message.get("content") if isinstance(message, dict) else None
+            # Jackson JsonNode.asText(null): missing/null -> null, containers -> "".
+            if isinstance(content, (dict, list)):
+                content = ""
+            elif isinstance(content, bool):
+                content = str(content).lower()
+            elif content is not None:
+                content = str(content)
             self.logs.log(call_type, settings.deepseek_model, digest, int((time.monotonic()-started)*1000), content is not None, None)
             return content
         except Exception as exc:
