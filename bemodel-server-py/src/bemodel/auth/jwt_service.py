@@ -12,6 +12,7 @@ class JwtService:
             raise ValueError("JWT secret must contain at least 32 bytes")
         # JJWT signWith(key) selects the strongest suitable HMAC algorithm.
         self.algorithm = "HS512" if length >= 64 else "HS384" if length >= 48 else "HS256"
+        self.allowed_algorithms = [name for name, minimum in (("HS256", 32), ("HS384", 48), ("HS512", 64)) if length >= minimum]
 
     def issue(self, user):
         now = int(time.time())
@@ -21,7 +22,7 @@ class JwtService:
 
     def parse(self, token):
         try:
-            return jwt.decode(token, self.secret, algorithms=["HS256", "HS384", "HS512"],
+            return jwt.decode(token, self.secret, algorithms=self.allowed_algorithms,
                               options={"verify_aud": False, "verify_iat": False})
         except jwt.PyJWTError:
             return None

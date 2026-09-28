@@ -1,0 +1,457 @@
+[
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "GET",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "GET",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "GET",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "POST",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "POST",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "POST",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "PUT",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PUT",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PUT",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "DELETE",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "DELETE",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "DELETE",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "PATCH",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PATCH",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PATCH",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "PROPFIND",
+      "Access-Control-Request-Headers": "authorization,content-type"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PROPFIND",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid",
+          "access-control-allow-methods": "PROPFIND",
+          "access-control-allow-headers": "authorization, content-type"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/outside",
+    "headers": {
+      "Origin": "https://example.invalid",
+      "Access-Control-Request-Method": "GET"
+    },
+    "responses": [
+      {
+        "status": 403,
+        "body": "Invalid CORS request",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      },
+      {
+        "status": 403,
+        "body": "Invalid CORS request",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api",
+    "headers": {
+      "Origin": "null",
+      "Access-Control-Request-Method": "POST"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "null",
+          "access-control-allow-methods": "POST"
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "null",
+          "access-control-allow-methods": "POST"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {},
+    "responses": [
+      {
+        "status": 401,
+        "body": {
+          "msg": "未登录或已过期",
+          "code": 401
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      },
+      {
+        "status": 401,
+        "body": {
+          "code": 401,
+          "msg": "未登录或已过期"
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "https://example.invalid"
+    },
+    "responses": [
+      {
+        "status": 401,
+        "body": {
+          "msg": "未登录或已过期",
+          "code": 401
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid"
+        }
+      },
+      {
+        "status": 401,
+        "body": {
+          "code": 401,
+          "msg": "未登录或已过期"
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ],
+          "access-control-allow-origin": "https://example.invalid"
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "GET",
+    "path": "/api/concept/list",
+    "headers": {},
+    "responses": [
+      {
+        "status": 401,
+        "body": {
+          "msg": "未登录或已过期",
+          "code": 401
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      },
+      {
+        "status": 401,
+        "body": {
+          "code": 401,
+          "msg": "未登录或已过期"
+        },
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      }
+    ],
+    "differences": []
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/concept/list",
+    "headers": {
+      "Origin": "<same-origin>",
+      "Access-Control-Request-Method": "GET"
+    },
+    "responses": [
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": "",
+        "headers": {
+          "vary": [
+            "Access-Control-Request-Headers",
+            "Access-Control-Request-Method",
+            "Origin"
+          ]
+        }
+      }
+    ],
+    "differences": []
+  }
+]

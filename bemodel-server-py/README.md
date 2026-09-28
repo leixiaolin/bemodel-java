@@ -2,6 +2,8 @@
 
 按照 `../docs/python-migration-plan.md` 将 Java 后端改写为 FastAPI + SQLAlchemy。前端和 Java 源码保持不变；Python 服务运行时不依赖 JVM。116 个 API 的方法、路径、鉴权规则和 MySQL 表结构与源项目对应。
 
+最新完整验收见 [ACCEPTANCE.md](ACCEPTANCE.md)：116/116 接口成功覆盖，131 项 Python 测试通过，75 张表操作后数据和结构一致。
+
 ## 启动
 
 需要 Python 3.12+、MySQL 8.x。在本目录执行：
@@ -54,13 +56,41 @@ $env:BEMODEL_MYSQL_TESTS='1'
 | 脚本                        | 核对内容                                             |
 | --------------------------- | ---------------------------------------------------- |
 | `check_route_coverage.py` | 从 Java Controller 提取方法、路径，对比 FastAPI 路由 |
-| `check_seed_parity.py`    | 13316 / 13317 两个独立 MySQL 的全部演示表逐行比较    |
+| `check_seed_parity.py`    | 独立 Java / Python MySQL 的全部演示表逐行比较；新鲜 Java 基线可通过 `BEMODEL_BASELINE_MYSQL_PORT=13318` 指定 |
 | `check_flow_parity.py`    | 住院、门诊闭环和人员下钻的 71 项原始响应比较         |
 | `replay_diff.py`          | Java 18080 / Python 18081 的 API 场景深比较          |
 | `check_rca_cs_parity.py`  | 根因分析七步证据、报告和 JWT 双向验证                |
 | `crypto_interop_check.py` | 调用原 Java 编译类，与 Python 双向 AES-GCM 解密      |
+| `replay_writes.py` | 代表性创建、更新、删除、非法参数和鉴权错误路径 |
+| `check_rdf_owl_parity.py` | 全部住院患者 TTL、SHACL 和 Turtle/RDFXML 导入预览 |
+| `check_initial_state.py` | 新鲜 Java / Python 初始化后的平台、演示和 Flyway 表全量对账 |
+| `check_flyway_interop.py` | 在全新 13318 测试库中由原生 Java Flyway 初始化，Python 接管，再由 Java 校验 |
 
 Java 基线必须连接 13316 的独立测试库，Python 连接 13317；两端均关闭外部 LLM，保持相同起始数据。回放报告列出归一化字段，时间和运行耗时不能作为业务差异；SHACL 违例应按集合比较。加密核验脚本依赖本工作区 Java 构建产物和测试 Maven 缓存，仅用于开发验收。
+
+### 本次验收结果
+
+验收使用 Docker 临时 MySQL，没有使用业务库。报告是对应隔离基线运行时的记录；执行会写入数据的测试后，不能直接假定两端仍处于相同初始状态。
+
+| 项目 | 结果 | 报告 |
+| --- | --- | --- |
+| API 方法和路径 | Java / Python 各 116，缺失 0、额外 0 | `artifacts/routes.json` |
+| Python 测试 | 131 通过，0 失败、0 跳过 | `artifacts/pytest.xml` |
+| 原 Java 测试 | 11 类、47 通过，0 失败、0 跳过 | `artifacts/validation-summary.json`、`artifacts/java-tests.log` |
+| API 读取及业务场景回放 | 180 场景，归一化后 0 差异 | `artifacts/replay-diff.json` |
+| 写入及错误路径回放 | 41 场景，归一化后 0 差异 | `artifacts/write-replay.json` |
+| 住院、门诊及人员闭环 | 71 场景，0 差异 | `artifacts/flow-parity.json` |
+| RDF / SHACL / OWL | 84 场景，按下述引擎标识例外核对后 0 差异 | `artifacts/rdf-owl-parity.json` |
+| 初始数据 | 75 张表对账通过；其中 42 张演示表共 2268 行 | `artifacts/initial-state-parity.json`、`artifacts/seed-parity.json` |
+| Flyway 互认 | Java 初始化 28，Python 接管执行 0，Java 再执行 0 | `artifacts/flyway-interop.json` |
+| AES-GCM / JWT / RCA | 18 次双向解密通过；JWT 双向验证、RCA 七步证据比对通过 | `artifacts/crypto-interop.json`、`artifacts/rca-cs-parity.json` |
+| 原 Vue 前端 | `npm run build` 通过；登录、架构、住院闭环、客服问答浏览器冒烟通过 | `artifacts/validation-summary.json`、`../output/playwright/python-cs.png` |
+
+已构建 wheel：`artifacts/dist/bemodel_server-1.0.0-py3-none-any.whl`，包含 28 个 SQL、种子 JSON 和 SHACL 资源。浏览器验收期间控制台无错误，存在原前端 Element Plus 弃用提示；冒烟测试不等同于穷尽所有界面交互。本次未调用真实 DeepSeek 服务，双端回放验证的是无 Key 降级路径。
+
+补充验证覆盖网关请求体、超时、HTTP 错误、无效 JSON、Jackson `asText(null)` 响应转换和无 Key 禁止发送请求；HTTP 采用受控替身，不代表真实 DeepSeek 服务验收。调度测试验证 Spring 星期编号和默认半小时表达式，并实际启动每秒 cron，确认首次巡检异常后下一周期继续执行且关闭数据库会话。
+
+鉴权复查修正普通 OPTIONS 请求误放行、`/api` 根路径规则、异常角色类型导致的错误响应，以及 HMAC 验签密钥长度限制。正常 CORS 预检继续放行。`scripts/check_jwt_key_parity.py` 调用原 Java `JwtService`，验证 32/48/64 字节密钥与 HS256/384/512 的 9 种组合，全部与 Python 一致；报告为 `artifacts/jwt-key-parity.json`。在 Windows 执行此脚本需配置 Java 21 的 `JAVA_HOME`，并保留 Java 编译产物及 `.m2-test`。
 
 ## 兼容细节
 

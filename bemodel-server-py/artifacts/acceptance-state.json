@@ -1,0 +1,992 @@
+{
+  "ignoredColumns": [
+    "created_at",
+    "execution_time",
+    "finished_at",
+    "first_seen",
+    "installed_on",
+    "last_eval_at",
+    "last_seen",
+    "latency_ms",
+    "scanned_at",
+    "started_at",
+    "updated_at"
+  ],
+  "tables": [
+    {
+      "table": "bemodel_acceptance.bm_action",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "9f51bb348f7828c96ba48b89ea798008618d356328020a07d36ae85cd99c1a7d",
+        "9f51bb348f7828c96ba48b89ea798008618d356328020a07d36ae85cd99c1a7d"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_alert_notice",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "37f46d0bca6df411067e93efe815740ea049eaa98ce27981cfeac9a20168e049",
+        "37f46d0bca6df411067e93efe815740ea049eaa98ce27981cfeac9a20168e049"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_attribute",
+      "javaCount": 164,
+      "pythonCount": 164,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "871777739bc525b6c7e98e1aade7d996c6a6c533dbd9f4dd2724528bdf9214ff",
+        "871777739bc525b6c7e98e1aade7d996c6a6c533dbd9f4dd2724528bdf9214ff"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_axiom",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "66cbcfb4467e2809907052f50ef7cecdd564203b52333c1561f1e293c9f8a983",
+        "66cbcfb4467e2809907052f50ef7cecdd564203b52333c1561f1e293c9f8a983"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_concept",
+      "javaCount": 51,
+      "pythonCount": 51,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "f3326359eca3af19f8f10a0e4e5e5655ebc3a66cf7a2c557288f8e77086145bf",
+        "f3326359eca3af19f8f10a0e4e5e5655ebc3a66cf7a2c557288f8e77086145bf"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_concept_disjoint",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "5dcc02de9408ca28f30081111890c6ff36cd0e0d96982fc5b591cd63ecb9b8ec",
+        "5dcc02de9408ca28f30081111890c6ff36cd0e0d96982fc5b591cd63ecb9b8ec"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_concept_parent",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "4c73b81dabc3676f120afd042119ff61d792e200024d6a6576d0b815b055e108",
+        "4c73b81dabc3676f120afd042119ff61d792e200024d6a6576d0b815b055e108"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_cs_feedback",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "3acbe44a59de4a8570eadaf1ccfa8a332039d9acdc961d7ad15ecc4782275e77",
+        "3acbe44a59de4a8570eadaf1ccfa8a332039d9acdc961d7ad15ecc4782275e77"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_datasource",
+      "javaCount": 10,
+      "pythonCount": 10,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "8fe5baecb0f5d60df72314da070bee1fb6f33059f5074ea983f06c2f64c67955",
+        "8fe5baecb0f5d60df72314da070bee1fb6f33059f5074ea983f06c2f64c67955"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_domain",
+      "javaCount": 18,
+      "pythonCount": 18,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "aaf855a35ae77b86138daa6a26715c9143dd1aa4f8dc57cb4fcbd55ad277f27f",
+        "aaf855a35ae77b86138daa6a26715c9143dd1aa4f8dc57cb4fcbd55ad277f27f"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_gov_issue",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "617cd0e97754dad1849c8d195f937b2e156f53039a5c9ec8c7853cd9284e00c8",
+        "617cd0e97754dad1849c8d195f937b2e156f53039a5c9ec8c7853cd9284e00c8"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_gov_rule",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "f51feb3d4cd93a84d2a6619a80d2f6d1c5de4a2522a197b2a10982cc53365945",
+        "f51feb3d4cd93a84d2a6619a80d2f6d1c5de4a2522a197b2a10982cc53365945"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_gov_scan",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "958fb7df76d26258c3bf5e952142cd349d88cea698c8f2dcc7c096d3e8f5af20",
+        "958fb7df76d26258c3bf5e952142cd349d88cea698c8f2dcc7c096d3e8f5af20"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_inspect_run",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "86a8f0db308ce442a1902f02d42540c0c2b3ecc1548253833337bd4fd085ef35",
+        "86a8f0db308ce442a1902f02d42540c0c2b3ecc1548253833337bd4fd085ef35"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_llm_log",
+      "javaCount": 21,
+      "pythonCount": 21,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "c74fb1b4e2c0b672ff027ad0b6ac61e4b52b4a24bdf7afea77d438c85c5edd19",
+        "c74fb1b4e2c0b672ff027ad0b6ac61e4b52b4a24bdf7afea77d438c85c5edd19"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_mapping",
+      "javaCount": 203,
+      "pythonCount": 203,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "de6be9bf781da7df5eadc3c7ab177bde5e8bd93a3cf835c993fd69aa23ab78f5",
+        "de6be9bf781da7df5eadc3c7ab177bde5e8bd93a3cf835c993fd69aa23ab78f5"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_metric",
+      "javaCount": 5,
+      "pythonCount": 5,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "74c0c461c0ef4e661e28fb91330e2be092481ce843a60c23a9cbd614fcfe7c87",
+        "74c0c461c0ef4e661e28fb91330e2be092481ce843a60c23a9cbd614fcfe7c87"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_ontology_miss",
+      "javaCount": 6,
+      "pythonCount": 6,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "e8018a08564c7a9dc5ae9aedf43976b5c36ea209caa38655cd80c9ac72f5b1b6",
+        "e8018a08564c7a9dc5ae9aedf43976b5c36ea209caa38655cd80c9ac72f5b1b6"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_physical_column",
+      "javaCount": 368,
+      "pythonCount": 368,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "182e25658864625a8b99679da345f0e31504751667f02c176c3daf850c84146b",
+        "182e25658864625a8b99679da345f0e31504751667f02c176c3daf850c84146b"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_physical_table",
+      "javaCount": 50,
+      "pythonCount": 50,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "3f835c5ce14934d2ea6b6fd262753522ffc5f24a89b93e4f75f4badba6ae0733",
+        "3f835c5ce14934d2ea6b6fd262753522ffc5f24a89b93e4f75f4badba6ae0733"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_relation",
+      "javaCount": 47,
+      "pythonCount": 47,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "d0b1baa75d51ec2d4b80a6ac584ff12a2f928141cfdc9188052e94a37815a2a3",
+        "d0b1baa75d51ec2d4b80a6ac584ff12a2f928141cfdc9188052e94a37815a2a3"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_relation_closure",
+      "javaCount": 4,
+      "pythonCount": 4,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "d751124d975cf992c5c5143ca1b7d9fefb16a943471ac130aa3925a1f6968cf0",
+        "d751124d975cf992c5c5143ca1b7d9fefb16a943471ac130aa3925a1f6968cf0"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_release",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "96e0eda18c540b389c0e93a1f0f217356ab189dd9baaff74293f84eca4cc534e",
+        "96e0eda18c540b389c0e93a1f0f217356ab189dd9baaff74293f84eca4cc534e"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_rule",
+      "javaCount": 14,
+      "pythonCount": 14,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "7eb4e521dac791e796069cac598ea67d0f0619059b97c821f67ad14387ef37ae",
+        "7eb4e521dac791e796069cac598ea67d0f0619059b97c821f67ad14387ef37ae"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_term",
+      "javaCount": 61,
+      "pythonCount": 61,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "9466467e44d7a72149ea57fb21ab1539e461d69cdc690e350eca2364ad9689d6",
+        "9466467e44d7a72149ea57fb21ab1539e461d69cdc690e350eca2364ad9689d6"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.bm_user",
+      "javaCount": 3,
+      "pythonCount": 3,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "162cbcbbc11d775f9dc7736955fecb40b4badb0cf70424ab291b8b6056bc6c0e",
+        "162cbcbbc11d775f9dc7736955fecb40b4badb0cf70424ab291b8b6056bc6c0e"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.flyway_schema_history",
+      "javaCount": 28,
+      "pythonCount": 28,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "38c3030992ce0144f4167e7fbc4564d580597f9fe017ba5c7604ee433b299d2c",
+        "38c3030992ce0144f4167e7fbc4564d580597f9fe017ba5c7604ee433b299d2c"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.link_node",
+      "javaCount": 25,
+      "pythonCount": 25,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "e97548fea01f2bc81f9ef95e0218bb5a0fa2eac64f88d74505eca1d91bbe5d4e",
+        "e97548fea01f2bc81f9ef95e0218bb5a0fa2eac64f88d74505eca1d91bbe5d4e"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.link_rel",
+      "javaCount": 17,
+      "pythonCount": 17,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "5a93fee04e6593e1488ef01223d4fa65ce9bc9d85b02a3137145b0228532123c",
+        "5a93fee04e6593e1488ef01223d4fa65ce9bc9d85b02a3137145b0228532123c"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.qc_result",
+      "javaCount": 15,
+      "pythonCount": 15,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "7808ad2072c60de5330be55fc54c5b3d1adb52ee8f1fa4f0c03dc7c6e149026b",
+        "7808ad2072c60de5330be55fc54c5b3d1adb52ee8f1fa4f0c03dc7c6e149026b"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.rca_case",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "64e5aae0da51035cdf498b28294e706a2816026249e1216e6d355d6b52d3f299",
+        "64e5aae0da51035cdf498b28294e706a2816026249e1216e6d355d6b52d3f299"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.rca_report",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "d0be8b2948bbd6d8df342156ef88700d5fdd92763c7a7908ae9abb468c771a4f",
+        "d0be8b2948bbd6d8df342156ef88700d5fdd92763c7a7908ae9abb468c771a4f"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "bemodel_acceptance.rca_step",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "a76dd9446da98cb23737103cc883dd630fa916cdf8acf46c952220a24f970a19",
+        "a76dd9446da98cb23737103cc883dd630fa916cdf8acf46c952220a24f970a19"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.charge_audit",
+      "javaCount": 277,
+      "pythonCount": 277,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "8aecea74c5abb0fac690cb829d39bcdaaebd871a80328fe92160c21386b842a5",
+        "8aecea74c5abb0fac690cb829d39bcdaaebd871a80328fe92160c21386b842a5"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.invoice",
+      "javaCount": 22,
+      "pythonCount": 22,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "30093ee1221e381f2add6b021840197770b5e1bc4511d3b6be66946e4c5115af",
+        "30093ee1221e381f2add6b021840197770b5e1bc4511d3b6be66946e4c5115af"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.pay_record",
+      "javaCount": 89,
+      "pythonCount": 89,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "cc124686c3df74b1e42ff4b36124dbdb01614d0cfa2c718c7cf91f85ab85a3d4",
+        "cc124686c3df74b1e42ff4b36124dbdb01614d0cfa2c718c7cf91f85ab85a3d4"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.reconcile_record",
+      "javaCount": 15,
+      "pythonCount": 15,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "3c780a319d889bc331afce1ae96afefd40daf98b5633f3472e606101f3a99e8a",
+        "3c780a319d889bc331afce1ae96afefd40daf98b5633f3472e606101f3a99e8a"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.refund_apply",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "69b2cf954710484fc7c4a05dc90bcd727e042b5deb533b4653d2403e0b49c1ab",
+        "69b2cf954710484fc7c4a05dc90bcd727e042b5deb533b4653d2403e0b49c1ab"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_charge.settlement",
+      "javaCount": 22,
+      "pythonCount": 22,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "81fa010f5276684843cb2f161338eba2539b164c2a7be0f59358466c0fea66c8",
+        "81fa010f5276684843cb2f161338eba2539b164c2a7be0f59358466c0fea66c8"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.anesthesia_record",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "958d66830f0319095c186c73f945576094b963d8d273cbb53b59db4ef08ba631",
+        "958d66830f0319095c186c73f945576094b963d8d273cbb53b59db4ef08ba631"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.diag_dict",
+      "javaCount": 15,
+      "pythonCount": 15,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "82070aa9637de0c5f6d3e38265524990768833d0654ef936117fbeaf1186de57",
+        "82070aa9637de0c5f6d3e38265524990768833d0654ef936117fbeaf1186de57"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.drg_group",
+      "javaCount": 13,
+      "pythonCount": 13,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "2d53fe950b066fcd66475fc415c4335f2a3d848c38989845048b21797f82f0a4",
+        "2d53fe950b066fcd66475fc415c4335f2a3d848c38989845048b21797f82f0a4"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.emr_record",
+      "javaCount": 13,
+      "pythonCount": 13,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "b6914bb25beabe8703cf01ec4355d5a03b02001506a0cf290daf70b18cf18fd3",
+        "b6914bb25beabe8703cf01ec4355d5a03b02001506a0cf290daf70b18cf18fd3"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.emr_surgery",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "e32cf910dfd515acc19ae4af419f8d4415b8e0b176712257198bd580c23dd6b5",
+        "e32cf910dfd515acc19ae4af419f8d4415b8e0b176712257198bd580c23dd6b5"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.followup",
+      "javaCount": 5,
+      "pythonCount": 5,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "cd372e41b28620bb652c10a6597575f83dfb45ec893a5c2e9168fdd31643d9b2",
+        "cd372e41b28620bb652c10a6597575f83dfb45ec893a5c2e9168fdd31643d9b2"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.infection_report",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "80c9d431b043274840699e0e3e29c5653f09b8ec14250b98a311a266a920c366",
+        "80c9d431b043274840699e0e3e29c5653f09b8ec14250b98a311a266a920c366"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_emr.patient_allergy",
+      "javaCount": 1,
+      "pythonCount": 1,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "9fc56673b1d3b6a2659bb71ba5761523e5f11429c8d3f349baef0ec20b08bcac",
+        "9fc56673b1d3b6a2659bb71ba5761523e5f11429c8d3f349baef0ec20b08bcac"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.blood_apply",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "7d9c0d88c7b27dfb691c11e2212aced77d47a6a842b060933ae6ac8c9126681d",
+        "7d9c0d88c7b27dfb691c11e2212aced77d47a6a842b060933ae6ac8c9126681d"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.blood_transfusion",
+      "javaCount": 2,
+      "pythonCount": 2,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "5a829192646910b61b89a8be95a2d3243ba7f72305c3c2e424aa1b46b4d442dd",
+        "5a829192646910b61b89a8be95a2d3243ba7f72305c3c2e424aa1b46b4d442dd"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.dept",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "b24f17b739cc532ff493d32827f1b62272a7b71255da13246e1cc0079aaad630",
+        "b24f17b739cc532ff493d32827f1b62272a7b71255da13246e1cc0079aaad630"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.fee_detail",
+      "javaCount": 271,
+      "pythonCount": 271,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "72ded8d7f9085521d447557e6be48d92f9c6e5a43b46bc9d3992fd3c0de96042",
+        "72ded8d7f9085521d447557e6be48d92f9c6e5a43b46bc9d3992fd3c0de96042"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.inpatient",
+      "javaCount": 41,
+      "pythonCount": 41,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "111d240b9e8e749d165a7db6db5b9842ca4df71a3be7039691e32a6a8345f512",
+        "111d240b9e8e749d165a7db6db5b9842ca4df71a3be7039691e32a6a8345f512"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.medical_order",
+      "javaCount": 271,
+      "pythonCount": 271,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "9c3757574c23cf40e147fbc40812dfc5b52da7df899eef5574b84b1e7b1bdf26",
+        "9c3757574c23cf40e147fbc40812dfc5b52da7df899eef5574b84b1e7b1bdf26"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.staff",
+      "javaCount": 17,
+      "pythonCount": 17,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "1f32ec34d5cd67ab8559aab3aa43f3bec06b17cce6ff9196b52f0d28045e5f8f",
+        "1f32ec34d5cd67ab8559aab3aa43f3bec06b17cce6ff9196b52f0d28045e5f8f"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_his.status_map",
+      "javaCount": 3,
+      "pythonCount": 3,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "ca2635edb8358181afd320ae01e80a76dc18d4559fb31808fad8315b46ee5933",
+        "ca2635edb8358181afd320ae01e80a76dc18d4559fb31808fad8315b46ee5933"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_apply",
+      "javaCount": 118,
+      "pythonCount": 118,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "ebabed9067154f711fef143731deb6277ef60f8530a44259fb1296515acfff61",
+        "ebabed9067154f711fef143731deb6277ef60f8530a44259fb1296515acfff61"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_dict_status",
+      "javaCount": 4,
+      "pythonCount": 4,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "c3ba08fafc612afdb3e148916345c8fe66747a0ff921651c9f12e615dc3974e7",
+        "c3ba08fafc612afdb3e148916345c8fe66747a0ff921651c9f12e615dc3974e7"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_lis.lab_report",
+      "javaCount": 111,
+      "pythonCount": 111,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "037582b8450c1ab8378b3d461208f826207f71e9f0135680d53da08b125bcae9",
+        "037582b8450c1ab8378b3d461208f826207f71e9f0135680d53da08b125bcae9"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_apply",
+      "javaCount": 9,
+      "pythonCount": 9,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "968fa7784987e37dc31a87c125becc8dc9ec4f5b229821d54a3b4c998796742d",
+        "968fa7784987e37dc31a87c125becc8dc9ec4f5b229821d54a3b4c998796742d"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_in",
+      "javaCount": 6,
+      "pythonCount": 6,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "3843fa3a12ebb53068aecfc32fe154e2de43f80bdd8d68d3227d9eeb951228d4",
+        "3843fa3a12ebb53068aecfc32fe154e2de43f80bdd8d68d3227d9eeb951228d4"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_out",
+      "javaCount": 7,
+      "pythonCount": 7,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "15f8a6f2a1a08f5bbbd7c0d96ed08d111b17ef9e65a2449d42878825bb08b0d6",
+        "15f8a6f2a1a08f5bbbd7c0d96ed08d111b17ef9e65a2449d42878825bb08b0d6"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_material.material_stock",
+      "javaCount": 6,
+      "pythonCount": 6,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "70f9b034b22d7a8c6e5e8598569f4f199ea002d3dfc9d28f07ab16e2b8ca9fb4",
+        "70f9b034b22d7a8c6e5e8598569f4f199ea002d3dfc9d28f07ab16e2b8ca9fb4"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_nurse.nurse_exec",
+      "javaCount": 258,
+      "pythonCount": 258,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "86a4a75062e94b44b45c4954b8cee67fda3672713889f95c009e728627dc87f8",
+        "86a4a75062e94b44b45c4954b8cee67fda3672713889f95c009e728627dc87f8"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_nurse.vital_sign",
+      "javaCount": 123,
+      "pythonCount": 123,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "8dd67a30f75ed95e6ed5cd3161d6b84c287ca9b50d0feca487e2926960fca11d",
+        "8dd67a30f75ed95e6ed5cd3161d6b84c287ca9b50d0feca487e2926960fca11d"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_presc",
+      "javaCount": 71,
+      "pythonCount": 71,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "cfd7b4a0e3bc34997611888d0122f92c6ef1c9e0de11033415aa68ccb41d5ea8",
+        "cfd7b4a0e3bc34997611888d0122f92c6ef1c9e0de11033415aa68ccb41d5ea8"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_reg",
+      "javaCount": 25,
+      "pythonCount": 25,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "095b9e82a26ff1294e3c83133b6243fcac2414ff67e7d1fd090517460892de09",
+        "095b9e82a26ff1294e3c83133b6243fcac2414ff67e7d1fd090517460892de09"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_opd.opd_visit",
+      "javaCount": 24,
+      "pythonCount": 24,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "13622c4d8d18ff4f377d8b46c0aee3f2cd9be081899699e823521e0f714a4b55",
+        "13622c4d8d18ff4f377d8b46c0aee3f2cd9be081899699e823521e0f714a4b55"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pacs.exam_report",
+      "javaCount": 37,
+      "pythonCount": 37,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "8aea63bd026c7d08f7e32ec6a1d0494ea76805ab5c7fa292c9c4f59112051851",
+        "8aea63bd026c7d08f7e32ec6a1d0494ea76805ab5c7fa292c9c4f59112051851"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.dispense_record",
+      "javaCount": 184,
+      "pythonCount": 184,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "8388222f1479618826418ba65bdf135b6ad7855291ab85d9f5a6975dcb4a8d64",
+        "8388222f1479618826418ba65bdf135b6ad7855291ab85d9f5a6975dcb4a8d64"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.drug_dict",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "b1bce49f69db84a2dc707017f953a48e0e40db23142e01f5a44b660ae9d1f784",
+        "b1bce49f69db84a2dc707017f953a48e0e40db23142e01f5a44b660ae9d1f784"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.drug_stock",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "7d6e81dc95e5dbc1f69c0324d1eefc4b40d86e5384d2d3bcf8b65761f460a28e",
+        "7d6e81dc95e5dbc1f69c0324d1eefc4b40d86e5384d2d3bcf8b65761f460a28e"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.presc_review",
+      "javaCount": 126,
+      "pythonCount": 126,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "6658dd293d1946cf7d7f64afa5b4551f6e8cab910d8c6935df19decd949ce582",
+        "6658dd293d1946cf7d7f64afa5b4551f6e8cab910d8c6935df19decd949ce582"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.purchase_order",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "64db7f17b038d49495b3c918d8a8c1672d3808bc5cf8ed46bea3665e562b86b9",
+        "64db7f17b038d49495b3c918d8a8c1672d3808bc5cf8ed46bea3665e562b86b9"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.stock_in",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "ec61636c4757be36277c969a0320e64d4521a62ecaa8fa4bd9ab5c88e007b935",
+        "ec61636c4757be36277c969a0320e64d4521a62ecaa8fa4bd9ab5c88e007b935"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    },
+    {
+      "table": "demo_pharmacy.stock_out",
+      "javaCount": 12,
+      "pythonCount": 12,
+      "equal": true,
+      "schemaEqual": true,
+      "ddlSha256": [
+        "43fe451ef53141a49b46bc05c678a164f6f5841674188441494d6d2ec55e765c",
+        "43fe451ef53141a49b46bc05c678a164f6f5841674188441494d6d2ec55e765c"
+      ],
+      "javaOnly": [],
+      "pythonOnly": []
+    }
+  ]
+}

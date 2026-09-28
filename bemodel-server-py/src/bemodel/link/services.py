@@ -42,9 +42,8 @@ class LinkService(BaseDAO):
         rel_type = rel_type if rel_type and rel_type.strip() else "RELATES"
         dao = BaseDAO(self.session, LinkRel)
         conditions = (LinkRel.from_ref_no == from_ref, LinkRel.to_ref_no == to_ref, LinkRel.rel_type == rel_type)
-        existing = dao.select_one(*conditions)
-        if existing:
-            return existing
+        # Java attempts the insert first: duplicate-key recovery also consumes a
+        # MySQL auto-increment value. Preserve that behavior for later edge IDs.
         try:
             with self.session.begin_nested():
                 row = LinkRel(from_ref_no=from_ref, to_ref_no=to_ref, rel_type=rel_type, remark=remark)

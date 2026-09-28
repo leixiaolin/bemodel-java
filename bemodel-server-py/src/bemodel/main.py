@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from bemodel.core.cors import CorsMiddleware
 from sqlalchemy.orm import Session
 from bemodel.core.database import engine
 from bemodel.core.dynamic_ds import dispose_all
@@ -49,13 +49,19 @@ async def lifespan(app):
         engine.dispose()
 
 
+class BeModelApplication(FastAPI):
+    def build_middleware_stack(self):
+        # Wrap ServerErrorMiddleware too, so unhandled exceptions keep CORS
+        # headers on the Java-compatible error response returned by our handler.
+        return CorsMiddleware(super().build_middleware_stack())
+
+
 def create_app(*, startup=True):
-    app = FastAPI(title="BeModel", lifespan=lifespan if startup else None)
+    app = BeModelApplication(title="BeModel", lifespan=lifespan if startup else None)
     install_handlers(app)
     for router in (auth_router, ontology_router, modeling_router, datasource_router, instance_router, notice_router, rdf_router, llm_router, search_router, governance_router, link_router, architecture_router, impact_router, clinical_router, flow_router, rca_router, cs_router, value_router):
         app.include_router(router)
     app.add_middleware(SecurityMiddleware)
-    app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
     return app
 
 

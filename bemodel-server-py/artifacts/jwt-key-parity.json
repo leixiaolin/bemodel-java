@@ -1,0 +1,56 @@
+[
+  {
+    "keyBytes": 32,
+    "algorithm": "HS256",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  },
+  {
+    "keyBytes": 32,
+    "algorithm": "HS384",
+    "pythonAccepted": false,
+    "javaAccepted": false
+  },
+  {
+    "keyBytes": 32,
+    "algorithm": "HS512",
+    "pythonAccepted": false,
+    "javaAccepted": false
+  },
+  {
+    "keyBytes": 48,
+    "algorithm": "HS256",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  },
+  {
+    "keyBytes": 48,
+    "algorithm": "HS384",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  },
+  {
+    "keyBytes": 48,
+    "algorithm": "HS512",
+    "pythonAccepted": false,
+    "javaAccepted": false
+  },
+  {
+    "keyBytes": 64,
+    "algorithm": "HS256",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  },
+  {
+    "keyBytes": 64,
+    "algorithm": "HS384",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  },
+  {
+    "keyBytes": 64,
+    "algorithm": "HS512",
+    "pythonAccepted": true,
+    "javaAccepted": true
+  }
+]

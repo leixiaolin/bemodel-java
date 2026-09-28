@@ -4,7 +4,7 @@ from bemodel.config import settings
 
 
 def allowed_roles(method, path):
-    if path == "/api/auth/login" or method == "OPTIONS" or not path.startswith("/api/"):
+    if path == "/api/auth/login" or not (path == "/api" or path.startswith("/api/")):
         return None
     all_roles = {"ADMIN", "EDITOR", "VIEWER"}
     if method == "POST" and path in {"/api/cs/ask", "/api/search", "/api/cs/feedback"}:
@@ -29,7 +29,8 @@ class SecurityMiddleware:
         scope.setdefault("state", {})["claims"] = claims
         roles = allowed_roles(scope["method"], scope["path"])
         if roles is not None:
-            code = 401 if claims is None else 403 if claims.get("role") not in roles else None
+            role = claims.get("role") if claims is not None else None
+            code = 401 if claims is None else 403 if not isinstance(role, str) or role not in roles else None
             if code:
                 response = JSONResponse({"code": code, "msg": "未登录或已过期" if code == 401 else "权限不足"}, status_code=code)
                 return await response(scope, receive, send)
