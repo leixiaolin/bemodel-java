@@ -26,6 +26,8 @@ Linux/macOS 使用 `python3.12` 和 `.venv/bin/python`。必须从包含 `.env` 
 
 数据源扫描成功后会持久化一个异步本体治理任务。任务先执行确定性覆盖分析与脱敏聚合统计，再按表分片调用模型；无 Key 时保留确定性结果并标记为 `PARTIAL`。任务轮询、锁超时、重试、分片和统计预算分别通过 `BEMODEL_ONTOLOGY_ANALYSIS_*`、`BEMODEL_ONTOLOGY_STATS_*` 配置。候选映射默认 `confirmed=0`，不会进入正式问数白名单；所有建议均需 ADMIN/EDITOR 审核。
 
+治理模型请求独立使用 `BEMODEL_ONTOLOGY_ANALYSIS_TIMEOUT_SECONDS`，默认 120 秒（允许 1–240 秒），不改变普通模型调用的超时。任务锁超时应大于单次模型请求超时。可在 Python 目录执行 `.venv\Scripts\python.exe scripts/probe_ontology_ai.py --tables 8`，使用当前模型配置和临时内存数据库验证真实调用；附加 `--workflow` 验证任务执行和变更集保存（跳过物理数据库统计）。该命令会产生模型调用费用，不访问业务数据库。
+
 ## 验证
 
 不依赖 MySQL 的测试：

@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     ontology_analysis_lock_seconds: int = Field(300, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_LOCK_SECONDS")
     ontology_analysis_max_attempts: int = Field(3, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_MAX_ATTEMPTS")
     ontology_analysis_chunk_tables: int = Field(8, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_CHUNK_TABLES")
+    ontology_analysis_timeout_seconds: int = Field(120, ge=1, le=240, validation_alias="BEMODEL_ONTOLOGY_ANALYSIS_TIMEOUT_SECONDS")
     ontology_stats_timeout_seconds: int = Field(5, validation_alias="BEMODEL_ONTOLOGY_STATS_TIMEOUT_SECONDS")
     ontology_stats_max_columns: int = Field(80, validation_alias="BEMODEL_ONTOLOGY_STATS_MAX_COLUMNS")
     ontology_stats_enum_limit: int = Field(20, validation_alias="BEMODEL_ONTOLOGY_STATS_ENUM_LIMIT")

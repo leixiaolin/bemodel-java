@@ -250,13 +250,23 @@
           </el-select>
           <el-input v-model="changeFilters.table" clearable placeholder="来源表" style="width: 180px" />
           <span class="change-state">状态：{{ changeSet.status }} · 建议 {{ changeSet.suggestionCount }}</span>
+          <el-segmented
+            v-model="changeView" size="small" style="margin-left: auto"
+            :options="[
+              { label: '列表', value: 'list' },
+              { label: '层次树', value: 'tree' },
+              { label: '关系图', value: 'graph' }
+            ]"
+          />
         </div>
         <el-table
+          v-if="changeView === 'list'"
           ref="changeTableRef"
           :data="filteredChangeItems"
           v-loading="changeLoading"
           height="560"
           row-key="id"
+          highlight-current-row
           @selection-change="onChangeSelection"
         >
           <el-table-column type="selection" width="44" :selectable="selectableChangeItem" />
@@ -298,6 +308,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <ChangeSetTree
+          v-else-if="changeView === 'tree'"
+          :items="filteredChangeItems"
+          :loading="changeLoading"
+          @locate="locateChangeItem"
+        />
+        <ChangeSetGraph
+          v-else-if="changeView === 'graph'"
+          :items="filteredChangeItems"
+          :loading="changeLoading"
+          @locate="locateChangeItem"
+        />
       </template>
       <template #footer>
         <el-button @click="governanceVisible = false">关闭</el-button>
@@ -439,8 +461,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
+import ChangeSetTree from './governance/ChangeSetTree.vue'
+import ChangeSetGraph from './governance/ChangeSetGraph.vue'
 import {
   listDatasources,
   scanDatasource,
@@ -601,8 +625,22 @@ const selectableChangeItem = (item) =>
   changeMutable.value && !['CONFLICT', 'INSUFFICIENT_EVIDENCE'].includes(item.operation)
 const onChangeSelection = (rows) => { selectedChangeItems.value = rows }
 
+// 变更集三视图：列表 / 层次树 / 关系图；树与图只读，点击叶子节点定位回列表行
+const changeView = ref('list')
+const locateChangeItem = async (item) => {
+  if (!item) return
+  changeView.value = 'list'
+  await nextTick()
+  await nextTick()
+  changeTableRef.value?.setCurrentRow(item)
+  changeTableRef.value?.$el?.querySelector('.el-table__row.current-row')
+    ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+}
+watch(changeFilters, () => changeTableRef.value?.setCurrentRow(null), { deep: true })
+
 const openGovernanceWorkbench = async () => {
   governanceVisible.value = true
+  changeView.value = 'list'
   changeLoading.value = true
   try {
     changeSet.value = await getOntologyChangeSet(analysis.value.changeSet.id)
@@ -666,7 +704,10 @@ const adoptSelectedChanges = async () => {
   try {
     const result = await adoptOntologyChangeItems(changeSet.value.id, selectedChangeItems.value.map((item) => item.id))
     await reloadChangeSet()
-    ElMessage.success(`已采纳 ${result.acceptedCount} 项建议（含依赖）`)
+    const cascaded = result.autoIncludedCount || 0
+    ElMessage.success(cascaded > 0
+      ? `已采纳 ${result.acceptedCount} 项建议（含自动联动属性/映射/关系/术语 ${cascaded} 项）`
+      : `已采纳 ${result.acceptedCount} 项建议（含依赖）`)
   } finally {
     changeSaving.value = false
   }
@@ -682,6 +723,9 @@ const publishChanges = async () => {
   try {
     const result = await publishOntologyChangeSet(changeSet.value.id)
     ElMessage.success(`变更集已发布，共创建 ${result.created?.length || 0} 项`)
+    if ((result.warnings || []).length) {
+      await ElMessageBox.alert(result.warnings.join('；'), '概念缺失属性提醒', { type: 'warning', confirmButtonText: '知道了' })
+    }
     await reloadChangeSet()
     await conceptStore.fetchAll()
     await loadAnalysis()

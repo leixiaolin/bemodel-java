@@ -36,6 +36,66 @@ def baseline(session):
     session.commit()
 
 
+@pytest.mark.parametrize("failure", ["timeout", "unauthorized", "empty", "reasoning", "length"])
+def test_ai_analysis_reports_gateway_failure(session, monkeypatch, failure):
+    import httpx
+
+    baseline(session)
+    monkeypatch.setattr(settings, "deepseek_api_key", "test-key")
+
+    def post(url, **kwargs):
+        if failure == "timeout":
+            raise httpx.ReadTimeout("timeout")
+        message = {"content": ""}
+        if failure == "reasoning":
+            message["reasoning_content"] = "private reasoning"
+        return httpx.Response(401 if failure == "unauthorized" else 200,
+                              json={"choices": [{"message": message,
+                                    "finish_reason": "length" if failure == "length" else "stop"}]},
+                              request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(httpx, "post", post)
+    suggestions, error = OntologyAnalysisService(session).ai_analysis("DS_NEW", [])
+    expected = {"timeout": "超时", "unauthorized": "HTTP 401", "empty": "未返回正文",
+                "reasoning": "仅返回推理内容", "length": "输出长度限制"}
+    assert suggestions == []
+    assert expected[failure] in error
+    assert "无效结构" not in error
+    from bemodel.llm.entities import LlmLog
+    audit = session.query(LlmLog).order_by(LlmLog.id.desc()).first()
+    assert audit.success == 0
+
+
+def test_ai_analysis_empty_json_array_is_success(session, monkeypatch):
+    import httpx
+
+    baseline(session)
+    monkeypatch.setattr(settings, "deepseek_api_key", "test-key")
+    monkeypatch.setattr(httpx, "post", lambda url, **kwargs: httpx.Response(
+        200, json={"choices": [{"message": {"content": "[]"}}]},
+        request=httpx.Request("POST", url)))
+    assert OntologyAnalysisService(session).ai_analysis("DS_NEW", []) == ([], None)
+
+
+def test_ai_analysis_rejects_nonempty_array_with_wrong_fields(session, monkeypatch):
+    import httpx
+
+    baseline(session)
+    monkeypatch.setattr(settings, "deepseek_api_key", "test-key")
+
+    def post(url, **kwargs):
+        prompt = kwargs["json"]["messages"][0]["content"]
+        assert all(field in prompt for field in ("itemType", "operation", "targetKey", "payload", "sourceTable"))
+        return httpx.Response(200, json={"choices": [{"message": {
+            "content": '[{"type":"CONCEPT","name":"Exam","source":"exam"}]'}}]},
+            request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(httpx, "post", post)
+    suggestions, error = OntologyAnalysisService(session).ai_analysis("DS_NEW", [])
+    assert suggestions == []
+    assert "均未通过" in error
+
+
 def headers(role="ADMIN"):
     token = JwtService().issue(SimpleNamespace(username="governance", display_name=None, role=role))
     return {"Authorization": "Bearer " + token}
@@ -144,6 +204,31 @@ def test_ai_parser_rejects_unknown_columns_and_sql(session):
     assert [row["targetKey"] for row in result] == ["GOOD"]
 
 
+def test_ai_parser_accepts_wrapped_json_payload(session):
+    service = OntologyAnalysisService(session)
+    raw = """模型分析如下：
+    ```json
+    {"result":{"suggestions":[{"itemType":"ATTRIBUTE","operation":"CREATE","targetKey":"EXAM.report_no",
+    "sourceTable":"exam","sourceColumn":"exam_id","confidence":0.8,
+    "payload":{"conceptCode":"EXAM","attrCode":"report_no","attrName":"报告号"},
+    "evidence":["字段来自体检表","模型补充候选"]}]}}
+    ```"""
+    result = service.parse_ai(raw, {"exam"}, {("exam", "exam_id")})
+    assert result is not None
+    assert [row["targetKey"] for row in result] == ["EXAM.report_no"]
+
+
+def test_ai_parser_accepts_single_suggestion_object(session):
+    service = OntologyAnalysisService(session)
+    raw = json.dumps({"itemType": "TERM", "operation": "CREATE", "targetKey": "EXAM_ALIAS",
+        "sourceTable": "exam", "sourceColumn": None, "confidence": .7,
+        "payload": {"conceptCode": "EXAM", "term": "体检记录"},
+        "evidence": ["表注释命中"]}, ensure_ascii=False)
+    result = service.parse_ai(raw, {"exam"}, {("exam", "exam_id")})
+    assert result is not None
+    assert [row["targetKey"] for row in result] == ["EXAM_ALIAS"]
+
+
 def test_ai_rule_requires_strong_evidence(session):
     service = OntologyAnalysisService(session)
     raw = json.dumps([{"itemType": "RULE", "operation": "CREATE", "targetKey": "RULE_EXAM",
@@ -154,8 +239,12 @@ def test_ai_rule_requires_strong_evidence(session):
     assert result[0]["operation"] == "INSUFFICIENT_EVIDENCE"
 
 
-def test_adopt_dependencies_and_publish_atomically(session):
-    baseline(session)
+def make_governance_fixture(session, item_specs):
+    """Build one change set with the given items.
+
+    item_spec: (item_type, operation, target_key, payload, dependencies[, review_status="PENDING"]).
+    Returns (change, items) with items in the same order as item_specs.
+    """
     analysis = OntologyAnalysisService(session)
     fingerprint, version = analysis.current_baseline("DS_NEW")
     task = BaseDAO(session, OntologyAnalysisTask).insert(OntologyAnalysisTask(
@@ -163,31 +252,165 @@ def test_adopt_dependencies_and_publish_atomically(session):
         ontology_version=version, model="test", attempt_count=1))
     change = BaseDAO(session, OntologyChangeSet).insert(OntologyChangeSet(
         task_id=task.id, ds_code="DS_NEW", name="测试变更", status="DRAFT",
-        scan_fingerprint=fingerprint, ontology_version=version, suggestion_count=3, high_risk_count=0))
-    concept = BaseDAO(session, OntologyChangeItem).insert(OntologyChangeItem(
-        change_set_id=change.id, item_type="CONCEPT", operation="CREATE", review_status="PENDING",
-        target_key="EXAM", payload_json=json.dumps({"code": "EXAM", "name": "体检", "domainCode": "IMPORT"}),
-        evidence_json="[]", dependency_json="[]", confidence=.9, risk_level="LOW"))
-    attribute = BaseDAO(session, OntologyChangeItem).insert(OntologyChangeItem(
-        change_set_id=change.id, item_type="ATTRIBUTE", operation="CREATE", review_status="PENDING",
-        target_key="EXAM.exam_id", payload_json=json.dumps({"conceptCode": "EXAM", "attrCode": "exam_id",
-            "attrName": "体检编号", "dataType": "NUMBER", "isKey": 1}), evidence_json="[]",
-        dependency_json=json.dumps(["CONCEPT:EXAM"]), confidence=.9, risk_level="LOW"))
-    mapping = BaseDAO(session, OntologyChangeItem).insert(OntologyChangeItem(
-        change_set_id=change.id, item_type="MAPPING", operation="CREATE", review_status="PENDING",
-        target_key="exam.exam_id", payload_json=json.dumps({"dsCode": "DS_NEW", "tableName": "exam",
-            "columnName": "exam_id", "conceptCode": "EXAM", "attrCode": "exam_id"}), evidence_json="[]",
-        dependency_json=json.dumps(["ATTRIBUTE:EXAM.exam_id"]), confidence=.9, risk_level="LOW"))
+        scan_fingerprint=fingerprint, ontology_version=version,
+        suggestion_count=len(item_specs), high_risk_count=0))
+    items = []
+    for spec in item_specs:
+        item_type, operation, target_key, payload, dependencies = spec[:5]
+        review_status = spec[5] if len(spec) > 5 else "PENDING"
+        items.append(BaseDAO(session, OntologyChangeItem).insert(OntologyChangeItem(
+            change_set_id=change.id, item_type=item_type, operation=operation,
+            review_status=review_status, target_key=target_key,
+            payload_json=json.dumps(payload), evidence_json="[]",
+            dependency_json=json.dumps(dependencies), confidence=.9, risk_level="LOW")))
+    return change, items
+
+
+CONCEPT_SPEC = ("CONCEPT", "CREATE", "EXAM",
+                {"code": "EXAM", "name": "体检", "domainCode": "IMPORT"}, [])
+
+
+def concept_attribute_spec(attr_code, attr_name="属性"):
+    return ("ATTRIBUTE", "CREATE", f"EXAM.{attr_code}",
+            {"conceptCode": "EXAM", "attrCode": attr_code, "attrName": attr_name,
+             "dataType": "NUMBER", "isKey": 0}, ["CONCEPT:EXAM"])
+
+
+def column_mapping_spec(column_name, attr_code):
+    return ("MAPPING", "CREATE", f"exam.{column_name}",
+            {"dsCode": "DS_NEW", "tableName": "exam", "columnName": column_name,
+             "conceptCode": "EXAM", "attrCode": attr_code}, [f"ATTRIBUTE:EXAM.{attr_code}"])
+
+
+def test_adopt_dependencies_and_publish_atomically(session):
+    baseline(session)
+    change, (concept, attribute, mapping) = make_governance_fixture(session, [
+        CONCEPT_SPEC,
+        ("ATTRIBUTE", "CREATE", "EXAM.exam_id",
+         {"conceptCode": "EXAM", "attrCode": "exam_id", "attrName": "体检编号",
+          "dataType": "NUMBER", "isKey": 1}, ["CONCEPT:EXAM"]),
+        ("MAPPING", "CREATE", "exam.exam_id",
+         {"dsCode": "DS_NEW", "tableName": "exam", "columnName": "exam_id",
+          "conceptCode": "EXAM", "attrCode": "exam_id"}, ["ATTRIBUTE:EXAM.exam_id"]),
+    ])
     service = OntologyChangeSetService(session)
     adopted = service.adopt(change.id, [mapping.id], "editor")
     assert adopted["acceptedIds"] == sorted([concept.id, attribute.id, mapping.id])
     published = service.publish(change.id, "editor")
     assert published["status"] == "PUBLISHED"
+    assert published["warnings"] == []
     assert BaseDAO(session, Concept).select_one(Concept.code == "EXAM").status == "DRAFT"
     assert BaseDAO(session, Attribute).select_one(Attribute.concept_code == "EXAM", Attribute.attr_code == "exam_id")
     saved = BaseDAO(session, Mapping).select_one(Mapping.ds_code == "DS_NEW", Mapping.column_name == "exam_id")
     assert saved.confirmed == 0 and saved.source == "AI_GOVERNANCE"
-    assert service.publish(change.id, "editor")["status"] == "PUBLISHED"
+    replay = service.publish(change.id, "editor")
+    assert replay["status"] == "PUBLISHED"
+    assert len(replay["created"]) == 3 and replay["warnings"] == []
+
+
+def test_adopt_concept_cascades_derived_suggestions(session):
+    baseline(session)
+    change, (concept, attr_id, attr_status, mapping, relation, term, rule, action, metric) = \
+        make_governance_fixture(session, [
+            CONCEPT_SPEC,
+            concept_attribute_spec("exam_id", "体检编号"),
+            concept_attribute_spec("exam_status", "状态"),
+            column_mapping_spec("exam_id", "exam_id"),
+            ("RELATION", "CREATE", "EXAM->LAB#关联",
+             {"fromConcept": "EXAM", "toConcept": "LAB", "relationName": "关联"}, ["CONCEPT:EXAM"]),
+            ("TERM", "CREATE", "体检", {"term": "体检", "conceptCode": "EXAM"}, ["CONCEPT:EXAM"]),
+            ("RULE", "CREATE", "RULE_EXAM_1",
+             {"ruleCode": "RULE_EXAM_1", "name": "规则", "conceptCode": "EXAM"}, ["CONCEPT:EXAM"]),
+            ("ACTION", "CREATE", "ACT_EXAM_1",
+             {"actionCode": "ACT_EXAM_1", "name": "动作", "conceptCode": "EXAM"}, ["CONCEPT:EXAM"]),
+            ("METRIC", "CREATE", "METRIC_EXAM_1",
+             {"metricCode": "METRIC_EXAM_1", "name": "指标"}, ["CONCEPT:EXAM"]),
+        ])
+    service = OntologyChangeSetService(session)
+    adopted = service.adopt(change.id, [concept.id], "editor")
+    expected = sorted([concept.id, attr_id.id, attr_status.id, mapping.id, relation.id, term.id])
+    assert adopted["acceptedIds"] == expected
+    assert adopted["autoIncludedIds"] == sorted(set(expected) - {concept.id})
+    assert adopted["autoIncludedCount"] == 5
+    for item in (rule, action, metric):
+        assert BaseDAO(session, OntologyChangeItem).select_by_id(item.id).review_status == "PENDING"
+    assert service.sets.select_by_id(change.id).status == "ADOPTED"
+
+
+def test_adopt_cascade_skips_blocked_and_rejected(session):
+    baseline(session)
+    change, (concept, conflict_attr, insufficient_term, orphan_mapping, rejected_attr) = \
+        make_governance_fixture(session, [
+            CONCEPT_SPEC,
+            ("ATTRIBUTE", "CONFLICT", "EXAM.exam_id",
+             {"conceptCode": "EXAM", "attrCode": "exam_id", "attrName": "体检编号",
+              "dataType": "NUMBER"}, ["CONCEPT:EXAM"]),
+            ("TERM", "INSUFFICIENT_EVIDENCE", "体检",
+             {"term": "体检", "conceptCode": "EXAM"}, ["CONCEPT:EXAM"]),
+            column_mapping_spec("exam_id", "exam_id"),
+            (*concept_attribute_spec("exam_status"), "REJECTED"),
+        ])
+    service = OntologyChangeSetService(session)
+    adopted = service.adopt(change.id, [concept.id], "editor")
+    assert adopted["acceptedIds"] == [concept.id]
+    assert adopted["autoIncludedCount"] == 0
+    for item in (conflict_attr, insufficient_term, orphan_mapping, rejected_attr):
+        assert BaseDAO(session, OntologyChangeItem).select_by_id(item.id).review_status in ("PENDING", "REJECTED")
+
+
+def test_adopt_explicit_blocked_selection_still_raises(session):
+    baseline(session)
+    change, (item,) = make_governance_fixture(session, [
+        ("CONCEPT", "CONFLICT", "EXAM",
+         {"code": "EXAM", "name": "体检", "domainCode": "IMPORT"}, []),
+    ])
+    with pytest.raises(BizException, match="冲突或证据不足"):
+        OntologyChangeSetService(session).adopt(change.id, [item.id], "editor")
+
+
+def test_publish_after_concept_only_adoption_creates_attributes(session):
+    baseline(session)
+    change, items = make_governance_fixture(session, [
+        CONCEPT_SPEC,
+        concept_attribute_spec("exam_id", "体检编号"),
+        concept_attribute_spec("exam_status", "状态"),
+        column_mapping_spec("exam_id", "exam_id"),
+    ])
+    concept = items[0]
+    service = OntologyChangeSetService(session)
+    adopted = service.adopt(change.id, [concept.id], "editor")
+    assert adopted["acceptedCount"] == 4
+    published = service.publish(change.id, "editor")
+    assert published["status"] == "PUBLISHED"
+    assert published["warnings"] == []
+    assert BaseDAO(session, Concept).select_one(Concept.code == "EXAM").status == "DRAFT"
+    assert BaseDAO(session, Attribute).select_count(Attribute.concept_code == "EXAM") == 2
+    saved = BaseDAO(session, Mapping).select_one(Mapping.ds_code == "DS_NEW", Mapping.column_name == "exam_id")
+    assert saved.confirmed == 0 and saved.source == "AI_GOVERNANCE"
+
+
+def test_publish_warns_for_attributeless_concept(session):
+    baseline(session)
+    change, (concept,) = make_governance_fixture(session, [CONCEPT_SPEC])
+    service = OntologyChangeSetService(session)
+    service.adopt(change.id, [concept.id], "editor")
+    published = service.publish(change.id, "editor")
+    assert published["status"] == "PUBLISHED"
+    assert BaseDAO(session, Concept).select_one(Concept.code == "EXAM").status == "DRAFT"
+    assert len(published["warnings"]) == 1
+    assert "EXAM" in published["warnings"][0]
+
+
+def test_adopt_respects_rejected_review_status(session):
+    baseline(session)
+    change, (concept, rejected_attr) = make_governance_fixture(session, [
+        CONCEPT_SPEC,
+        (*concept_attribute_spec("exam_id", "体检编号"), "REJECTED"),
+    ])
+    service = OntologyChangeSetService(session)
+    adopted = service.adopt(change.id, [concept.id], "editor")
+    assert adopted["acceptedIds"] == [concept.id]
+    assert BaseDAO(session, OntologyChangeItem).select_by_id(rejected_attr.id).review_status == "REJECTED"
 
 
 def test_conflict_cannot_be_accepted_and_stale_lock_is_recovered(session, monkeypatch):

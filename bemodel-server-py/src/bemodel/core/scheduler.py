@@ -1,9 +1,12 @@
 import logging
+from threading import Lock
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from sqlalchemy.orm import Session
 from bemodel.config import settings
 from bemodel.core.database import engine
+
+_ontology_analysis_lock = Lock()
 
 
 def cron_trigger(expression):
@@ -43,13 +46,17 @@ def start_scheduler():
     scheduler.add_job(inspect, cron_trigger(settings.inspect_cron))
     def ontology_analysis():
         from bemodel.datasource.governance import OntologyAnalysisService
+        if not _ontology_analysis_lock.acquire(blocking=False):
+            return
         try:
             with Session(engine, expire_on_commit=False) as session:
                 OntologyAnalysisService(session).run_next()
         except Exception:
             logging.getLogger(__name__).exception("数据源本体治理任务失败（下个周期重试）")
+        finally:
+            _ontology_analysis_lock.release()
     scheduler.add_job(ontology_analysis, "interval",
                       seconds=max(1, settings.ontology_analysis_interval_seconds),
-                      max_instances=1, coalesce=True)
+                      max_instances=10, coalesce=True)
     scheduler.start()
     return scheduler

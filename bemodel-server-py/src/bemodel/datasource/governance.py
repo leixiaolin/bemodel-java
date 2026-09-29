@@ -26,6 +26,8 @@ CHANGE_MUTABLE = {"DRAFT", "REVIEWED", "ADOPTED"}
 ITEM_TYPES = {"CONCEPT", "ATTRIBUTE", "TERM", "RELATION", "RULE", "ACTION", "METRIC", "MAPPING"}
 OPERATIONS = {"REUSE_EXISTING", "CREATE", "EXTEND", "CONFLICT", "INSUFFICIENT_EVIDENCE"}
 REVIEW_STATES = {"PENDING", "ACCEPTED", "REJECTED", "NEEDS_INPUT"}
+BLOCKED_OPERATIONS = {"CONFLICT", "INSUFFICIENT_EVIDENCE"}
+CASCADE_TYPES = {"ATTRIBUTE", "MAPPING", "RELATION", "TERM"}
 SENSITIVE = re.compile(
     r"(^|_)(name|patient_name|person_name|id_card|identity|phone|mobile|address|email|病历|姓名|证件|身份证|电话|手机|地址)(?=$|[^A-Za-z0-9])",
     re.IGNORECASE,
@@ -51,6 +53,59 @@ def contains_sql_key(value):
     if isinstance(value, list):
         return any(contains_sql_key(child) for child in value)
     return False
+
+
+def extract_json_payload(raw):
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    fenced = re.search(r"```(?:json)?\s*(.*?)```", text, re.IGNORECASE | re.DOTALL)
+    if fenced:
+        text = fenced.group(1).strip()
+    decoder = json.JSONDecoder()
+    for index, char in enumerate(text):
+        if char not in "[{":
+            continue
+        try:
+            data, _ = decoder.raw_decode(text[index:])
+            return data
+        except ValueError:
+            continue
+    for start, end in (("[", "]"), ("{", "}")):
+        left, right = text.find(start), text.rfind(end)
+        if left >= 0 and right >= left:
+            try:
+                return json.loads(text[left:right + 1])
+            except ValueError:
+                pass
+    return None
+
+
+def is_suggestion_shape(value):
+    return isinstance(value, dict) and ("itemType" in value or "payload" in value or "targetKey" in value)
+
+
+def suggestion_rows(data):
+    if isinstance(data, list):
+        return data
+    if not isinstance(data, dict):
+        return None
+    if is_suggestion_shape(data):
+        return [data]
+    for key in ("suggestions", "items", "data", "results", "changes"):
+        value = data.get(key)
+        if isinstance(value, list):
+            return value
+        nested = suggestion_rows(value)
+        if nested is not None:
+            return nested
+    for value in data.values():
+        nested = suggestion_rows(value)
+        if nested is not None:
+            return nested
+    return None
 
 
 def schema_fingerprint(tables, columns):
@@ -493,24 +548,45 @@ class OntologyAnalysisService:
             prompt = stable_json({"datasource": ds_code, "schema": schema,
                 "existingSuggestions": [s for s in deterministic if s["sourceTable"] in names],
                 "requirements": "仅补充确定性分析遗漏。输出JSON数组；不得输出SQL；不得虚构表列。"})
-            raw = DeepSeekClient(self.session).chat("DATASOURCE_ONTOLOGY_ANALYSIS",
-                "你是医疗本体治理助手。只返回JSON数组。候选类型仅限CONCEPT/ATTRIBUTE/TERM/RELATION/RULE/ACTION/METRIC/MAPPING。", prompt)
+            client = DeepSeekClient(self.session)
+            raw = client.chat("DATASOURCE_ONTOLOGY_ANALYSIS",
+                "你是医疗本体治理助手。仅补充有证据的遗漏，只返回JSON数组，无补充时返回[]。"
+                "每个元素必须包含itemType、operation、targetKey、payload、sourceTable、sourceColumn、"
+                "confidence、riskLevel、evidence、reason、dependencies、missingInformation。"
+                "itemType仅限CONCEPT/ATTRIBUTE/TERM/RELATION/RULE/ACTION/METRIC/MAPPING；"
+                "operation仅限REUSE_EXISTING/CREATE/EXTEND/CONFLICT/INSUFFICIENT_EVIDENCE；"
+                "targetKey为非空标识；payload为对象，不得包含SQL；sourceTable必须来自输入schema，"
+                "sourceColumn为该表实际列名或null；confidence为0到1数字；riskLevel为LOW/MEDIUM/HIGH；"
+                "evidence和dependencies为字符串数组；reason为字符串；missingInformation为字符串或null。"
+                "CONCEPT的payload包含code/name/domainCode/definition；ATTRIBUTE的payload包含"
+                "conceptCode/attrCode/attrName/dataType；MAPPING的payload包含"
+                "dsCode/tableName/columnName/conceptCode/attrCode。编码应复用existingSuggestions，"
+                "不得编造表列或无依据的规则。输出简洁，避免重复既有建议。", prompt)
+            if not (raw or "").strip():
+                error = client.last_error or "模型未返回正文"
+                logging.getLogger(__name__).warning("AI 本体治理分片调用失败：%s", error)
+                errors.append("AI 分片调用失败：" + error)
+                continue
             parsed = self.parse_ai(raw, names, allowed_columns)
             if parsed is None:
+                logging.getLogger(__name__).warning("AI 本体治理分片返回无效结构，响应摘要=%r", str(raw or "")[:300])
                 errors.append("AI 分片返回无效结构")
             else:
-                output.extend(parsed)
+                rows = suggestion_rows(extract_json_payload(raw))
+                if rows and not parsed:
+                    errors.append("AI 分片建议均未通过字段或证据校验")
+                    logging.getLogger(__name__).warning("AI 本体治理分片建议均未通过校验，候选数=%s", len(rows))
+                else:
+                    output.extend(parsed)
         return output, "; ".join(errors) or None
 
     def parse_ai(self, raw, allowed_tables, allowed_columns):
-        if not raw:
-            return None
-        try:
-            data = json.loads(raw[raw.index("["):raw.rindex("]") + 1])
-        except (ValueError, TypeError):
+        data = extract_json_payload(raw)
+        rows = suggestion_rows(data)
+        if rows is None:
             return None
         valid = []
-        for row in data if isinstance(data, list) else []:
+        for row in rows:
             if not isinstance(row, dict):
                 continue
             kind, operation = str(row.get("itemType", "")).upper(), str(row.get("operation", "")).upper()
@@ -585,7 +661,7 @@ class OntologyChangeSetService(OntologyAnalysisService):
             status = str(body["reviewStatus"]).upper()
             if status not in REVIEW_STATES:
                 raise BizException("审核状态不合法: " + status)
-            if status == "ACCEPTED" and item.operation in {"CONFLICT", "INSUFFICIENT_EVIDENCE"}:
+            if status == "ACCEPTED" and item.operation in BLOCKED_OPERATIONS:
                 raise BizException("冲突或证据不足建议不能直接采纳")
             item.review_status = status
         if "payload" in body:
@@ -610,16 +686,38 @@ class OntologyChangeSetService(OntologyAnalysisService):
         selected = {int(value) for value in item_ids or []}
         items = self.items.select_list(OntologyChangeItem.change_set_id == change_set_id)
         by_ref = {f"{item.item_type}:{item.target_key}": item for item in items}
-        queue = [item for item in items if item.id in selected]
-        if not queue:
+        if not any(item.id in selected for item in items):
             raise BizException("请选择要采纳的建议")
+        # Adopting a concept also adopts its table-derived suggestions (attributes, candidate
+        # mappings, foreign-key relations, terms); business-logic items still need explicit
+        # selection and manually rejected suggestions are never overridden by the cascade.
+        dependents = {}
+        for item in items:
+            for dep in json_value(item.dependency_json, []):
+                dependents.setdefault(dep, []).append(item)
+        cascaded = set()
+        queue = [item for item in items if item.id in selected and item.item_type == "CONCEPT"]
+        while queue:
+            item = queue.pop()
+            for dependent in dependents.get(f"{item.item_type}:{item.target_key}", []):
+                if dependent.id in cascaded or dependent.id in selected:
+                    continue
+                if dependent.item_type not in CASCADE_TYPES:
+                    continue
+                if dependent.operation in BLOCKED_OPERATIONS or dependent.review_status == "REJECTED":
+                    continue
+                cascaded.add(dependent.id)
+                queue.append(dependent)
         accepted = set()
+        queue = [item for item in items if item.id in selected or item.id in cascaded]
         while queue:
             item = queue.pop()
             if item.id in accepted:
                 continue
-            if item.operation in {"CONFLICT", "INSUFFICIENT_EVIDENCE"}:
-                raise BizException("冲突或证据不足建议不能直接采纳: " + item.target_key)
+            if item.operation in BLOCKED_OPERATIONS:
+                if item.id in selected:
+                    raise BizException("冲突或证据不足建议不能直接采纳: " + item.target_key)
+                continue
             accepted.add(item.id)
             for dep in json_value(item.dependency_json, []):
                 dependency = by_ref.get(dep)
@@ -627,22 +725,30 @@ class OntologyChangeSetService(OntologyAnalysisService):
                     queue.append(dependency)
                 elif not self.existing_dependency(dep):
                     raise BizException("建议依赖不存在: " + dep)
-        for item in items:
-            if item.id in accepted:
-                item.review_status = "ACCEPTED"
-                self.items.update_by_id(item)
-        change.status = "ADOPTED"
-        change.reviewed_by = reviewer
-        change.updated_at = datetime.now()
-        self.sets.update_by_id(change)
-        return {"acceptedIds": sorted(accepted), "acceptedCount": len(accepted)}
+        with transactional(self.session):
+            now = datetime.now()
+            for item in items:
+                if item.id in accepted and item.review_status != "ACCEPTED":
+                    item.review_status = "ACCEPTED"
+                    item.updated_at = now
+                    self.items.update_by_id(item)
+            change.status = "ADOPTED"
+            change.reviewed_by = reviewer
+            change.updated_at = now
+            self.sets.update_by_id(change)
+        auto_included = accepted - selected
+        return {"acceptedIds": sorted(accepted), "acceptedCount": len(accepted),
+                "autoIncludedIds": sorted(auto_included), "autoIncludedCount": len(auto_included)}
 
     def publish(self, change_set_id, actor=None):
         change = self.sets.select_by_id(change_set_id)
         if change is None:
             raise BizException("变更集不存在: " + str(change_set_id))
         if change.status == "PUBLISHED":
-            return self.detail(change_set_id)
+            rows = self.items.select_list(OntologyChangeItem.change_set_id == change_set_id,
+                                          OntologyChangeItem.review_status == "ACCEPTED")
+            created = [ref for ref in (json_value(row.result_ref_json, None) for row in rows) if ref]
+            return {"changeSetId": change.id, "status": "PUBLISHED", "created": created, "warnings": []}
         if change.status not in CHANGE_MUTABLE:
             raise BizException("当前变更集状态不允许发布: " + change.status)
         from .services import DatasourceService, MappingService
@@ -675,12 +781,20 @@ class OntologyChangeSetService(OntologyAnalysisService):
                 item.result_ref_json = stable_json(ref)
                 self.items.update_by_id(item)
                 results.append(ref)
+            # Attribute inserts are flushed, so the count also covers attributes created by
+            # this very publish; concepts left without any attribute are reported, not blocked.
+            warnings = []
+            concept_codes = {json_value(item.payload_json, {}).get("code")
+                             for item in items if item.item_type == "CONCEPT"}
+            for code in sorted(value for value in concept_codes if value):
+                if BaseDAO(self.session, Attribute).select_count(Attribute.concept_code == code) == 0:
+                    warnings.append(f"概念 {code} 发布后没有任何属性，请在本体建模中补建属性与映射")
             change.status = "PUBLISHED"
             change.published_by = actor
             change.published_at = datetime.now()
             change.updated_at = datetime.now()
             self.sets.update_by_id(change)
-        return {"changeSetId": change.id, "status": "PUBLISHED", "created": results}
+        return {"changeSetId": change.id, "status": "PUBLISHED", "created": results, "warnings": warnings}
 
     def require_mutable(self, change_set_id):
         change = self.sets.select_by_id(change_set_id)

@@ -22,6 +22,17 @@ def test_disabled_scheduler(monkeypatch):
     assert module.start_scheduler() is None
 
 
+def test_ontology_analysis_job_uses_local_lock_and_relaxed_instances(monkeypatch):
+    monkeypatch.setattr(module.settings, "disable_scheduler", False)
+    scheduler = module.start_scheduler()
+    try:
+        jobs = [job for job in scheduler.get_jobs() if job.func.__name__ == "ontology_analysis"]
+        assert len(jobs) == 1
+        assert jobs[0].max_instances == 10
+    finally:
+        scheduler.shutdown(wait=False)
+
+
 def test_actual_cron_retries_after_inspection_failure(monkeypatch, caplog):
     monkeypatch.setattr(module.settings, "disable_scheduler", False)
     monkeypatch.setattr(module.settings, "inspect_cron", "* * * * * *")

@@ -119,6 +119,34 @@ def test_jackson_content_coercion(gateway, monkeypatch, body, expected):
     assert logs[0][4:6] == (expected is not None, None)
 
 
+def test_chat_extracts_segmented_text_content(gateway, monkeypatch):
+    client, _logs = gateway
+    body = {"choices": [{"message": {"content": [
+        {"type": "text", "text": "[{\"itemType\":\"CONCEPT\""},
+        {"type": "text", "text": "}]"},
+    ]}}]}
+    monkeypatch.setattr(httpx, "post", lambda *a, **k: httpx.Response(200, json=body,
+        request=httpx.Request("POST", "https://example.invalid")))
+    assert client.chat("DATASOURCE_ONTOLOGY_ANALYSIS", "s", "u") == "[{\"itemType\":\"CONCEPT\"}]"
+
+
+def test_governance_uses_independent_timeout(gateway, monkeypatch):
+    client, _ = gateway
+    monkeypatch.setattr(settings, "ontology_analysis_timeout_seconds", 90)
+    monkeypatch.setattr(settings, "deepseek_timeout_seconds", 7)
+    timeouts = []
+
+    def post(url, **kwargs):
+        timeouts.append(kwargs["timeout"])
+        return httpx.Response(200, json={"choices": [{"message": {"content": "[]"}}]},
+                              request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(httpx, "post", post)
+    client.chat("DATASOURCE_ONTOLOGY_ANALYSIS", "s", "u")
+    client.chat("QA", "s", "u")
+    assert timeouts == [90, 7]
+
+
 @pytest.mark.parametrize("failure", ["timeout", "http", "json"])
 def test_failures_degrade_and_record_audit(gateway, monkeypatch, failure):
     client, logs = gateway
