@@ -7,6 +7,8 @@ from bemodel.core.base_dao import BaseDAO
 from bemodel.modeling.services import ReleaseService
 from .entities import LlmLog
 
+logger = logging.getLogger(__name__)
+
 
 class LlmLogService(BaseDAO):
     def __init__(self, session):
@@ -71,6 +73,8 @@ class DeepSeekClient:
     def chat(self, call_type, system_prompt, user_prompt):
         self.last_error = None
         digest = ((system_prompt or "") + " | " + (user_prompt or ""))[:200]
+        logger.info("LLM prompt call_type=%s model=%s\n[system]\n%s\n[user]\n%s",
+                    call_type, settings.deepseek_model, system_prompt or "", user_prompt or "")
         if not settings.deepseek_api_key.strip():
             self.last_error = "API Key 未配置"
             self.logs.log(call_type, settings.deepseek_model, digest, 0, False, "API Key 未配置")

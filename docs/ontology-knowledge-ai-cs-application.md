@@ -75,6 +75,14 @@ SEMANTIC_QUERY
 | `CS_SEMANTIC_PLAN` | 本体语义查询规划器 | 是；概念、属性、确认映射、枚举和关系 | 生成 `QUERY`、`MODEL_ANSWER` 或 `UNANSWERABLE` |
 | `CS_SEMANTIC_ANSWER` | 数据问答/业务规则解答助手 | 不带完整本体；只带规划结论和查询证据 | 把已验证结果组织成人话 |
 
+这三次调用的代码落点如下。统一入口是 `bemodel-server-py/src/bemodel/cs/router.py` 的 `ask()`，它调用 `CsService.ask()`；真正发起模型请求的底层方法都是 `bemodel-server-py/src/bemodel/llm/services.py` 的 `DeepSeekClient.chat()`。
+
+| 第几次 | call type | 文件 | 关键方法 | 说明 |
+| --- | --- | --- | --- | --- |
+| 第一次 | `CS_ROUTE` | `bemodel-server-py/src/bemodel/cs/services.py` | `CsService.ask()`、`CsService.route_prompt()` | `ask()` 判断是否配置 DeepSeek Key；配置后调用 `self.llm.chat('CS_ROUTE', ...)`。客服场景的 user prompt 由 `route_prompt()` 拼接 `CS_ROUTE_PROMPT`、最近 10 条负反馈和用户问题；智能问数场景使用 `ANALYTICS_ROUTE_PROMPT + q`。 |
+| 第二次 | `CS_SEMANTIC_PLAN` | `bemodel-server-py/src/bemodel/cs/semantic.py` | `SemanticQaService.answer()`、`SemanticQaService.plan_query()`、`SemanticQaService.build_semantic_context()` | `CsService.ask()` 在意图为 `SEMANTIC_QUERY` 时调用 `SemanticQaService.answer()`；`answer()` 先调用 `plan_query()`，`plan_query()` 用 `build_semantic_context()` 读取概念、属性、确认映射、枚举和关系，再调用 `self.llm.chat('CS_SEMANTIC_PLAN', ...)` 生成查询计划 JSON。 |
+| 第三次 | `CS_SEMANTIC_ANSWER` | `bemodel-server-py/src/bemodel/cs/semantic.py` | `SemanticQaService.answer()`、`SemanticQaService.model_answer()` | `plan_query()` 返回 `QUERY` 时，`answer()` 负责 SQL 白名单校验、业务库执行和结果截断，然后调用 `self.llm.chat('CS_SEMANTIC_ANSWER', ...)` 生成自然语言答案；返回 `MODEL_ANSWER` 时走 `model_answer()`，可先执行 `verifySql` 探针，再调用同一个 `CS_SEMANTIC_ANSWER` 组织业务规则答案。 |
+
 ### 4.2 第一步：从数据库读取哪些知识
 
 `build_semantic_context()` 每次规划查询时直接读取当前表：

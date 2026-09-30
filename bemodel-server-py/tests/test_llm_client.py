@@ -61,6 +61,16 @@ def test_response_digest_truncated_to_512(monkeypatch, session):
     assert len(row.response_digest) == 512
 
 
+def test_chat_logs_full_prompt(monkeypatch, session, caplog):
+    """服务日志记录实际提交给模型的 system/user prompt，便于排查三段调用。"""
+    _, client = call_with_capture(monkeypatch, session, "x")
+    with caplog.at_level("INFO", logger="bemodel.llm.services"):
+        client.chat("CS_SEMANTIC_PLAN", "系统提示", "用户提示")
+    assert "LLM prompt call_type=CS_SEMANTIC_PLAN" in caplog.text
+    assert "[system]\n系统提示" in caplog.text
+    assert "[user]\n用户提示" in caplog.text
+
+
 def test_failure_records_no_response_digest(monkeypatch, session):
     """调用失败时 err_msg 有值、response_digest 为空。"""
 
