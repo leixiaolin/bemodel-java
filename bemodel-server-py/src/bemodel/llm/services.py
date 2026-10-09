@@ -10,6 +10,12 @@ from .entities import LlmLog
 logger = logging.getLogger(__name__)
 
 
+def log_prompt(call_type, system_prompt, user_prompt):
+    """记录发送给模型的完整提示词，不使用数据库审计的截断摘要。"""
+    logger.info("LLM prompt call_type=%s model=%s\n[system]\n%s\n[user]\n%s",
+                call_type, settings.deepseek_model, system_prompt or "", user_prompt or "")
+
+
 class LlmLogService(BaseDAO):
     def __init__(self, session):
         super().__init__(session, LlmLog)
@@ -73,8 +79,7 @@ class DeepSeekClient:
     def chat(self, call_type, system_prompt, user_prompt):
         self.last_error = None
         digest = ((system_prompt or "") + " | " + (user_prompt or ""))[:200]
-        logger.info("LLM prompt call_type=%s model=%s\n[system]\n%s\n[user]\n%s",
-                    call_type, settings.deepseek_model, system_prompt or "", user_prompt or "")
+        log_prompt(call_type, system_prompt, user_prompt)
         if not settings.deepseek_api_key.strip():
             self.last_error = "API Key 未配置"
             self.logs.log(call_type, settings.deepseek_model, digest, 0, False, "API Key 未配置")

@@ -16,7 +16,7 @@ from agent_framework.openai import OpenAIChatClient
 from openai import AsyncOpenAI
 
 from bemodel.config import settings
-from bemodel.llm.services import LlmLogService
+from bemodel.llm.services import LlmLogService, log_prompt
 
 CRITIC_CALL_TYPE = 'CS_SEMANTIC_CRITIQUE'
 
@@ -50,13 +50,14 @@ def critic_chat(session, system_prompt, user_prompt):
     """校验纠错智能体单轮判定调用：返回模型文本或 None（降级）。"""
     logs = LlmLogService(session)
     digest = ((system_prompt or '')+' | '+(user_prompt or ''))[:200]
+    log_prompt(CRITIC_CALL_TYPE, system_prompt, user_prompt)
     if not settings.deepseek_api_key.strip():
         logs.log(CRITIC_CALL_TYPE, settings.deepseek_model, digest, 0, False, 'API Key 未配置')
         return None
     started = time.monotonic()
     try:
         response = _run_sync(_chat_client().get_response(
-            [Message(role='system', contents=system_prompt), Message(role='user', contents=user_prompt)],
+            [Message(role='system', contents=[system_prompt]), Message(role='user', contents=[user_prompt])],
             options=ChatOptions(temperature=0),
         ))
         content = response.text

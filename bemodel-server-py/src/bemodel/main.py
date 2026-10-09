@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 from fastapi import FastAPI
 from bemodel.core.cors import CorsMiddleware
 from sqlalchemy.orm import Session
@@ -57,6 +58,9 @@ class BeModelApplication(FastAPI):
 
 
 def create_app(*, startup=True):
+    # Uvicorn 默认仅配置自身日志；为应用 INFO 日志提供默认输出。
+    # 已由部署方配置根日志处理器时，basicConfig 不覆盖其配置。
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     app = BeModelApplication(title="BeModel", lifespan=lifespan if startup else None)
     install_handlers(app)
     for router in (auth_router, ontology_router, modeling_router, datasource_router, instance_router, notice_router, rdf_router, llm_router, search_router, governance_router, link_router, architecture_router, impact_router, clinical_router, flow_router, rca_router, cs_router, value_router):

@@ -6,6 +6,8 @@
 
 ## 启动
 
+智能问数每次调用 LLM 前会在服务 INFO 日志输出完整的 system/user prompt（包含路由、SQL 规划、智能体校验和答案生成），以 `LLM prompt call_type=... model=...` 标识。默认输出到控制台；部署方自定义日志配置时需放行 `bemodel.llm.services` 的 INFO 日志。数据库 `bm_llm_log.prompt_digest` 仍保留原有的 200 字符摘要。
+
 需要 Python 3.12+、MySQL 8.x。在本目录执行：
 
 ```powershell
