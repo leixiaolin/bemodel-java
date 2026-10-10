@@ -9,7 +9,7 @@
     <div class="filter-bar">
       <el-button type="primary" @click="openDialog">新建公理</el-button>
     </div>
-    <el-table :data="axioms" v-loading="loading">
+    <el-table ref="tableRef" :data="axioms" v-loading="loading" highlight-current-row>
       <el-table-column prop="axiomCode" label="公理编码" width="110" />
       <el-table-column prop="subject" label="主语" min-width="150" show-overflow-tooltip />
       <el-table-column label="谓词" width="90">
@@ -68,9 +68,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { listAxioms, createAxiom, deleteAxiom } from '../../../api/ontology'
+
+// 深链定位协议：父页 ?tab=axioms&assetCode=CODE → 高亮目标行；
+// 不存在/已删除给明确提示，不定位到其他记录
+const props = defineProps({ assetCode: { type: String, default: '' } })
+const tableRef = ref(null)
+const locatedCode = ref('')
 
 const axiomTypes = ['依赖', '互斥', '支撑', '因果', '继承']
 
@@ -90,6 +96,20 @@ const loadAxioms = async () => {
     loading.value = false
   }
 }
+
+const locateAsset = () => {
+  const code = props.assetCode
+  if (!code || locatedCode.value === code || loading.value) return
+  locatedCode.value = code
+  const row = axioms.value.find((a) => a.axiomCode === code)
+  if (!row) {
+    ElMessage.warning(`未在公理库找到 ${code}，可能已被删除`)
+    return
+  }
+  tableRef.value?.setCurrentRow(row)
+}
+
+watch(() => [props.assetCode, axioms.value, loading.value], locateAsset, { flush: 'post' })
 
 const dialogVisible = ref(false)
 const saving = ref(false)

@@ -18,7 +18,7 @@
       </el-select>
       <el-button type="primary" @click="openDialog('create')">新建动作</el-button>
     </div>
-    <el-table :data="actions" v-loading="loading">
+    <el-table ref="tableRef" :data="actions" v-loading="loading" highlight-current-row>
       <el-table-column prop="actionCode" label="动作编码" width="170" />
       <el-table-column prop="name" label="动作动词" width="120" />
       <el-table-column prop="conceptCode" label="作用概念" width="120" />
@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   listActions,
@@ -128,6 +128,12 @@ import { statusText, statusTagType } from '../../../utils/dict'
 import { useConceptStore } from '../../../store/concept'
 
 const conceptStore = useConceptStore()
+
+// 深链定位协议：父页 ?tab=actions&assetCode=CODE → 清概念筛选、高亮目标行；
+// 不存在/已删除给明确提示。动作无详情抽屉，以高亮当前行为定位结果
+const props = defineProps({ assetCode: { type: String, default: '' } })
+const tableRef = ref(null)
+const locatedCode = ref('')
 
 const actions = ref([])
 const loading = ref(false)
@@ -142,6 +148,24 @@ const loadActions = async () => {
     loading.value = false
   }
 }
+
+const locateAsset = async () => {
+  const code = props.assetCode
+  if (!code || locatedCode.value === code || loading.value) return
+  if (filterConcept.value) {
+    filterConcept.value = ''
+    await loadActions()
+  }
+  locatedCode.value = code
+  const row = actions.value.find((a) => a.actionCode === code)
+  if (!row) {
+    ElMessage.warning(`未在动作库找到 ${code}，可能已被删除`)
+    return
+  }
+  tableRef.value?.setCurrentRow(row)
+}
+
+watch(() => [props.assetCode, actions.value, loading.value], locateAsset, { flush: 'post' })
 
 const doTransition = async (row, target) => {
   actingCode.value = row.actionCode

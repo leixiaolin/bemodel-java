@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <el-table :data="filteredRules" v-loading="loading">
+    <el-table ref="tableRef" :data="filteredRules" v-loading="loading" highlight-current-row>
       <el-table-column prop="ruleCode" label="规则编码" width="140" />
       <el-table-column prop="name" label="名称" min-width="150" show-overflow-tooltip />
       <el-table-column prop="conceptCode" label="关联概念" width="120" />
@@ -461,6 +461,12 @@ import TagInput from './TagInput.vue'
 const router = useRouter()
 const conceptStore = useConceptStore()
 
+// 深链定位协议：父页 ?tab=rules&assetCode=CODE → 等列表加载后清遮挡筛选、
+// 高亮并打开目标详情；不存在/已删除给明确提示，不定位到其他记录
+const props = defineProps({ assetCode: { type: String, default: '' } })
+const tableRef = ref(null)
+const locatedCode = ref('')
+
 const rules = ref([])
 const loading = ref(false)
 const filterConcept = ref('')
@@ -479,6 +485,27 @@ const loadRules = async () => {
     loading.value = false
   }
 }
+
+const locateAsset = async () => {
+  const code = props.assetCode
+  if (!code || locatedCode.value === code || loading.value) return
+  // 清掉遮挡筛选（概念下拉/类型页签），确保目标行在当前数据里可见
+  if (filterConcept.value || filterType.value) {
+    filterConcept.value = ''
+    filterType.value = ''
+    await loadRules()
+  }
+  locatedCode.value = code
+  const row = rules.value.find((r) => r.ruleCode === code)
+  if (!row) {
+    ElMessage.warning(`未在规则库找到 ${code}，可能已被删除`)
+    return
+  }
+  tableRef.value?.setCurrentRow(row)
+  openDetail(row)
+}
+
+watch(() => [props.assetCode, rules.value, loading.value], locateAsset, { flush: 'post' })
 
 // ---------- 分类页签（数量徽标） ----------
 const TYPE_ORDER = ['约束', '推导', '校验']

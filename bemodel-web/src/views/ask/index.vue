@@ -88,6 +88,18 @@
                     <span class="evidence-value">{{ e.value }}</span>
                   </div>
                 </div>
+                <!-- 资产引用徽章：指标/规则/公理/动作，点击深链到对应面板（route 为空时仅展示） -->
+                <div v-if="msg.citationList?.length" class="ans-citations">
+                  <el-tag
+                    v-for="(c, j) in msg.citationList"
+                    :key="j"
+                    size="small"
+                    effect="plain"
+                    :type="citationTagType(c)"
+                    :class="{ 'cite-jump': c.route }"
+                    @click="goCitation(c)"
+                  >{{ c.label }}·{{ c.name }}<span class="cite-code">{{ c.code }}</span></el-tag>
+                </div>
                 <div v-if="msg.links?.length" class="ans-links">
                   <el-button
                     v-for="(l, j) in msg.links"
@@ -222,7 +234,7 @@
 
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { askCs } from '../../api/cs'
 import { ChatDotRound, Opportunity, Promotion, DataLine, ArrowDown, ArrowRight } from '@element-plus/icons-vue'
 
@@ -241,7 +253,39 @@ const ROUTE_TYPE = { RULE: 'warning', LLM: 'warning', SEMANTIC: 'success', REFER
 const routeText = (r) => ROUTE_TEXT[r] || r || '回答'
 const routeTagType = (r) => ROUTE_TYPE[r] || 'info'
 
+// ---------- 资产引用（citations）徽章 ----------
+// 后端 citations：{metric:{code,name,route}, rules/axioms/actions:[{code,name,route}]}
+// 拍平为统一徽章列表；route 为 null 的引用只展示不可点
+const CITE_GROUPS = [
+  ['metric', '指标', 'metric'],
+  ['rules', '规则', 'rule'],
+  ['axioms', '公理', 'axiom'],
+  ['actions', '动作', 'action']
+]
+const flattenCitations = (citations) => {
+  if (!citations) return []
+  const out = []
+  for (const [key, label, type] of CITE_GROUPS) {
+    const items = key === 'metric'
+      ? (citations.metric ? [citations.metric] : [])
+      : (citations[key] || [])
+    for (const it of items) {
+      if (!it?.code) continue
+      out.push({ type, label, code: it.code, name: it.name || it.code, route: it.route || null })
+    }
+  }
+  return out
+}
+const citationTagType = (c) => ({ metric: 'success', rule: 'warning', axiom: 'info', action: 'primary' }[c.type] || 'info')
+const goCitation = (c) => {
+  // 只对合法内部路由提供跳转（指标→统一口径页，规则/公理/动作→本体页资产定位）
+  if (c.route && String(c.route).startsWith('/') && !String(c.route).includes('://')) {
+    router.push(c.route)
+  }
+}
+
 const route = useRoute()
+const router = useRouter()
 const input = ref('')
 const asking = ref(false)
 const messages = ref([]) // {role:'user'|'ai', text, router, intent, evidence, links, parse, unanswered, card, metric}
@@ -307,6 +351,7 @@ const ask = async (q) => {
       router: res.router,
       intent: res.intent,
       evidence: res.evidence,
+      citationList: flattenCitations(res.citations),
       links: res.links,
       unanswered
     }
@@ -547,6 +592,28 @@ const ask = async (q) => {
 
 .evidence-value {
   word-break: break-all;
+}
+
+/* ---------- 资产引用徽章 ---------- */
+.ans-citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ans-citations .cite-jump {
+  cursor: pointer;
+}
+
+.ans-citations .cite-jump:hover {
+  opacity: 0.85;
+}
+
+.cite-code {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.65;
 }
 
 .ans-links {

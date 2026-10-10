@@ -1,0 +1,802 @@
+{
+  "generatedAt": "2026-10-09T15:50:45",
+  "git": {
+    "head": "19bb44beed3f",
+    "dirty": true
+  },
+  "policyVersion": 1,
+  "llmMode": "deterministic(no-key)",
+  "llmKeyConfigured": false,
+  "expectedCancelNotRefund": 5,
+  "config": {
+    "semanticAssetEnhance": "off→on 两轮",
+    "datasourceGuard": "127.0.0.1:13317/bemodel_py_test"
+  },
+  "rounds": {
+    "off": {
+      "summary": {
+        "total": 24,
+        "direct": 0,
+        "directValueOk": 0,
+        "withCitations": 0,
+        "llmCalls": 17,
+        "avgLatencyMs": 35
+      },
+      "perQuestion": [
+        {
+          "category": "A_qualified_metric",
+          "question": "现在取消未退费的费用有多少笔",
+          "error": null,
+          "latencyMs": 63,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "取消未退费笔数是多少",
+          "error": null,
+          "latencyMs": 62,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "请问取消未退费有多少笔？",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数怎么算",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "SEARCH_ANSWER": 1
+          },
+          "intent": "口径查询",
+          "router": "RULE",
+          "direct": false,
+          "card": "METRIC",
+          "citations": null,
+          "measured": null,
+          "answer": "「取消未退费笔数（负责人：陈财务）」口径：医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。 公式：COUNT(医嘱状态=已取消 AND 费用状态=正常)"
+        },
+        {
+          "category": "A_boundary",
+          "question": "今天取消未退费有多少笔",
+          "error": null,
+          "latencyMs": 63,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "内科取消未退费笔数是多少",
+          "error": null,
+          "latencyMs": 78,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "按科室统计取消未退费笔数",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数和出院人数是多少",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "男性患者能有妊娠诊断吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "没有诊断指征能做手术吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "医嘱取消了费用该怎么处理",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "检验异常的报告必须处置吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院人数是多少",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "今天出院人数是多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "检验撤销率现在多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院患者均次费用是多少",
+          "error": null,
+          "latencyMs": 46,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "最近10条缴费记录",
+          "error": null,
+          "latencyMs": 63,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "昨天缴费总额是多少",
+          "error": null,
+          "latencyMs": 78,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "内科有多少住院患者",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "2026年8月出院的结算单有多少",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_reject",
+          "question": "今天天气怎么样",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_reject",
+          "question": "医院门口有几个停车位",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_write_op",
+          "question": "帮我给张三开发票",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_export",
+          "question": "导出药品价格表",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        }
+      ]
+    },
+    "on": {
+      "summary": {
+        "total": 24,
+        "direct": 3,
+        "directValueOk": 3,
+        "withCitations": 3,
+        "llmCalls": 14,
+        "avgLatencyMs": 38
+      },
+      "perQuestion": [
+        {
+          "category": "A_qualified_metric",
+          "question": "现在取消未退费的费用有多少笔",
+          "error": null,
+          "latencyMs": 94,
+          "llmCalls": {},
+          "intent": "指标实测",
+          "router": "SEMANTIC",
+          "direct": true,
+          "card": null,
+          "citations": {
+            "metric": {
+              "code": "CANCEL_NOT_REFUND",
+              "name": "取消未退费笔数",
+              "route": "/glossary?metric=CANCEL_NOT_REFUND"
+            }
+          },
+          "measured": "5笔",
+          "answer": "当前全量数据快照中，取消未退费共 5 笔。口径：医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。该结果不限定发生日期。已超过预警阈值 0笔，需要关注。",
+          "valueOk": true
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "取消未退费笔数是多少",
+          "error": null,
+          "latencyMs": 93,
+          "llmCalls": {},
+          "intent": "指标实测",
+          "router": "SEMANTIC",
+          "direct": true,
+          "card": null,
+          "citations": {
+            "metric": {
+              "code": "CANCEL_NOT_REFUND",
+              "name": "取消未退费笔数",
+              "route": "/glossary?metric=CANCEL_NOT_REFUND"
+            }
+          },
+          "measured": "5笔",
+          "answer": "当前全量数据快照中，取消未退费共 5 笔。口径：医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。该结果不限定发生日期。已超过预警阈值 0笔，需要关注。",
+          "valueOk": true
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "请问取消未退费有多少笔？",
+          "error": null,
+          "latencyMs": 78,
+          "llmCalls": {},
+          "intent": "指标实测",
+          "router": "SEMANTIC",
+          "direct": true,
+          "card": null,
+          "citations": {
+            "metric": {
+              "code": "CANCEL_NOT_REFUND",
+              "name": "取消未退费笔数",
+              "route": "/glossary?metric=CANCEL_NOT_REFUND"
+            }
+          },
+          "measured": "5笔",
+          "answer": "当前全量数据快照中，取消未退费共 5 笔。口径：医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。该结果不限定发生日期。已超过预警阈值 0笔，需要关注。",
+          "valueOk": true
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数怎么算",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "SEARCH_ANSWER": 1
+          },
+          "intent": "口径查询",
+          "router": "RULE",
+          "direct": false,
+          "card": "METRIC",
+          "citations": null,
+          "measured": null,
+          "answer": "「取消未退费笔数（负责人：陈财务）」口径：医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。 公式：COUNT(医嘱状态=已取消 AND 费用状态=正常)"
+        },
+        {
+          "category": "A_boundary",
+          "question": "今天取消未退费有多少笔",
+          "error": null,
+          "latencyMs": 78,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "内科取消未退费笔数是多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "按科室统计取消未退费笔数",
+          "error": null,
+          "latencyMs": 32,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数和出院人数是多少",
+          "error": null,
+          "latencyMs": 46,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "男性患者能有妊娠诊断吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "没有诊断指征能做手术吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "医嘱取消了费用该怎么处理",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "B_assets",
+          "question": "检验异常的报告必须处置吗",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院人数是多少",
+          "error": null,
+          "latencyMs": 31,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "今天出院人数是多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "检验撤销率现在多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院患者均次费用是多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "最近10条缴费记录",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "昨天缴费总额是多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "内科有多少住院患者",
+          "error": null,
+          "latencyMs": 46,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "D_plain_query",
+          "question": "2026年8月出院的结算单有多少",
+          "error": null,
+          "latencyMs": 47,
+          "llmCalls": {
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_reject",
+          "question": "今天天气怎么样",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_reject",
+          "question": "医院门口有几个停车位",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_write_op",
+          "question": "帮我给张三开发票",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        },
+        {
+          "category": "E_export",
+          "question": "导出药品价格表",
+          "error": null,
+          "latencyMs": 0,
+          "llmCalls": {},
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "answer": "本页面向数据问题：把提问解析为「概念→关系→物理表」的查询计划，SQL 经白名单校验后在业务库实时执行。这个问题暂时没有命中语义层能力——可以换个数据问法，或转 AI 客服处理业务咨询。当前发布版本体覆盖 49 个概念；语义层答不了的问题会自动回流概念缺口页，按提问热度生长。"
+        }
+      ]
+    }
+  },
+  "deterministicFailures": [],
+  "notes": [
+    "主报告经完整入口 CsService.ask(scene=ANALYTICS) 执行；成本收益只统计实际进入合格直查的样本。",
+    "未运行 --real-llm 时本报告仅为确定性验证，不宣称真实模型准确率或成本结论。",
+    "citations 为业务证据，不参与任何双端归一化忽略。"
+  ]
+}

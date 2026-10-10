@@ -1,6 +1,6 @@
 # 智能问数增强设计方案：业务资产参与规划与证据，可信指标进入查数主路
 
-> 状态：**评审修订稿，尚未实施**。本文将评审发现转为实现约束和验收条件，不代表功能已通过测试。
+> 状态：**已实施（2026-10-09）**。实现按本文约束落地：sqlite+MySQL 全量测试 289 项通过（真实 MySQL 5.7 临时隔离实例 13317/bemodel_py_test，含 35 项集成），`scripts/eval_semantic_qa.py` 确定性断言 0 失败（报告 `bemodel-server-py/artifacts/semantic-qa-eval.json`）。未验证项：真实 DeepSeek A/B（未运行 `--real-llm`）、前端浏览器人工核验（已通过 `npm run build`）。
 >
 > 范围：后台扩展仅在 `bemodel-server-py/`；Java 端 `bemodel-server/` 不增加代码、不修改资源；前端 `bemodel-web/` 配套增强。
 

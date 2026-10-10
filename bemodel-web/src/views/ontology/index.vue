@@ -876,12 +876,12 @@
 
       <!-- ============ 规则 ============ -->
       <el-tab-pane label="规则" name="rules" lazy>
-        <RulePanel />
+        <RulePanel :asset-code="assetQueryCode" />
       </el-tab-pane>
 
       <!-- ============ 动作 ============ -->
       <el-tab-pane label="动作" name="actions" lazy>
-        <ActionPanel />
+        <ActionPanel :asset-code="assetQueryCode" />
       </el-tab-pane>
 
       <!-- ============ 实例浏览 ============ -->
@@ -896,7 +896,7 @@
 
       <!-- ============ 公理 ============ -->
       <el-tab-pane label="公理" name="axioms" lazy>
-        <AxiomPanel />
+        <AxiomPanel :asset-code="assetQueryCode" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -1755,9 +1755,12 @@ const submitTerm = async () => {
 }
 
 // ---------- 路由 query 联动 ----------
-// ?concept=CODE 打开详情抽屉；?domain=CODE 过滤业务域；?tab=rule 打开规则面板
+// ?concept=CODE 打开详情抽屉；?domain=CODE 过滤业务域；?tab=rules|actions|axioms&assetCode=CODE
+// 切到对应面板并定位资产（问数页引用徽章深链协议；面板自行清筛选/定位/提示不存在）
+const assetQueryCode = ref('')
 const applyRouteQuery = async (q) => {
   try {
+    assetQueryCode.value = q.assetCode ? String(q.assetCode) : ''
     if (q.tab) {
       const map = { rule: 'rules' }
       activeTab.value = map[q.tab] || q.tab

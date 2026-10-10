@@ -334,13 +334,16 @@ def test_model_answer_uses_real_verification_probe(mysql_session, monkeypatch):
     service = SemanticQaService(mysql_session)
     def chat(kind, system, prompt):
         return json.dumps(dict(mode='MODEL_ANSWER', ds='DS_HIS', conclusion='可以查询医嘱',
-            semantics='MEDICAL_ORDER 通过映射访问业务数据', verifySql='SELECT COUNT(*) cnt FROM medical_order')) if kind == 'CS_SEMANTIC_PLAN' else None
+            semantics='MEDICAL_ORDER 通过映射访问业务数据', verifySql='SELECT COUNT(*) cnt FROM medical_order',
+            axiomCodes=['AX-005'])) if kind == 'CS_SEMANTIC_PLAN' else None
     monkeypatch.setattr(service.llm, 'chat', chat)
     answer, missed = service.answer('可以查询医嘱吗？')
     assert not missed and answer['router'] == 'SEMANTIC'
     assert '验证探针返回：{cnt=' in answer['answer']
     assert answer['evidence'][1]['value'].startswith('SELECT COUNT(*) cnt')
     assert any('MEDICAL_ORDER' in link['route'] for link in answer['links'])
+    # 增强模式：引用的种子公理通过核验并进入 citations（资产级深链）
+    assert answer['citations']['axioms'][0]['code'] == 'AX-005'
 
 
 @pytest.mark.parametrize('mode', ['UNANSWERABLE', 'UNSAFE_QUERY'])
