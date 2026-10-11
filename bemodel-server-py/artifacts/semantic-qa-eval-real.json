@@ -1,0 +1,4885 @@
+{
+  "generatedAt": "2026-10-11T10:18:15",
+  "git": {
+    "head": "99dbfe65e103",
+    "dirty": true,
+    "sourceSha256": "afb83a386f32f19af1262504710d1da28f274089041e1875156b889599e22a51"
+  },
+  "policyVersion": 2,
+  "fixtureVersion": "isolated-seed-unversioned",
+  "baselineDate": "2026-10-11",
+  "releaseGatePassed": false,
+  "pendingValidation": [
+    "真实模型三轮 A/B 与业务正确率、证据支持度人工复核"
+  ],
+  "llmMode": "real(rounds=3)",
+  "llmKeyConfigured": true,
+  "expectedCancelNotRefund": 5,
+  "config": {
+    "semanticAssetEnhance": "off 基线 1 轮 + on 轮",
+    "datasourceGuard": "127.0.0.1:13317/bemodel_py_test"
+  },
+  "rounds": {
+    "off": {
+      "summary": {
+        "total": 24,
+        "direct": 0,
+        "directValueOk": 0,
+        "queryValueOk": 0,
+        "failed": 0,
+        "pendingHumanReview": 24,
+        "latencyByOutcome": {
+          "passedChecks": {
+            "count": 24,
+            "avgMs": 635
+          },
+          "failedChecks": {
+            "count": 0,
+            "avgMs": null
+          }
+        },
+        "promptChars": 204116,
+        "withCitations": 0,
+        "llmCalls": 40,
+        "avgLatencyMs": 635
+      },
+      "perQuestion": [
+        {
+          "category": "A_qualified_metric",
+          "question": "现在取消未退费的费用有多少笔",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 1000,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 282,
+              "latencyMs": 422,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12345,
+              "latencyMs": 531,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": false,
+          "expectedValue": 5,
+          "unit": "笔",
+          "scope": "当前全量数据快照（不限发生日期）",
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "DIRECT",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "取消未退费笔数是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 750,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 278,
+              "latencyMs": 360,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12341,
+              "latencyMs": 359,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": false,
+          "expectedValue": 5,
+          "unit": "笔",
+          "scope": "当前全量数据快照（不限发生日期）",
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "DIRECT",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_qualified_metric",
+          "question": "请问取消未退费有多少笔？",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 750,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 280,
+              "latencyMs": 344,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12343,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": false,
+          "expectedValue": 5,
+          "unit": "笔",
+          "scope": "当前全量数据快照（不限发生日期）",
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "DIRECT",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数怎么算",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 359,
+          "llmCalls": {
+            "SEARCH_ANSWER": 1
+          },
+          "calls": [
+            {
+              "type": "SEARCH_ANSWER",
+              "promptChars": 236,
+              "latencyMs": 343,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "SEARCH_ANSWER": 1
+          },
+          "missDelta": 0,
+          "intent": "口径查询",
+          "router": "RULE",
+          "direct": false,
+          "card": "METRIC",
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_boundary",
+          "question": "今天取消未退费有多少笔",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 781,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 279,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12342,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_boundary",
+          "question": "内科取消未退费笔数是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 766,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 280,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12343,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_boundary",
+          "question": "按科室统计取消未退费笔数",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 734,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 280,
+              "latencyMs": 359,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12343,
+              "latencyMs": 359,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "A_boundary",
+          "question": "取消未退费笔数和出院人数是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 750,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 283,
+              "latencyMs": 359,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12346,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "B_assets",
+          "question": "男性患者能有妊娠诊断吗",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 360,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 279,
+              "latencyMs": 360,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "B_assets",
+          "question": "没有诊断指征能做手术吗",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 279,
+              "latencyMs": 360,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "B_assets",
+          "question": "医嘱取消了费用该怎么处理",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 766,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 280,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12343,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "B_assets",
+          "question": "检验异常的报告必须处置吗",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 280,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院人数是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 765,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 275,
+              "latencyMs": 359,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12338,
+              "latencyMs": 390,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "今天出院人数是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 766,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 277,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12340,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "检验撤销率现在多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 766,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 277,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12340,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "C_inconsistent_probe",
+          "question": "出院患者均次费用是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 750,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 279,
+              "latencyMs": 359,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12342,
+              "latencyMs": 344,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "D_plain_query",
+          "question": "最近10条缴费记录",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 734,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 277,
+              "latencyMs": 343,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12340,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "D_plain_query",
+          "question": "昨天缴费总额是多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 766,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 277,
+              "latencyMs": 375,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12340,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "D_plain_query",
+          "question": "内科有多少住院患者",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 718,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 277,
+              "latencyMs": 359,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12340,
+              "latencyMs": 343,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "D_plain_query",
+          "question": "2026年8月出院的结算单有多少",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 719,
+          "llmCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 284,
+              "latencyMs": 344,
+              "tokens": null
+            },
+            {
+              "type": "CS_SEMANTIC_PLAN",
+              "promptChars": 12347,
+              "latencyMs": 344,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1,
+            "CS_SEMANTIC_PLAN": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "RULE",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "E_reject",
+          "question": "今天天气怎么样",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 275,
+              "latencyMs": 359,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "E_reject",
+          "question": "医院门口有几个停车位",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 278,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "E_write_op",
+          "question": "帮我给张三开发票",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 276,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        },
+        {
+          "category": "E_export",
+          "question": "导出药品价格表",
+          "scene": "ANALYTICS",
+          "error": null,
+          "latencyMs": 375,
+          "llmCalls": {
+            "CS_ROUTE": 1
+          },
+          "calls": [
+            {
+              "type": "CS_ROUTE",
+              "promptChars": 275,
+              "latencyMs": 375,
+              "tokens": null
+            }
+          ],
+          "auditCalls": {
+            "CS_ROUTE": 1
+          },
+          "missDelta": 0,
+          "intent": "场景引导",
+          "router": "REFERRAL",
+          "direct": false,
+          "card": null,
+          "citations": null,
+          "measured": null,
+          "valueOk": null,
+          "expectedValue": null,
+          "unit": null,
+          "scope": null,
+          "fallbackReason": null,
+          "expectedCitations": null,
+          "allowedPath": "PLAN_OR_CARD",
+          "assetSnapshots": [],
+          "failures": [],
+          "businessReview": "pending-human-review",
+          "evidenceSupport": "pending-human-review",
+          "answer": null
+        }
+      ]
+    },
+    "on": [
+      {
+        "round": 1,
+        "summary": {
+          "total": 24,
+          "direct": 3,
+          "directValueOk": 3,
+          "queryValueOk": 0,
+          "failed": 0,
+          "pendingHumanReview": 24,
+          "latencyByOutcome": {
+            "passedChecks": {
+              "count": 24,
+              "avgMs": 591
+            },
+            "failedChecks": {
+              "count": 0,
+              "avgMs": null
+            }
+          },
+          "promptChars": 218554,
+          "withCitations": 3,
+          "llmCalls": 37,
+          "avgLatencyMs": 591
+        },
+        "perQuestion": [
+          {
+            "category": "A_qualified_metric",
+            "question": "现在取消未退费的费用有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 500,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 282,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 422,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "请问取消未退费有多少笔？",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 438,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数怎么算",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "calls": [
+              {
+                "type": "SEARCH_ANSWER",
+                "promptChars": 236,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "missDelta": 0,
+            "intent": "口径查询",
+            "router": "RULE",
+            "direct": false,
+            "card": "METRIC",
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "今天取消未退费有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "内科取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "按科室统计取消未退费笔数",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 797,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数和出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 283,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16305,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "男性患者能有妊娠诊断吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 360,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "没有诊断指征能做手术吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "医嘱取消了费用该怎么处理",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "检验异常的报告必须处置吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 765,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16297,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "今天出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "检验撤销率现在多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院患者均次费用是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 718,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 343,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "最近10条缴费记录",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "昨天缴费总额是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "内科有多少住院患者",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "2026年8月出院的结算单有多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 765,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 284,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16306,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "今天天气怎么样",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "医院门口有几个停车位",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 344,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_write_op",
+            "question": "帮我给张三开发票",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 276,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_export",
+            "question": "导出药品价格表",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "summary": {
+          "total": 24,
+          "direct": 3,
+          "directValueOk": 3,
+          "queryValueOk": 0,
+          "failed": 0,
+          "pendingHumanReview": 24,
+          "latencyByOutcome": {
+            "passedChecks": {
+              "count": 24,
+              "avgMs": 587
+            },
+            "failedChecks": {
+              "count": 0,
+              "avgMs": null
+            }
+          },
+          "promptChars": 218554,
+          "withCitations": 3,
+          "llmCalls": 37,
+          "avgLatencyMs": 587
+        },
+        "perQuestion": [
+          {
+            "category": "A_qualified_metric",
+            "question": "现在取消未退费的费用有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 500,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 282,
+                "latencyMs": 391,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 469,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "请问取消未退费有多少笔？",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 453,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数怎么算",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "calls": [
+              {
+                "type": "SEARCH_ANSWER",
+                "promptChars": 236,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "missDelta": 0,
+            "intent": "口径查询",
+            "router": "RULE",
+            "direct": false,
+            "card": "METRIC",
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "今天取消未退费有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 734,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 344,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "内科取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "按科室统计取消未退费笔数",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数和出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 735,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 283,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16305,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "男性患者能有妊娠诊断吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "没有诊断指征能做手术吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "医嘱取消了费用该怎么处理",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "检验异常的报告必须处置吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16297,
+                "latencyMs": 343,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "今天出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "检验撤销率现在多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 797,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 391,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院患者均次费用是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 734,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 344,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "最近10条缴费记录",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "昨天缴费总额是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 734,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 343,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "内科有多少住院患者",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "2026年8月出院的结算单有多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 284,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16306,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "今天天气怎么样",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "医院门口有几个停车位",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 360,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_write_op",
+            "question": "帮我给张三开发票",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 360,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 276,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_export",
+            "question": "导出药品价格表",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 360,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          }
+        ]
+      },
+      {
+        "round": 3,
+        "summary": {
+          "total": 24,
+          "direct": 3,
+          "directValueOk": 3,
+          "queryValueOk": 0,
+          "failed": 0,
+          "pendingHumanReview": 24,
+          "latencyByOutcome": {
+            "passedChecks": {
+              "count": 24,
+              "avgMs": 584
+            },
+            "failedChecks": {
+              "count": 0,
+              "avgMs": null
+            }
+          },
+          "promptChars": 218554,
+          "withCitations": 3,
+          "llmCalls": 37,
+          "avgLatencyMs": 584
+        },
+        "perQuestion": [
+          {
+            "category": "A_qualified_metric",
+            "question": "现在取消未退费的费用有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 453,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 282,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 422,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_qualified_metric",
+            "question": "请问取消未退费有多少笔？",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 454,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "指标实测",
+            "router": "SEMANTIC",
+            "direct": true,
+            "card": null,
+            "citations": {
+              "metric": {
+                "code": "CANCEL_NOT_REFUND",
+                "name": "取消未退费笔数",
+                "route": "/glossary?metric=CANCEL_NOT_REFUND"
+              }
+            },
+            "measured": "5笔",
+            "valueOk": true,
+            "expectedValue": 5,
+            "unit": "笔",
+            "scope": "当前全量数据快照（不限发生日期）",
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "DIRECT",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数怎么算",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 360,
+            "llmCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "calls": [
+              {
+                "type": "SEARCH_ANSWER",
+                "promptChars": 236,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "SEARCH_ANSWER": 1
+            },
+            "missDelta": 0,
+            "intent": "口径查询",
+            "router": "RULE",
+            "direct": false,
+            "card": "METRIC",
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "今天取消未退费有多少笔",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 735,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 344,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "内科取消未退费笔数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 344,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "按科室统计取消未退费笔数",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 765,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "A_boundary",
+            "question": "取消未退费笔数和出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 283,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16305,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "男性患者能有妊娠诊断吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "没有诊断指征能做手术吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "医嘱取消了费用该怎么处理",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 765,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16302,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "B_assets",
+            "question": "检验异常的报告必须处置吗",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 280,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 719,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 344,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16297,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "今天出院人数是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "检验撤销率现在多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 359,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "C_inconsistent_probe",
+            "question": "出院患者均次费用是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 279,
+                "latencyMs": 343,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16301,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "最近10条缴费记录",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 735,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "昨天缴费总额是多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 360,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "内科有多少住院患者",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 750,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 277,
+                "latencyMs": 360,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16299,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "D_plain_query",
+            "question": "2026年8月出院的结算单有多少",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 766,
+            "llmCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 284,
+                "latencyMs": 375,
+                "tokens": null
+              },
+              {
+                "type": "CS_SEMANTIC_PLAN",
+                "promptChars": 16306,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1,
+              "CS_SEMANTIC_PLAN": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "RULE",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [
+              {
+                "chars": 3375,
+                "omitted": {
+                  "rule": 0,
+                  "axiom": 0,
+                  "action": 0
+                }
+              }
+            ],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "今天天气怎么样",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 344,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_reject",
+            "question": "医院门口有几个停车位",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 375,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 278,
+                "latencyMs": 375,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_write_op",
+            "question": "帮我给张三开发票",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 276,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          },
+          {
+            "category": "E_export",
+            "question": "导出药品价格表",
+            "scene": "ANALYTICS",
+            "error": null,
+            "latencyMs": 359,
+            "llmCalls": {
+              "CS_ROUTE": 1
+            },
+            "calls": [
+              {
+                "type": "CS_ROUTE",
+                "promptChars": 275,
+                "latencyMs": 359,
+                "tokens": null
+              }
+            ],
+            "auditCalls": {
+              "CS_ROUTE": 1
+            },
+            "missDelta": 0,
+            "intent": "场景引导",
+            "router": "REFERRAL",
+            "direct": false,
+            "card": null,
+            "citations": null,
+            "measured": null,
+            "valueOk": null,
+            "expectedValue": null,
+            "unit": null,
+            "scope": null,
+            "fallbackReason": null,
+            "expectedCitations": null,
+            "allowedPath": "PLAN_OR_CARD",
+            "assetSnapshots": [],
+            "failures": [],
+            "businessReview": "pending-human-review",
+            "evidenceSupport": "pending-human-review",
+            "answer": null
+          }
+        ]
+      }
+    ]
+  },
+  "onAggregateByCategory": {
+    "A_qualified_metric": {
+      "questions": 9,
+      "direct": 9,
+      "valueOk": 9,
+      "citations": 9,
+      "directRate": 1.0
+    },
+    "A_boundary": {
+      "questions": 15,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "B_assets": {
+      "questions": 12,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "C_inconsistent_probe": {
+      "questions": 12,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "D_plain_query": {
+      "questions": 12,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "E_reject": {
+      "questions": 6,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "E_write_op": {
+      "questions": 3,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    },
+    "E_export": {
+      "questions": 3,
+      "direct": 0,
+      "valueOk": 0,
+      "citations": 0,
+      "directRate": 0.0
+    }
+  },
+  "deterministicFailures": [],
+  "notes": [
+    "主报告经完整入口 CsService.ask(scene=ANALYTICS) 执行；成本收益只统计实际进入合格直查的样本。",
+    "未运行 --real-llm 时本报告仅为确定性验证，不宣称真实模型准确率或成本结论。",
+    "真实模型自由文本的结论支持度需人工复核，编码有效率不等于业务正确率。",
+    "citations 为业务证据，不参与任何双端归一化忽略。",
+    "tokens=null：现有网关不向调用方暴露 usage；promptChars 是实际字符数，不估算 token。",
+    "llmCalls 是调用入口尝试次数，包含无 Key 降级或替身；不等同于外部计费调用。"
+  ]
+}

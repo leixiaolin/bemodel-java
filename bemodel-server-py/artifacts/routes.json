@@ -1,8 +1,42 @@
 {
   "javaCount": 116,
-  "pythonCount": 116,
+  "pythonCount": 124,
   "missing": [],
   "extra": [],
+  "pythonExtensions": [
+    [
+      "DELETE",
+      "/api/datasource/{dsCode}"
+    ],
+    [
+      "GET",
+      "/api/datasource/{dsCode}/ontology-analysis/latest"
+    ],
+    [
+      "GET",
+      "/api/ontology-change-set/{id}"
+    ],
+    [
+      "PATCH",
+      "/api/datasource/{dsCode}/status"
+    ],
+    [
+      "PATCH",
+      "/api/ontology-change-set/{id}/items/{itemId}"
+    ],
+    [
+      "POST",
+      "/api/datasource/{dsCode}/ontology-analysis"
+    ],
+    [
+      "POST",
+      "/api/ontology-change-set/{id}/adopt"
+    ],
+    [
+      "POST",
+      "/api/ontology-change-set/{id}/publish"
+    ]
+  ],
   "javaRoutes": [
     [
       "DELETE",
@@ -496,6 +530,10 @@
     ],
     [
       "DELETE",
+      "/api/datasource/{dsCode}"
+    ],
+    [
+      "DELETE",
       "/api/link/rel/{id}"
     ],
     [
@@ -561,6 +599,10 @@
     [
       "GET",
       "/api/datasource/tables/{dsCode}"
+    ],
+    [
+      "GET",
+      "/api/datasource/{dsCode}/ontology-analysis/latest"
     ],
     [
       "GET",
@@ -652,6 +694,10 @@
     ],
     [
       "GET",
+      "/api/ontology-change-set/{id}"
+    ],
+    [
+      "GET",
       "/api/ontology/disjoint"
     ],
     [
@@ -709,6 +755,14 @@
     [
       "GET",
       "/api/value/compare"
+    ],
+    [
+      "PATCH",
+      "/api/datasource/{dsCode}/status"
+    ],
+    [
+      "PATCH",
+      "/api/ontology-change-set/{id}/items/{itemId}"
     ],
     [
       "POST",
@@ -776,6 +830,10 @@
     ],
     [
       "POST",
+      "/api/datasource/{dsCode}/ontology-analysis"
+    ],
+    [
+      "POST",
       "/api/domain"
     ],
     [
@@ -833,6 +891,14 @@
     [
       "POST",
       "/api/notice/{id}/read"
+    ],
+    [
+      "POST",
+      "/api/ontology-change-set/{id}/adopt"
+    ],
+    [
+      "POST",
+      "/api/ontology-change-set/{id}/publish"
     ],
     [
       "POST",

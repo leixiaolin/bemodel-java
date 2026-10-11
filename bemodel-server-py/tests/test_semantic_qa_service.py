@@ -331,6 +331,8 @@ def test_planned_query_executes_mysql_and_caps_output(mysql_session, monkeypatch
 def test_model_answer_uses_real_verification_probe(mysql_session, monkeypatch):
     import json
     from bemodel.cs.semantic import SemanticQaService
+    from bemodel.config import settings
+    monkeypatch.setattr(settings, 'semantic_asset_enhance', True)
     service = SemanticQaService(mysql_session)
     def chat(kind, system, prompt):
         return json.dumps(dict(mode='MODEL_ANSWER', ds='DS_HIS', conclusion='可以查询医嘱',

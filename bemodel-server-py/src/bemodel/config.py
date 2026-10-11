@@ -25,7 +25,8 @@ class Settings(BaseSettings):
     ontology_stats_timeout_seconds: int = Field(5, validation_alias="BEMODEL_ONTOLOGY_STATS_TIMEOUT_SECONDS")
     ontology_stats_max_columns: int = Field(80, validation_alias="BEMODEL_ONTOLOGY_STATS_MAX_COLUMNS")
     ontology_stats_enum_limit: int = Field(20, validation_alias="BEMODEL_ONTOLOGY_STATS_ENUM_LIMIT")
-    semantic_asset_enhance: bool = Field(True, validation_alias="BEMODEL_SEMANTIC_ASSET_ENHANCE")
+    # 完成真实模型 A/B 与人工证据复核前，增强通过环境变量显式启用。
+    semantic_asset_enhance: bool = Field(False, validation_alias="BEMODEL_SEMANTIC_ASSET_ENHANCE")
 
 
 settings = Settings()

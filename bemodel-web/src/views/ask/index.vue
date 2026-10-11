@@ -271,7 +271,8 @@ const flattenCitations = (citations) => {
       : (citations[key] || [])
     for (const it of items) {
       if (!it?.code) continue
-      out.push({ type, label, code: it.code, name: it.name || it.code, route: it.route || null })
+      const internal = typeof it.route === 'string' && /^\/(?:ontology|glossary)\?/.test(it.route) && !/[\\\r\n]/.test(it.route)
+      out.push({ type, label, code: it.code, name: it.name || it.code, route: internal ? it.route : null })
     }
   }
   return out

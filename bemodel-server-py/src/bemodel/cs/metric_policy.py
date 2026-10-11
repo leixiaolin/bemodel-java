@@ -14,13 +14,13 @@ import hashlib
 import math
 import re
 from decimal import Decimal
+from sqlalchemy import select
 
-from bemodel.core.base_dao import BaseDAO
 from bemodel.datasource.entities import Mapping
 from bemodel.datasource.services import parse_value_map
 from bemodel.ontology.entities import Metric
 
-POLICY_VERSION = 1
+POLICY_VERSION = 2
 
 # 归一化只处理空白、标点和明确列出的礼貌/快照词（设计方案 4.2）；
 # 「现在/当前/目前」仅允许解释为指标的当前数据快照，不代表当天发生量。
@@ -34,7 +34,7 @@ _PUNCT_RE = re.compile(r'[\s，。？！、；：,.?!;:（）()【】\[\]“”�
 _METRIC_ALIASES = ('取消未退费',)
 _QUESTION_TAILS = frozenset((
     '有多少笔', '多少笔', '笔数是多少', '笔数多少', '笔数有多少', '笔数有几笔', '有几笔',
-    '有多少', '的费用有多少笔', '费用有多少笔', '费用多少', '的费用有多少', '笔数是多少呀',
+    '的费用有多少笔', '费用有多少笔', '笔数是多少呀',
 ))
 
 # 核对基准：指标资产内容（definition/formula/ds_code/probe_sql）与相关枚举
@@ -46,17 +46,19 @@ _QUALIFIED = {
         'unit': '笔',
         'scope': '当前全量数据快照（不限发生日期）',
         'numeric_type': 'non_negative_integer',
+        'precision': 0,
         'null_answer': '暂无可用实测值',
         'verified_basis': 'V3/V4 种子人工核对：探针=取消且未退费明细笔数，与定义一致',
         'expect': {
+            'name': '取消未退费笔数',
             'definition': '医嘱已取消但费用状态仍为正常的明细笔数，计费一致性核心监控指标，正常应为0。',
             'formula': 'COUNT(医嘱状态=已取消 AND 费用状态=正常)',
             'ds_code': 'DS_HIS',
             'probe_sql': "SELECT COUNT(*) FROM fee_detail f JOIN medical_order o ON f.order_id = o.order_id "
                          "WHERE o.order_status = '2' AND f.fee_status = '1'",
-            # (数据源, 表, 列, 原始码, 标签须含关键词)：探针物理码的语义锚点
+            # 精确核对已确认映射，拒绝「未取消」「非正常」等含相同关键词的反义标签。
             'enums': (
-                ('DS_HIS', 'medical_order', 'order_status', '2', '取消'),
+                ('DS_HIS', 'medical_order', 'order_status', '2', '已取消'),
                 ('DS_HIS', 'fee_detail', 'fee_status', '1', '正常'),
             ),
         },
@@ -73,8 +75,11 @@ def fingerprint(row):
 def normalize_question(q):
     """归一化问句：去空白/标点、剥离明确列出的礼貌与快照词，其余内容原样保留。"""
     text = _PUNCT_RE.sub('', q or '')
-    for word in _STRIP_WORDS:
-        text = text.replace(word, '')
+    while True:
+        prefix = next((word for word in _STRIP_WORDS if text.startswith(word)), None)
+        if prefix is None:
+            break
+        text = text[len(prefix):]
     return text
 
 
@@ -105,28 +110,23 @@ def verify_qualified(session, code):
     policy = _QUALIFIED.get(code)
     if policy is None:
         return None, None, '指标不在直查资格清单中'
-    row = BaseDAO(session, Metric).select_one(Metric.metric_code == code)
+    row = session.scalar(select(Metric).where(Metric.metric_code == code).execution_options(populate_existing=True))
     if row is None:
         return policy, None, '指标不存在'
     if not (row.name or '').strip() or not (row.probe_sql or '').strip() or not (row.ds_code or '').strip():
-        return policy, row, '指标必填字段缺失（name/probe_sql/ds_code）'
+        return policy, None, '指标必填字段缺失（name/probe_sql/ds_code）'
     expect = policy['expect']
     mismatches = [f'{field}与核对基准不一致'
-                  for field in ('definition', 'formula', 'ds_code', 'probe_sql')
+                  for field in ('name', 'definition', 'formula', 'ds_code', 'probe_sql')
                   if (getattr(row, field) or '') != expect[field]]
     if mismatches:
-        return policy, row, '；'.join(mismatches)
-    for ds, table, column, code_value, keyword in expect['enums']:
-        mappings = BaseDAO(session, Mapping).select_list(
-            Mapping.ds_code == ds, Mapping.table_name == table, Mapping.column_name == column)
-        value_map = {}
-        for m in mappings:
-            parsed = parse_value_map(m.value_map)
-            if parsed:
-                value_map.update(parsed)
-        label = value_map.get(code_value)
-        if label is None or keyword not in label:
-            return policy, row, f'枚举映射含义变化：{ds}.{table}.{column}[{code_value}]≠{keyword}'
+        return policy, None, '；'.join(mismatches)
+    for ds, table, column, code_value, expected_label in expect['enums']:
+        mappings = list(session.scalars(select(Mapping).where(
+            Mapping.ds_code == ds, Mapping.table_name == table, Mapping.column_name == column,
+            Mapping.confirmed == 1).execution_options(populate_existing=True)))
+        if not mappings or any((parse_value_map(m.value_map) or {}).get(code_value) != expected_label for m in mappings):
+            return policy, None, f'枚举映射含义变化或未确认：{ds}.{table}.{column}[{code_value}]≠{expected_label}'
     return policy, row, None
 
 

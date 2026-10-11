@@ -26,6 +26,10 @@ Linux/macOS 使用 `python3.12` 和 `.venv/bin/python`。必须从包含 `.env` 
 
 `JWT_SECRET`、`APP_SECRET_KEY` 缺省时沿用 Java 的开发默认值；连接已有库时必须与原服务一致。`DEEPSEEK_API_KEY` 为空时使用原有降级路径。`BEMODEL_DISABLE_SCHEDULER=1` 可关闭定时巡检；`BEMODEL_INSPECT_CRON` 使用含秒的六字段表达式。
 
+智能问数资产增强由 `BEMODEL_SEMANTIC_ASSET_ENHANCE` 控制，目前默认 `0`；受控验证设为 `1` 后重启。增强包含规则/动作/公理证据、引用核验和经过资格核对的“取消未退费笔数”直查。真实模型三轮 A/B 与人工证据支持度复核完成前不默认开启，关闭时恢复原问数链路。详情与本轮验证边界见 [增强方案](../docs/semantic-qa-asset-enhancement.md)。
+
+无数据库也可执行 `.\.venv\Scripts\python.exe scripts/eval_semantic_qa.py --sqlite-fixture`：25 个固定合成场景经完整问数入口执行开/关两组，报告写入 `artifacts/semantic-qa-eval-sqlite.json`。这是 SQLite + StubLLM 验证，不能替代 MySQL 或真实 DeepSeek 验收。默认不带参数的评测仍要求受保护的本机 13317 隔离库；`--real-llm` 至少运行三轮并单独生成真实模型报告。
+
 数据源扫描成功后会持久化一个异步本体治理任务。任务先执行确定性覆盖分析与脱敏聚合统计，再按表分片调用模型；无 Key 时保留确定性结果并标记为 `PARTIAL`。任务轮询、锁超时、重试、分片和统计预算分别通过 `BEMODEL_ONTOLOGY_ANALYSIS_*`、`BEMODEL_ONTOLOGY_STATS_*` 配置。候选映射默认 `confirmed=0`，不会进入正式问数白名单；所有建议均需 ADMIN/EDITOR 审核。
 
 治理模型请求独立使用 `BEMODEL_ONTOLOGY_ANALYSIS_TIMEOUT_SECONDS`，默认 120 秒（允许 1–240 秒），不改变普通模型调用的超时。任务锁超时应大于单次模型请求超时。可在 Python 目录执行 `.venv\Scripts\python.exe scripts/probe_ontology_ai.py --tables 8`，使用当前模型配置和临时内存数据库验证真实调用；附加 `--workflow` 验证任务执行和变更集保存（跳过物理数据库统计）。该命令会产生模型调用费用，不访问业务数据库。

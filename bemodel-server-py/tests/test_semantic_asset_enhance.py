@@ -25,6 +25,12 @@ METRIC_DEFINITION = '医嘱已取消但费用状态仍为正常的明细笔数�
 METRIC_FORMULA = 'COUNT(医嘱状态=已取消 AND 费用状态=正常)'
 
 
+@pytest.fixture(autouse=True)
+def enable_enhancement(monkeypatch):
+    monkeypatch.setattr(settings, 'semantic_asset_enhance', True)
+    monkeypatch.setattr(settings, 'deepseek_api_key', '')
+
+
 class StubLLM:
     """按调用类型返回预设响应；answer=None 模拟作答降级（走确定性模板）。"""
 
@@ -33,12 +39,14 @@ class StubLLM:
         self.answer_text = answer
         self.plan_calls = 0
         self.plan_prompts = []
+        self.answer_prompts = []
 
     def chat(self, call_type, system_prompt, user_prompt):
         if call_type == 'CS_SEMANTIC_PLAN':
             self.plan_calls += 1
             self.plan_prompts.append(user_prompt)
             return self.plan_responses.pop(0)
+        self.answer_prompts.append(user_prompt)
         return self.answer_text
 
 
@@ -188,7 +196,7 @@ def test_qualified_metric_passes_verification(session):
 def test_metric_content_change_disqualifies(session, override, fragment):
     seed_metric(session, **override)
     policy, row, reason = metric_policy.verify_qualified(session, 'CANCEL_NOT_REFUND')
-    assert row is not None and reason is not None and fragment in reason
+    assert row is None and reason is not None and fragment in reason
 
 
 def test_enum_meaning_change_disqualifies(session):
@@ -198,7 +206,7 @@ def test_enum_meaning_change_disqualifies(session):
     mapping.value_map = '{"0":"未执行","1":"已执行","2":"已完成"}'   # 2 不再是「取消」
     session.commit()
     policy, row, reason = metric_policy.verify_qualified(session, 'CANCEL_NOT_REFUND')
-    assert row is not None and '枚举映射含义变化' in reason
+    assert row is None and '枚举映射含义变化' in reason
 
 
 def test_unlisted_metric_never_qualified(session):
@@ -430,13 +438,14 @@ def test_model_answer_retry_failure_keeps_only_valid_evidence(session):
     assert svc.llm.plan_calls == 2
 
 
-def test_model_answer_keeps_original_behavior_without_assets(session):
-    """无已发布资产（如空库）时 MODEL_ANSWER 维持原结构判断行为。"""
+def test_model_answer_without_assets_is_insufficient(session):
+    """空库也必须拒绝无依据结构判断。"""
     svc = SemanticQaService(session)
     svc.llm = StubLLM([json.dumps(dict(mode='MODEL_ANSWER', ds='', conclusion='可以', semantics='结构'))],
                       answer='模型作答')
     result, _ = svc.answer('可以合并结算吗')
-    assert result['answer'] == '模型作答' and 'citations' not in result
+    assert '不足以确认' in result['answer'] and 'citations' not in result
+    assert not svc.llm.answer_prompts
 
 
 def test_query_fabricated_citation_never_executes(session, monkeypatch):
@@ -459,13 +468,13 @@ def test_query_invalid_citation_replan_recovers(session, monkeypatch):
     assert svc.llm.plan_calls == 2
 
 
-def test_query_replan_to_unanswerable_records_miss(session):
+def test_query_replan_to_unanswerable_is_insufficient(session):
     seed_assets(session)
     svc = SemanticQaService(session)
     svc.llm = StubLLM([query_plan(ruleCodes=['RULE-NOPE']),
                        json.dumps(dict(mode='UNANSWERABLE', reason='无依据'))])
     result, recorded = svc.answer('取消医嘱的费用')
-    assert result is None and recorded is True
+    assert '不足以确认' in result['answer'] and recorded is False
 
 
 def test_citation_field_type_and_length_guards(session):

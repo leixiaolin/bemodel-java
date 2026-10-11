@@ -876,12 +876,12 @@
 
       <!-- ============ 规则 ============ -->
       <el-tab-pane label="规则" name="rules" lazy>
-        <RulePanel :asset-code="assetQueryCode" />
+        <RulePanel :asset-code="activeTab === 'rules' && ['rules', 'rule'].includes(route.query.tab) ? assetQueryCode : ''" />
       </el-tab-pane>
 
       <!-- ============ 动作 ============ -->
       <el-tab-pane label="动作" name="actions" lazy>
-        <ActionPanel :asset-code="assetQueryCode" />
+        <ActionPanel :asset-code="activeTab === 'actions' && route.query.tab === 'actions' ? assetQueryCode : ''" />
       </el-tab-pane>
 
       <!-- ============ 实例浏览 ============ -->
@@ -896,7 +896,7 @@
 
       <!-- ============ 公理 ============ -->
       <el-tab-pane label="公理" name="axioms" lazy>
-        <AxiomPanel :asset-code="assetQueryCode" />
+        <AxiomPanel :asset-code="activeTab === 'axioms' && route.query.tab === 'axioms' ? assetQueryCode : ''" />
       </el-tab-pane>
     </el-tabs>
   </div>

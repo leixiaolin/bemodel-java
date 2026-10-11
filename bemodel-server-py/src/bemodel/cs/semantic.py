@@ -133,7 +133,7 @@ class SemanticQaService:
         if code is None:
             return None
         policy, metric, reason = metric_policy.verify_qualified(self.session, code)
-        if metric is None:
+        if reason or metric is None:
             logging.getLogger(__name__).warning('指标直查资格失效(%s)：%s，回落语义规划', code, reason)
             return None
         try:
@@ -144,12 +144,12 @@ class SemanticQaService:
             sql = validate_sql(self.normalize_enum_literals(metric.ds_code, metric.probe_sql), tables, columns)
             # 执行前再次确认资格内容未发生不允许的变化（设计方案 4.3）
             policy, metric, reason = metric_policy.verify_qualified(self.session, code)
-            if metric is None:
+            if reason or metric is None:
                 logging.getLogger(__name__).warning('指标直查执行前资格复核失败(%s)：%s，回落语义规划', code, reason)
                 return None
             rows = self.execute(metric.ds_code, sql)
-        except Exception:
-            logging.getLogger(__name__).warning('指标直查校验/执行失败(%s)，回落语义规划', code, exc_info=True)
+        except Exception as exc:
+            logging.getLogger(__name__).warning('指标直查校验/执行失败(%s, %s)，回落语义规划', code, type(exc).__name__)
             return None
         accepted, value, vreason = metric_policy.check_result_value(rows, policy)
         if not accepted:
@@ -163,12 +163,12 @@ class SemanticQaService:
             if metric.warn_threshold is not None and value > metric.warn_threshold:
                 answer += f"已超过预警阈值 {metric.warn_threshold}{policy['unit']}，需要关注。"
         used = self.tables_in_sql(sql, tables)
-        codes = [m.concept_code for m in self.rows(Mapping, Mapping.ds_code == metric.ds_code, Mapping.table_name.in_(used))] if used else []
+        codes = [m.concept_code for m in self.rows(Mapping, Mapping.ds_code == metric.ds_code, Mapping.confirmed == 1, Mapping.table_name.in_(used))] if used else []
         evidence = [
             dict(label='指标', value=f"{metric.name}（{code}）"),
             dict(label='指标口径', value=metric.definition),
             dict(label='统计范围', value=policy['scope']),
-            dict(label='单位', value=policy['unit'] if value is not None else '-'),
+            dict(label='单位', value=policy['unit']),
             dict(label='执行SQL', value=sql),
             dict(label='数据源', value=metric.ds_code+(' / '+','.join(used) if used else '')),
             dict(label='实测值', value=('暂无可用实测值' if value is None else f"{value}{policy['unit']}")),
@@ -183,7 +183,7 @@ class SemanticQaService:
 
     def insufficient_result(self, q, valid_entries=()):
         """依据不足的确定性结果：保留已有有效证据，不输出肯定业务结论。"""
-        evidence = [dict(label='处理说明', value='规划引用的业务资产未通过核验或无有效依据，已按依据不足处理，未执行查询、未输出业务结论')]
+        evidence = [dict(label='处理说明', value='规划引用的业务资产未通过核验或无有效依据，已按依据不足处理，未输出业务结论')]
         evidence += [dict(label=f'依据{asset_context.KIND_LABEL[e.kind]} {e.code}', value=e.evidence) for e in valid_entries]
         return dict(question=q, intent='语义查询', router='SEMANTIC',
             answer='当前已发布资产不足以确认该问题的结论。请到本体管理补充或核验业务资产（规则/公理/动作）后重试，或换个问法。',
@@ -194,9 +194,12 @@ class SemanticQaService:
         则重规划一次（新快照），仍失败转依据不足，不执行以无效依据生成的计划。
 
         返回 (plan, snapshot, valid_entries, outcome)：outcome 为 'ok'（继续
-        执行）、'insufficient'（依据不足）、'miss'（重规划改判拒答）、
+        执行）、'insufficient'（依据不足）、
         'model'（重规划改判 MODEL_ANSWER，plan 已替换）。"""
         declared = asset_context.declared_codes(plan)
+        if plan.get('evidenceStatus') in ('INSUFFICIENT', 'CONFLICT'):
+            valid, _, _ = asset_context.verify_citations(self.session, snapshot, plan)
+            return plan, snapshot, valid, 'insufficient'
         bad_type = any(v is None for v in declared.values())
         if not bad_type and not any(declared[k] for k in ('rule', 'axiom', 'action')):
             return plan, snapshot, [], 'ok'
@@ -211,7 +214,7 @@ class SemanticQaService:
         if retry_plan is None:
             return plan, snapshot, valid, 'insufficient'
         if retry_plan['mode'] == 'UNANSWERABLE':
-            return retry_plan, retry_snapshot, [], 'miss'
+            return retry_plan, retry_snapshot, valid, 'insufficient'
         if retry_plan['mode'] == 'MODEL_ANSWER':
             return retry_plan, retry_snapshot, [], 'model'
         valid2, invalid2, err2 = asset_context.verify_citations(self.session, retry_snapshot, retry_plan)
@@ -438,14 +441,12 @@ class SemanticQaService:
         if plan['mode'] == 'MODEL_ANSWER':
             return self.model_answer(q, plan, snapshot), False
         valid_entries = []
-        if snapshot is not None and snapshot.entries:
+        if snapshot is not None:
             plan, snapshot, valid_entries, outcome = self._gate_query_citations(q, plan, snapshot)
             if outcome == 'insufficient':
                 return self.insufficient_result(q, valid_entries), False
-            if outcome == 'miss':
-                return miss()
             if outcome == 'model':
-                return self.model_answer(q, plan, snapshot), False
+                return self.model_answer(q, plan, snapshot, allow_retry=False), False
         tables, columns = self.allowed(plan['ds'])
         if not tables:
             return miss()
@@ -457,13 +458,23 @@ class SemanticQaService:
             logging.getLogger(__name__).warning('语义查询失败，降级能力菜单', exc_info=True)
             return miss()
         sql, rows, corrections = self.agent_correct(q, plan, sql, rows, tables, columns)
+        if corrections and settings.semantic_asset_enhance:
+            plan = dict(plan, semantics='按纠错后的最终 SQL 查询；原规划的业务资产引用已清除。')
+        if valid_entries and not corrections:
+            valid_entries, invalid, error = asset_context.verify_citations(self.session, snapshot, plan)
+            if invalid or error:
+                return self.insufficient_result(q, valid_entries), False
         total, view = len(rows), rows[:20]
         rows_json = dumps(view)
         if len(rows_json) > 3000:
             rows_json = rows_json[:3000]+'…'
         answer_prompt = f"用户问题：{q}\n查询语义：{plan['semantics']}\n执行SQL：{sql}\n结果行数：{total}"+('（仅展示前20行）' if total > 20 else '')+'\n结果JSON：'+rows_json
         if valid_entries:
-            answer_prompt += asset_context.ASSET_ANSWER_ADDENDUM
+            if corrections:
+                valid_entries = []
+            else:
+                answer_prompt += ''.join(f'\n依据{asset_context.KIND_LABEL[e.kind]} {e.code}：{e.evidence}' for e in valid_entries)
+                answer_prompt += asset_context.ASSET_ANSWER_ADDENDUM
         answer = self.llm.chat('CS_SEMANTIC_ANSWER', '你是医院信息平台的数据问答助手。严格基于给定查询结果用中文回答，先给结论再给关键数字，口语化，不超过200字。结果里没有的信息不要编造，结果为0条就如实说没有。', answer_prompt)
         if answer is None:
             answer = f"按本体映射到 {plan['ds']} 查询，没有符合条件的记录。（{plan['semantics']}）" if total == 0 else f"按本体映射查询到 {total} 条记录（{plan['semantics']}）。首条明细：{java_value(view[0])}"
@@ -479,12 +490,15 @@ class SemanticQaService:
         self.fill_parse(result, q+' '+plan['semantics'], codes)
         return result, False
 
-    def model_answer(self, q, plan, snapshot=None):
+    def model_answer(self, q, plan, snapshot=None, allow_retry=True):
         if not plan['conclusion']:
             return None
         valid_entries = []
-        if snapshot is not None and snapshot.entries:
-            # 增强模式下有已发布资产时，MODEL_ANSWER 必须有可核验依据（设计方案 4.4）
+        if settings.semantic_asset_enhance:
+            if plan.get('evidenceStatus') in ('INSUFFICIENT', 'CONFLICT'):
+                valid, _, _ = asset_context.verify_citations(self.session, snapshot, plan)
+                return self.insufficient_result(q, valid)
+            # 空快照也必须核验：没有可引用资产不能成为绕过依据不足保护的理由。
             declared = asset_context.declared_codes(plan)
             if any(v is None for v in declared.values()):
                 valid_entries, invalid, err = [], [], '引用字段类型错误'
@@ -493,6 +507,8 @@ class SemanticQaService:
             else:
                 valid_entries, invalid, err = [], [], None
             if err or invalid:
+                if not allow_retry:
+                    return self.insufficient_result(q, valid_entries)
                 # 出现无效引用：重规划一次并明确指出失效项；不得仅删引用后保留原结论
                 pointed = ', '.join(invalid) if invalid else '引用字段类型错误'
                 note = (f'\n注意：你上次 MODEL_ANSWER 引用的资产编码未通过核验（{pointed}）。'
@@ -500,7 +516,7 @@ class SemanticQaService:
                 retry_plan, retry_snapshot = self._plan_query(q, note=note)
                 if retry_plan is not None and retry_plan['mode'] == 'MODEL_ANSWER' and retry_plan['conclusion']:
                     valid_entries, invalid, err = asset_context.verify_citations(self.session, retry_snapshot, retry_plan)
-                    if err or invalid or not valid_entries:
+                    if err or invalid or not valid_entries or retry_plan.get('evidenceStatus') in ('INSUFFICIENT', 'CONFLICT'):
                         return self.insufficient_result(q, valid_entries)
                     plan, snapshot = retry_plan, retry_snapshot
                 else:
@@ -517,6 +533,10 @@ class SemanticQaService:
             except Exception:
                 sql, rows = None, None
         probe = '无（纯结构判断）' if sql is None else sql+' → '+dumps(rows)
+        if valid_entries:
+            valid_entries, invalid, error = asset_context.verify_citations(self.session, snapshot, plan)
+            if invalid or error:
+                return self.insufficient_result(q, valid_entries)
         grounding = ''.join(f"\n依据{asset_context.KIND_LABEL[e.kind]} {e.code}：{e.evidence}" for e in valid_entries)
         answer = self.llm.chat('CS_SEMANTIC_ANSWER', '你是医院信息平台的业务规则解答助手。基于给定的本体结构判断与验证探针结果用中文回答，先给「可以/不可以」的结论，再给依据（结构口径+探针数字），口语化，不超过200字。不要编造探针没有的数字。', f"用户问题：{q}\n本体结构判断：{plan['semantics']}\n初步结论：{plan['conclusion']}"+grounding+f"\n验证探针：{probe}"+(asset_context.ASSET_ANSWER_ADDENDUM if valid_entries else ''))
         if answer is None:
@@ -524,7 +544,7 @@ class SemanticQaService:
             if valid_entries:
                 answer += '（依据：'+'；'.join(e.code for e in valid_entries)+'）'
             if rows is not None:
-                answer += ' 验证探针返回：'+java_value(rows[0])
+                answer += ' 验证探针返回：'+(java_value(rows[0]) if rows else '无记录')
         evidence = [dict(label='结构依据', value=plan['semantics'])]
         if sql is not None:
             evidence += [dict(label='执行SQL', value=sql), dict(label='结果行数', value=str(len(rows))+('，首行 '+java_value(rows[0]) if rows else ''))]

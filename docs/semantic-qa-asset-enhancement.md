@@ -1,6 +1,8 @@
 # 智能问数增强设计方案：业务资产参与规划与证据，可信指标进入查数主路
 
-> 状态：**已实施（2026-10-09）**。实现按本文约束落地：sqlite+MySQL 全量测试 289 项通过（真实 MySQL 5.7 临时隔离实例 13317/bemodel_py_test，含 35 项集成），`scripts/eval_semantic_qa.py` 确定性断言 0 失败（报告 `bemodel-server-py/artifacts/semantic-qa-eval.json`）。未验证项：真实 DeepSeek A/B（未运行 `--real-llm`）、前端浏览器人工核验（已通过 `npm run build`）。
+> 状态：**已修复核心缺陷并完成本地及隔离 MySQL 回归，尚未通过默认开启验收（2026-10-11）**。Docker Desktop 已从 2.3.0.3 升级到 4.94.0，隔离环境 `127.0.0.1:13317/bemodel_py_test` 完整 Python 回归为 **327 通过、0 跳过**；前端构建通过，独立浏览器通过接口替身验证三类资产深链、筛选清除、同页切换、前进后退、失效提示和指标/规则徽章跳转。固定 MySQL 数据评测通过完整 `CsService.ask` 入口验证 24 个场景：开关两组均无失败，增强开启后的 3 个确定性直查业务值全部正确且均带引用。固定 SQLite 数据 + StubLLM 的 25 场景评测也已通过。尚未运行真实 DeepSeek 三轮 A/B 和人工证据支持度复核，因此不能宣称真实模型准确率或默认开启验收通过。原 `semantic-qa-eval.json` 是历史记录，不作为本轮证据。
+>
+> 本轮证据：`bemodel-server-py/artifacts/semantic-qa-regression-off.xml`、`semantic-qa-regression-on.xml`、`semantic-qa-regression-mysql.xml`、`semantic-qa-eval-sqlite.json`、`semantic-qa-eval-mysql.json`、`semantic-qa-browser.json`。增强默认关闭；测试或受控验证显式设置 `BEMODEL_SEMANTIC_ASSET_ENHANCE=1`，真实模型与人工证据复核完成后再决定默认开启。
 >
 > 范围：后台扩展仅在 `bemodel-server-py/`；Java 端 `bemodel-server/` 不增加代码、不修改资源；前端 `bemodel-web/` 配套增强。
 
@@ -68,10 +70,10 @@
 使用 `settings.semantic_asset_enhance` 控制资产注入、提示词补充、指标直查和引用验证四条增强线：
 
 ```python
-semantic_asset_enhance: bool = Field(True, validation_alias="BEMODEL_SEMANTIC_ASSET_ENHANCE")
+semantic_asset_enhance: bool = Field(False, validation_alias="BEMODEL_SEMANTIC_ASSET_ENHANCE")
 ```
 
-保留原方案默认开启的目标，前提是第 8 节验收完成。上线回退设置 `BEMODEL_SEMANTIC_ASSET_ENHANCE=0` 后重启；关闭时不执行资格检查、资产查询、引用处理或新增提示词，恢复原链路。
+默认开启仍以第 8 节验收完成为前提；当前默认关闭，受控验证需显式设为 `1`。上线回退设置 `BEMODEL_SEMANTIC_ASSET_ENHANCE=0` 后重启；关闭时不执行资格检查、资产查询、引用处理或新增提示词，恢复原链路。
 
 ```text
 CsService.ask：原有路由和口径卡
@@ -274,7 +276,9 @@ CsService.ask：原有路由和口径卡
 
 成本收益只比较实际进入合格直查的样本：语义服务内规划、作答、critic 调用应为 0，完整入口可能仍有 CS_ROUTE。未调用真实模型时仅报告确定性验证结果，不宣称成本或准确率提升已经成立。
 
-报告写入 `bemodel-server-py/artifacts/semantic-qa-eval.json`，含代码版本/工作区状态摘要、数据夹具版本、策略版本、配置（脱敏）、模型、运行时间、开/关两轮逐题结果、预期值、失败原因及分组差异，不保存敏感明细。
+报告按模式写入 `bemodel-server-py/artifacts/semantic-qa-eval-sqlite.json`、`semantic-qa-eval-mysql.json` 或 `semantic-qa-eval-real.json`，可用 `--output` 指定路径，避免不同验证覆盖证据。报告含代码内容摘要、数据夹具版本、策略版本、配置（脱敏）、运行时间、开/关逐题结果、预期值、失败原因及分组差异。SQLite 模式保存合成回答；真实环境不保存自由文本回答或敏感结果行。现有网关未向调用方暴露 token usage，报告据实使用 `null`，另报实际 prompt 字符数。
+
+本地可执行 `python scripts/eval_semantic_qa.py --sqlite-fixture`；该模式不连接 MySQL，路由、规划、作答和 critic 全部使用 StubLLM，业务 SQL 在固定 SQLite 数据上实际执行。时间、科室、患者、分组和比例结果均有独立标注；冲突等场景验证服务对给定模型计划的处理，不能证明真实模型能识别所有冲突。真实环境的自由文本业务正确性和证据支持度仍须人工复核，报告的 `releaseGatePassed` 不因确定性断言通过而自动置真。
 
 ### 8.4 兼容性回归
 

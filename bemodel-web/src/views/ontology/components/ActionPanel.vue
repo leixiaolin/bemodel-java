@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   listActions,
@@ -151,21 +151,32 @@ const loadActions = async () => {
 
 const locateAsset = async () => {
   const code = props.assetCode
-  if (!code || locatedCode.value === code || loading.value) return
+  if (!code) {
+    locatedCode.value = ''
+    tableRef.value?.setCurrentRow()
+    return
+  }
+  if (locatedCode.value === code || loading.value) return
   if (filterConcept.value) {
     filterConcept.value = ''
     await loadActions()
   }
+  await nextTick()
+  if (props.assetCode !== code || loading.value || locatedCode.value === code) return
   locatedCode.value = code
   const row = actions.value.find((a) => a.actionCode === code)
   if (!row) {
+    tableRef.value?.setCurrentRow()
     ElMessage.warning(`未在动作库找到 ${code}，可能已被删除`)
     return
   }
   tableRef.value?.setCurrentRow(row)
+  await nextTick()
+  tableRef.value?.$el.querySelector('.current-row')?.scrollIntoView({ block: 'nearest' })
 }
 
 watch(() => [props.assetCode, actions.value, loading.value], locateAsset, { flush: 'post' })
+watch(actions, () => { locatedCode.value = '' }, { flush: 'sync' })
 
 const doTransition = async (row, target) => {
   actingCode.value = row.actionCode

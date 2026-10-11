@@ -448,7 +448,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Close } from '@element-plus/icons-vue'
@@ -488,16 +488,26 @@ const loadRules = async () => {
 
 const locateAsset = async () => {
   const code = props.assetCode
-  if (!code || locatedCode.value === code || loading.value) return
+  if (!code) {
+    if (locatedCode.value) detailVisible.value = false
+    locatedCode.value = ''
+    tableRef.value?.setCurrentRow()
+    return
+  }
+  if (locatedCode.value === code || loading.value) return
   // 清掉遮挡筛选（概念下拉/类型页签），确保目标行在当前数据里可见
   if (filterConcept.value || filterType.value) {
     filterConcept.value = ''
     filterType.value = ''
     await loadRules()
   }
+  await nextTick()
+  if (props.assetCode !== code || loading.value || locatedCode.value === code) return
   locatedCode.value = code
   const row = rules.value.find((r) => r.ruleCode === code)
   if (!row) {
+    detailVisible.value = false
+    tableRef.value?.setCurrentRow()
     ElMessage.warning(`未在规则库找到 ${code}，可能已被删除`)
     return
   }
@@ -506,6 +516,7 @@ const locateAsset = async () => {
 }
 
 watch(() => [props.assetCode, rules.value, loading.value], locateAsset, { flush: 'post' })
+watch(rules, () => { locatedCode.value = '' }, { flush: 'sync' })
 
 // ---------- 分类页签（数量徽标） ----------
 const TYPE_ORDER = ['约束', '推导', '校验']

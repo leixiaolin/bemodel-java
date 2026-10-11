@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { listAxioms, createAxiom, deleteAxiom } from '../../../api/ontology'
 
@@ -97,19 +97,28 @@ const loadAxioms = async () => {
   }
 }
 
-const locateAsset = () => {
+const locateAsset = async () => {
   const code = props.assetCode
-  if (!code || locatedCode.value === code || loading.value) return
+  if (!code) {
+    locatedCode.value = ''
+    tableRef.value?.setCurrentRow()
+    return
+  }
+  if (locatedCode.value === code || loading.value) return
   locatedCode.value = code
   const row = axioms.value.find((a) => a.axiomCode === code)
   if (!row) {
+    tableRef.value?.setCurrentRow()
     ElMessage.warning(`未在公理库找到 ${code}，可能已被删除`)
     return
   }
   tableRef.value?.setCurrentRow(row)
+  await nextTick()
+  if (props.assetCode === code) tableRef.value?.$el.querySelector('.current-row')?.scrollIntoView({ block: 'nearest' })
 }
 
 watch(() => [props.assetCode, axioms.value, loading.value], locateAsset, { flush: 'post' })
+watch(axioms, () => { locatedCode.value = '' }, { flush: 'sync' })
 
 const dialogVisible = ref(false)
 const saving = ref(false)
